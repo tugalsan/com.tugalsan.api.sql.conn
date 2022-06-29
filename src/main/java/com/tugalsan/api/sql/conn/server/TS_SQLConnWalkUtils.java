@@ -4,6 +4,7 @@ import com.tugalsan.api.executable.client.TGS_ExecutableType1;
 import com.tugalsan.api.log.server.TS_Log;
 import com.tugalsan.api.pack.client.TGS_Pack1;
 import com.tugalsan.api.sql.resultset.server.TS_SQLResultSet;
+import com.tugalsan.api.unsafe.client.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
@@ -12,26 +13,28 @@ public class TS_SQLConnWalkUtils {
     final private static TS_Log d = TS_Log.of(TS_SQLConnWalkUtils.class.getSimpleName());
 
     public static void con(TS_SQLConnAnchor anchor, TGS_ExecutableType1<Connection> con) {
-        try ( var conPack = TS_SQLConnConUtils.conPack(anchor);) {
-            d.ci("con", anchor.config.dbName);
-            con.execute(conPack.con());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        TGS_UnSafe.execute(() -> {
+            try ( var conPack = TS_SQLConnConUtils.conPack(anchor);) {
+                d.ci("con", anchor.config.dbName);
+                con.execute(conPack.con());
+            }
+        });
     }
 
     public static boolean active(TS_SQLConnAnchor anchor) {
         TGS_Pack1<Boolean> result = new TGS_Pack1(false);
         var sqlStmt = "SELECT 'Hello world'  FROM DUAL";
         TS_SQLConnWalkUtils.stmt(anchor, sqlStmt, stmt -> {
-            try ( var resultSet = stmt.executeQuery();) {
-                var rs = new TS_SQLResultSet(resultSet);
-                var val = rs.str.get(0, 0);
-                d.ci("active", val);
-                result.value0 = true;
-            } catch (Exception e) {
-                d.ce("active", "Is database driver loaded? Try restart!", e.getMessage());
-            }
+            TGS_UnSafe.execute(() -> {
+                try ( var resultSet = stmt.executeQuery();) {
+                    var rs = new TS_SQLResultSet(resultSet);
+                    var val = rs.str.get(0, 0);
+                    d.ci("active", val);
+                    result.value0 = true;
+                }
+            }, exception -> {
+                d.ce("active", "Is database driver loaded? Try restart!", exception.getMessage());
+            });
         });
         return result.value0;
     }
@@ -56,12 +59,12 @@ public class TS_SQLConnWalkUtils {
         }
         TS_SQLConnWalkUtils.stmt(anchor, sqlStmt, stmt -> {
             fillStmt.execute(stmt);
-            try ( var resultSet = stmt.executeQuery();) {
-                var rso = new TS_SQLResultSet(resultSet);
-                rs.execute(rso);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            TGS_UnSafe.execute(() -> {
+                try ( var resultSet = stmt.executeQuery();) {
+                    var rso = new TS_SQLResultSet(resultSet);
+                    rs.execute(rso);
+                }
+            });
         });
     }
 
