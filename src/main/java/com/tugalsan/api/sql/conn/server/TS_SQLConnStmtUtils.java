@@ -4,6 +4,7 @@ import com.tugalsan.api.file.obj.server.*;
 import com.tugalsan.api.log.server.TS_Log;
 import com.tugalsan.api.sql.col.typed.client.TGS_SQLColTypedUtils;
 import com.tugalsan.api.string.server.*;
+import com.tugalsan.api.unsafe.client.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,15 +16,12 @@ public class TS_SQLConnStmtUtils {
     final public static TS_Log d = TS_Log.of(TS_SQLConnStmtUtils.class.getSimpleName());
 
     public static PreparedStatement stmt(Connection con, CharSequence sql) {
-        try {
-            if (TS_SQLConnConUtils.scrollingSupported(con)) {
-                return con.prepareStatement(sql.toString(), ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            } else {
-                throw new RuntimeException(TS_SQLConnConUtils.class.getSimpleName() + ".of.scrollingSupported = false");
+        return TGS_UnSafe.compile(() -> {
+            if (!TS_SQLConnConUtils.scrollingSupported(con)) {
+                TGS_UnSafe.catchMeIfUCan(d.className, "stmt", "!TS_SQLConnConUtils.scrollingSupported(con)");
             }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+            return con.prepareStatement(sql.toString(), ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+        });
     }
 
     public static int fill(PreparedStatement fillStmt, List<String> colNames, List params, int index) {
@@ -41,64 +39,57 @@ public class TS_SQLConnStmtUtils {
     }
 
     public static int fill(PreparedStatement fillStmt, CharSequence colName, Object param, int index) {
-        try {
-            if (param instanceof byte[]) {
+        return TGS_UnSafe.compile(() -> {
+            if (param instanceof byte[] val) {
                 if (!TGS_SQLColTypedUtils.familyBytes(colName)) {
-                    throw new RuntimeException("byte[] on not familyBytes col: " + colName);
+                    TGS_UnSafe.catchMeIfUCan(d.className, "fill", "param instanceof byte[] -> !TGS_SQLColTypedUtils.familyBytes(colName)");
                 }
-                var val = (byte[]) param;
                 d.ci("fill", index, "byte[]", "len", val.length);
                 fillStmt.setBytes(index + 1, val);
                 return index + 1;
             }
-            if (param instanceof Boolean) {
+            if (param instanceof Boolean val) {
                 if (!TGS_SQLColTypedUtils.familyLng(colName)) {
-                    throw new RuntimeException("Boolean on not familyLng col: " + colName);
+                    TGS_UnSafe.catchMeIfUCan(d.className, "fill", "param instanceof Boolean -> !TGS_SQLColTypedUtils.familyLng(colName)");
                 }
-                var val = (Boolean) param;
                 d.ci("fill", index, "bool", val);
                 fillStmt.setLong(index + 1, val ? 1L : 0L);
                 return index + 1;
             }
-            if (param instanceof Short) {
+            if (param instanceof Short val) {
                 if (!TGS_SQLColTypedUtils.familyLng(colName)) {
-                    throw new RuntimeException("Short on not familyLng col: " + colName);
+                    TGS_UnSafe.catchMeIfUCan(d.className, "fill", "param instanceof Short -> !TGS_SQLColTypedUtils.familyLng(colName)");
                 }
-                var val = (Short) param;
                 d.ci("fill", index, "Short", val);
                 fillStmt.setLong(index + 1, val);
                 return index + 1;
             }
-            if (param instanceof Integer) {
+            if (param instanceof Integer val) {
                 if (!TGS_SQLColTypedUtils.familyLng(colName)) {
-                    throw new RuntimeException("Integer on not familyLng col: " + colName);
+                    TGS_UnSafe.catchMeIfUCan(d.className, "fill", "param instanceof Integer -> !TGS_SQLColTypedUtils.familyLng(colName)");
                 }
-                var val = (Integer) param;
                 d.ci("fill", index, "Integer", val);
                 fillStmt.setLong(index + 1, val);
                 return index + 1;
             }
-            if (param instanceof Long) {
+            if (param instanceof Long val) {
                 if (!TGS_SQLColTypedUtils.familyLng(colName)) {
-                    throw new RuntimeException("Long on not familyLng col: " + colName);
+                    TGS_UnSafe.catchMeIfUCan(d.className, "fill", "param instanceof Long -> !TGS_SQLColTypedUtils.familyLng(colName)");
                 }
-                var val = (Long) param;
                 d.ci("fill", index, "Long", val);
                 fillStmt.setLong(index + 1, val);
                 return index + 1;
             }
-            if (param instanceof Object[]) {
+            if (param instanceof Object[] val) {
                 if (!TGS_SQLColTypedUtils.typeBytes(colName) && !TGS_SQLColTypedUtils.typeBytesRow(colName)) {
-                    throw new RuntimeException("Object[] on not typeBytes or typeBytesRow col: " + colName);
+                    TGS_UnSafe.catchMeIfUCan(d.className, "fill", "param instanceof Object[] -> !TGS_SQLColTypedUtils.typeBytes(colName) && !TGS_SQLColTypedUtils.typeBytesRow(colName)");
                 }
-                var val = (Object[]) param;
                 var obj = TS_FileObjUtils.toBytes(val);
                 d.ci("fill", index, "byte[].str", "len", obj.length);
                 fillStmt.setBytes(index + 1, obj);
                 return index + 1;
             }
-            if (param instanceof CharSequence) {
-                var val = (CharSequence) param;
+            if (param instanceof CharSequence val) {
                 var str = val.toString().replace("'", "\"");//JAVASCRIPT FIX
                 if (TGS_SQLColTypedUtils.typeBytes(colName) || TGS_SQLColTypedUtils.typeBytesStr(colName)) {
                     var obj = TS_StringUtils.toByte(str);
@@ -111,11 +102,9 @@ public class TS_SQLConnStmtUtils {
                     fillStmt.setString(index + 1, str);
                     return index + 1;
                 }
-                throw new RuntimeException("CharSequence on not typeBytes or typeBytesStr col: " + colName);
+                TGS_UnSafe.catchMeIfUCan(d.className, "fill", "CharSequence on not typeBytes or typeBytesStr col: " + colName);
             }
-            throw new RuntimeException(TS_SQLConnStmtUtils.class.getSimpleName() + ".fill-> Error: Uncoded type! [" + param + "]");
-        } catch (Exception ex) {
-            throw new RuntimeException(TS_SQLConnStmtUtils.class.getSimpleName() + ".fill-> Error: idx:" + index + " for " + ex.getMessage(), ex);
-        }
+            return TGS_UnSafe.catchMeIfUCanReturns(d.className, "fill", "Uncoded type! [" + param + "]");
+        });
     }
 }

@@ -41,11 +41,11 @@ public class TS_SQLConnWalkUtils {
 
     private static void stmt(TS_SQLConnAnchor anchor, CharSequence sql, TGS_ExecutableType1<PreparedStatement> stmt) {
         con(anchor, con -> {
-            try ( var stmt0 = TS_SQLConnStmtUtils.stmt(con, sql);) {
-                stmt.execute(stmt0);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            TGS_UnSafe.execute(() -> {
+                try ( var stmt0 = TS_SQLConnStmtUtils.stmt(con, sql);) {
+                    stmt.execute(stmt0);
+                }
+            });
         });
     }
 
@@ -72,12 +72,10 @@ public class TS_SQLConnWalkUtils {
         d.ci("update", "sqlStmt", sqlStmt);
         TGS_Pack1<Integer> pack = new TGS_Pack1(0);
         TS_SQLConnWalkUtils.stmt(anchor, sqlStmt, stmt -> {
-            try {
+            TGS_UnSafe.execute(() -> {
                 fillStmt.execute(stmt);
                 pack.value0 = stmt.executeUpdate();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            });
         });
         return pack.value0;
     }

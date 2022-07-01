@@ -7,53 +7,46 @@ import com.tugalsan.api.list.server.*;
 import com.tugalsan.api.log.server.TS_Log;
 import com.tugalsan.api.pack.client.*;
 import com.tugalsan.api.profile.server.melody.*;
+import com.tugalsan.api.stream.client.*;
+import com.tugalsan.api.string.client.*;
+import com.tugalsan.api.unsafe.client.*;
 
 public class TS_SQLConnConUtils {
 
     final private static TS_Log d = TS_Log.of(TS_SQLConnConUtils.class.getSimpleName());
 
     public static boolean scrollingSupported(Connection con) {
-        try {
-            return con.getMetaData().supportsResultSetType(ResultSet.TYPE_SCROLL_INSENSITIVE);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(TS_SQLConnConUtils.class.getSimpleName() + ".scrollingSupported = ?");
-        }
+        return TGS_UnSafe.compile(() -> con.getMetaData().supportsResultSetType(ResultSet.TYPE_SCROLL_INSENSITIVE));
     }
 
     @Deprecated
     public static boolean valid(Connection con0, int timeoutSeconds) {
-        try ( var con = con0) {
-            return con.isValid(timeoutSeconds);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static void destroy() {
-        SYNC.forEach(item -> {
-            try {
-                ((org.apache.tomcat.jdbc.pool.DataSource) item.value1).close(true);
-            } catch (Exception e) {
-            }
-            try {
-                ((org.apache.tomcat.jdbc.pool.DataSource) item.value1).close();
-            } catch (Exception e) {
-            }
-            try {
-                ((org.apache.tomcat.jdbc.pool.DataSource) item.value2).close(true);
-            } catch (Exception e) {
-            }
-            try {
-                ((org.apache.tomcat.jdbc.pool.DataSource) item.value2).close();
-            } catch (Exception e) {
+        return TGS_UnSafe.compile(() -> {
+            try ( var con = con0) {
+                return con.isValid(timeoutSeconds);
             }
         });
     }
 
+    public static void destroy() {
+        SYNC.forEach(item -> {
+            TGS_UnSafe.execute(() -> {
+                ((org.apache.tomcat.jdbc.pool.DataSource) item.value1).close(true)
+            }, e -> TGS_UnSafe.doNothing());
+            TGS_UnSafe.execute(() -> {
+                ((org.apache.tomcat.jdbc.pool.DataSource) item.value1).close();
+            }, e -> TGS_UnSafe.doNothing());
+            TGS_UnSafe.execute(() -> {
+                ((org.apache.tomcat.jdbc.pool.DataSource) item.value2).close(true);
+            }, e -> TGS_UnSafe.doNothing());
+            TGS_UnSafe.execute(() -> {
+                ((org.apache.tomcat.jdbc.pool.DataSource) item.value2).close();
+            }, e -> TGS_UnSafe.doNothing());
+        });
+    }
+
     @Deprecated //DOES IT EVEN WORK?
-    public static void destroy(ClassLoader thread_currentThread_getContextClassLoader
-    ) {
+    public static void destroy(ClassLoader thread_currentThread_getContextClassLoader) {
         var drivers = DriverManager.getDrivers();
         while (drivers.hasMoreElements()) {
             var driver = drivers.nextElement();
@@ -75,20 +68,14 @@ public class TS_SQLConnConUtils {
     }
 
     private static Connection conProp(TS_SQLConnAnchor anchor) {
-        try {
+        return TGS_UnSafe.compile(() -> {
             Class.forName(TS_SQLConnMethodUtils.getDriver(anchor.config)).getConstructor().newInstance();
             return DriverManager.getConnection(anchor.url(), anchor.properties());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        });
     }
 
     private static Connection conPool(TS_SQLConnAnchor anchor) {
-        try {
-            return ds(anchor).getConnection();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        return TGS_UnSafe.compile(() -> ds(anchor).getConnection());
     }
 
     private static javax.sql.DataSource ds(TS_SQLConnAnchor anchor) {

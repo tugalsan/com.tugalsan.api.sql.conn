@@ -5,6 +5,7 @@ import com.tugalsan.api.pack.client.*;
 import com.tugalsan.api.sql.col.typed.client.*;
 import com.tugalsan.api.sql.sanitize.server.*;
 import com.tugalsan.api.string.client.*;
+import com.tugalsan.api.unsafe.client.*;
 import java.util.*;
 
 public class TS_SQLConnColUtils {
@@ -31,46 +32,50 @@ public class TS_SQLConnColUtils {
         if (Objects.equals(config.method, TS_SQLConnMethodUtils.METHOD_MYSQL())) {
             if (colType.familyLng()) {
                 return "INTEGER NOT NULL";
-            } else if (colType.familyStr()) {
-                return "VARCHAR(254) NOT NULL";
-            } else if (colType.familyBytes()) {
-                return "LONGBLOB";
-            } else {
-                throw new RuntimeException("Unrecognized SQL colType:" + colType);
             }
+            if (colType.familyStr()) {
+                return "VARCHAR(254) NOT NULL";
+            }
+            if (colType.familyBytes()) {
+                return "LONGBLOB";
+            }
+            return TGS_UnSafe.catchMeIfUCanReturns(d.className, "creationType(TS_SQLConnConfig config, TGS_SQLColTyped colType)", "Unrecognized SQL colType:" + colType);
         }
         if (Objects.equals(config.method, TS_SQLConnMethodUtils.METHOD_ODBC())) {
             if (colType.familyLng()) {
                 return "INTEGER NOT NULL";
-            } else if (colType.familyStr()) {
-                return "VARCHAR(254) NOT NULL";
-            } else if (colType.familyBytes()) {
-                return "LONGBINARY";
-            } else {
-                throw new RuntimeException("Unrecognized SQL colType:" + colType);
             }
+            if (colType.familyStr()) {
+                return "VARCHAR(254) NOT NULL";
+            }
+            if (colType.familyBytes()) {
+                return "LONGBINARY";
+            }
+            return TGS_UnSafe.catchMeIfUCanReturns(d.className, "creationType(TS_SQLConnConfig config, TGS_SQLColTyped colType)", "Unrecognized SQL colType:" + colType);
         }
         if (Objects.equals(config.method, TS_SQLConnMethodUtils.METHOD_ORACLE())) {
             if (colType.familyLng()) {
                 return "INTEGER NOT NULL";
-            } else if (colType.familyStr()) {
-                return "VARCHAR2(254) NOT NULL";
-            } else if (colType.familyBytes()) {
-                return "LONGBLOB";
-            } else {
-                throw new RuntimeException("Unrecognized SQL colType:" + colType);
             }
+            if (colType.familyStr()) {
+                return "VARCHAR2(254) NOT NULL";
+            }
+            if (colType.familyBytes()) {
+                return "LONGBLOB";
+            }
+            return TGS_UnSafe.catchMeIfUCanReturns(d.className, "creationType(TS_SQLConnConfig config, TGS_SQLColTyped colType)", "Unrecognized SQL colType:" + colType);
         }
         if (Objects.equals(config.method, TS_SQLConnMethodUtils.METHOD_SQLSERVER())) {
             if (colType.familyLng()) {
                 return "INT NOT NULL";
-            } else if (colType.familyStr()) {
-                return "VARCHAR(254) NOT NULL";
-            } else if (colType.familyBytes()) {
-                return "IMAGE"; //BINARY, VARBIMARY, IMAGE
-            } else {
-                throw new RuntimeException("Unrecognized SQL colType:" + colType);
             }
+            if (colType.familyStr()) {
+                return "VARCHAR(254) NOT NULL";
+            }
+            if (colType.familyBytes()) {
+                return "IMAGE"; //BINARY, VARBIMARY, IMAGE
+            }
+            return TGS_UnSafe.catchMeIfUCanReturns(d.className, "creationType(TS_SQLConnConfig config, TGS_SQLColTyped colType)", "Unrecognized SQL colType:" + colType);
         }
         if (Objects.equals(config.method, TS_SQLConnMethodUtils.METHOD_SMALLSQL())) {
             //BIT, BOOLEAN, BINARY, VARBINARY, RAW, LONGVARBINARY, BLOB,
@@ -80,14 +85,15 @@ public class TS_SQLConnColUtils {
             //LONGVARCHAR, CLOB, NCLOB, UNIQUEIDENTIFIER, JAVA_OBJECT or SYSNAME
             if (colType.familyLng()) {
                 return "INT NOT NULL";
-            } else if (colType.familyStr()) {
-                return "VARCHAR(254) NOT NULL";
-            } else if (colType.familyBytes()) {
-                return "LONGVARBINARY";
-            } else {
-                throw new RuntimeException("Unrecognized SQL colType:" + colType);
             }
+            if (colType.familyStr()) {
+                return "VARCHAR(254) NOT NULL";
+            }
+            if (colType.familyBytes()) {
+                return "LONGVARBINARY";
+            }
+            return TGS_UnSafe.catchMeIfUCanReturns(d.className, "creationType(TS_SQLConnConfig config, TGS_SQLColTyped colType)", "Unrecognized SQL colType:" + colType);
         }
-        throw new RuntimeException("Unrecognized SQL method:" + config.method);
+        return TGS_UnSafe.catchMeIfUCanReturns(d.className, "creationType(TS_SQLConnConfig config, TGS_SQLColTyped colType)", "Unrecognized SQL method:" + config.method);
     }
 }
