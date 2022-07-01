@@ -7,8 +7,6 @@ import com.tugalsan.api.list.server.*;
 import com.tugalsan.api.log.server.TS_Log;
 import com.tugalsan.api.pack.client.*;
 import com.tugalsan.api.profile.server.melody.*;
-import com.tugalsan.api.stream.client.*;
-import com.tugalsan.api.string.client.*;
 import com.tugalsan.api.unsafe.client.*;
 
 public class TS_SQLConnConUtils {
@@ -30,18 +28,10 @@ public class TS_SQLConnConUtils {
 
     public static void destroy() {
         SYNC.forEach(item -> {
-            TGS_UnSafe.execute(() -> {
-                ((org.apache.tomcat.jdbc.pool.DataSource) item.value1).close(true)
-            }, e -> TGS_UnSafe.doNothing());
-            TGS_UnSafe.execute(() -> {
-                ((org.apache.tomcat.jdbc.pool.DataSource) item.value1).close();
-            }, e -> TGS_UnSafe.doNothing());
-            TGS_UnSafe.execute(() -> {
-                ((org.apache.tomcat.jdbc.pool.DataSource) item.value2).close(true);
-            }, e -> TGS_UnSafe.doNothing());
-            TGS_UnSafe.execute(() -> {
-                ((org.apache.tomcat.jdbc.pool.DataSource) item.value2).close();
-            }, e -> TGS_UnSafe.doNothing());
+            TGS_UnSafe.execute(() -> ((org.apache.tomcat.jdbc.pool.DataSource) item.value1).close(true), e -> TGS_UnSafe.doNothing());
+            TGS_UnSafe.execute(() -> ((org.apache.tomcat.jdbc.pool.DataSource) item.value1).close(), e -> TGS_UnSafe.doNothing());
+            TGS_UnSafe.execute(() -> ((org.apache.tomcat.jdbc.pool.DataSource) item.value2).close(true), e -> TGS_UnSafe.doNothing());
+            TGS_UnSafe.execute(() -> ((org.apache.tomcat.jdbc.pool.DataSource) item.value2).close(), e -> TGS_UnSafe.doNothing());
         });
     }
 
