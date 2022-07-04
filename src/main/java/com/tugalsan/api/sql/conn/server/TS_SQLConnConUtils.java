@@ -44,13 +44,11 @@ public class TS_SQLConnConUtils {
             if (driver.getClass().getClassLoader() == thread_currentThread_getContextClassLoader) {
                 var classLoaderName = thread_currentThread_getContextClassLoader.getName();
                 var classLoaderClassName = thread_currentThread_getContextClassLoader.getClass().getSimpleName();
-                try {
+                TGS_UnSafe.execute(() -> {
                     d.cr("destroy", "found", driverClassName, classLoaderName, classLoaderClassName);
                     DriverManager.deregisterDriver(driver);
                     d.cr("destroy", "successful");
-                } catch (SQLException e) {
-                    d.ce("destroy", "failed", driverClassName, classLoaderName, classLoaderClassName);
-                }
+                }, e -> d.ce("destroy", "failed", driverClassName, classLoaderName, classLoaderClassName));
             } else {
                 d.ci("destroy", "Not deregistering JDBC driver, as it does not belong to this webapp's ClassLoader", driver);
             }

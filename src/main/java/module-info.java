@@ -4,6 +4,7 @@ module com.tugalsan.api.sql.conn {
     requires com.tugalsan.api.unsafe;
     requires com.tugalsan.api.validator;
     requires com.tugalsan.api.profile;
+    requires com.tugalsan.api.compiler;
     requires com.tugalsan.api.executable;
     requires com.tugalsan.api.string;
     requires com.tugalsan.api.log;

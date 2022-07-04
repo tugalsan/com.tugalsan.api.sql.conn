@@ -4,6 +4,7 @@ import com.tugalsan.api.file.json.server.*;
 import com.tugalsan.api.file.server.*;
 import com.tugalsan.api.file.txt.server.*;
 import com.tugalsan.api.log.server.*;
+import com.tugalsan.api.unsafe.client.*;
 import java.nio.file.*;
 
 public class TS_SQLConnAnchorUtils {
@@ -22,16 +23,14 @@ public class TS_SQLConnAnchorUtils {
             TS_FileJsonUtils.toFile(jsonString, filePath, false, true);
         }
 
-        String jsonString;
-        try {
-            jsonString = TS_FileTxtUtils.toString(filePath);
-        } catch (Exception e) {
+        var jsonString = TGS_UnSafe.compile(() -> TS_FileTxtUtils.toString(filePath), e -> {
             d.ct("getDefaultInstance", e);
             d.cr("getDefaultInstance", "writing default file");
             var tmp = new TS_SQLConnConfig(dbName);
-            jsonString = TS_FileJsonUtils.toJSON(tmp, true);
-            TS_FileTxtUtils.toFile(jsonString, filePath, false);
-        }
+            var jsonString0 = TS_FileJsonUtils.toJSON(tmp, true);
+            TS_FileTxtUtils.toFile(jsonString0, filePath, false);
+            return jsonString0;
+        });
         d.ci("getDefaultInstance", jsonString);
 
         var config = TS_FileJsonUtils.toObject(jsonString, TS_SQLConnConfig.class);
