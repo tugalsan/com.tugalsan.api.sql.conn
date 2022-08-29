@@ -11,7 +11,7 @@ import com.tugalsan.api.unsafe.client.*;
 
 public class TS_SQLConnConUtils {
 
-    final private static TS_Log d = TS_Log.of(TS_SQLConnConUtils.class.getSimpleName());
+    final private static TS_Log d = TS_Log.of(TS_SQLConnConUtils.class);
 
     public static boolean scrollingSupported(Connection con) {
         return TGS_UnSafe.compile(() -> con.getMetaData().supportsResultSetType(ResultSet.TYPE_SCROLL_INSENSITIVE));

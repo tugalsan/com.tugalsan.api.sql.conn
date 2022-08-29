@@ -5,7 +5,7 @@ import java.nio.charset.StandardCharsets;
 
 public class TS_SQLConnURLUtils {
 
-    final private static TS_Log d = TS_Log.of(TS_SQLConnURLUtils.class.getSimpleName());
+    final private static TS_Log d = TS_Log.of(TS_SQLConnURLUtils.class);
 
     private static String PARAMETER_AND() {
         return "&";

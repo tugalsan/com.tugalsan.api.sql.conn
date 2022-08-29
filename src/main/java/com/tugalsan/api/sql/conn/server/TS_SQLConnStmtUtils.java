@@ -13,7 +13,7 @@ import java.util.stream.IntStream;
 
 public class TS_SQLConnStmtUtils {
 
-    final public static TS_Log d = TS_Log.of(TS_SQLConnStmtUtils.class.getSimpleName());
+    final public static TS_Log d = TS_Log.of(TS_SQLConnStmtUtils.class);
 
     public static PreparedStatement stmt(Connection con, CharSequence sql) {
         return TGS_UnSafe.compile(() -> {

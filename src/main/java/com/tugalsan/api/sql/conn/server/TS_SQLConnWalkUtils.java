@@ -10,7 +10,7 @@ import java.sql.PreparedStatement;
 
 public class TS_SQLConnWalkUtils {
 
-    final private static TS_Log d = TS_Log.of(TS_SQLConnWalkUtils.class.getSimpleName());
+    final private static TS_Log d = TS_Log.of(TS_SQLConnWalkUtils.class);
 
     public static void con(TS_SQLConnAnchor anchor, TGS_ExecutableType1<Connection> con) {
         TGS_UnSafe.execute(() -> {

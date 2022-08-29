@@ -9,7 +9,7 @@ import java.nio.file.*;
 
 public class TS_SQLConnAnchorUtils {
 
-    final private static TS_Log d = TS_Log.of(TS_SQLConnAnchorUtils.class.getSimpleName());
+    final private static TS_Log d = TS_Log.of(TS_SQLConnAnchorUtils.class);
 
     public static TS_SQLConnAnchor createAnchor(Path dir, CharSequence dbName) {
         TS_DirectoryUtils.assureExists(dir);

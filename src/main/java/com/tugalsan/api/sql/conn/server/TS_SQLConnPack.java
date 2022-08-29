@@ -6,7 +6,7 @@ import java.sql.*;
 
 public class TS_SQLConnPack implements AutoCloseable {
 
-    final private static TS_Log d = TS_Log.of(TS_SQLConnWalkUtils.class.getSimpleName());
+    final private static TS_Log d = TS_Log.of(TS_SQLConnWalkUtils.class);
 
     public TS_SQLConnPack(TS_SQLConnAnchor anchor, Connection main, Connection proxy) {
         this.anchor = anchor;

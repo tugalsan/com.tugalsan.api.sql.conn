@@ -10,7 +10,7 @@ import java.util.*;
 
 public class TS_SQLConnColUtils {
 
-    final private static TS_Log d = TS_Log.of(TS_SQLConnColUtils.class.getSimpleName());
+    final private static TS_Log d = TS_Log.of(TS_SQLConnColUtils.class);
 
     public static List<String> names(TS_SQLConnAnchor anchor, CharSequence tableName) {
         TS_SQLSanitizeUtils.sanitize(tableName);

@@ -5,7 +5,7 @@ import org.apache.tomcat.jdbc.pool.*;
 
 public class TS_SQLConnAnchor {
 
-//    final private static TS_Log d = TS_Log.of(TS_SQLConnAnchor.class.getSimpleName());
+//    final private static TS_Log d = TS_Log.of(TS_SQLConnAnchor.class);
 
     public TS_SQLConnAnchor(TS_SQLConnConfig config) {
         this.config = config;
