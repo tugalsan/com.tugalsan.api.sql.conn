@@ -2,12 +2,14 @@ package com.tugalsan.api.sql.conn.server;
 
 import com.tugalsan.api.file.obj.server.*;
 import com.tugalsan.api.log.server.TS_Log;
+import com.tugalsan.api.pack.client.TGS_Pack2;
 import com.tugalsan.api.sql.col.typed.client.TGS_SQLColTypedUtils;
 import com.tugalsan.api.string.server.*;
 import com.tugalsan.api.unsafe.client.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -15,12 +17,25 @@ public class TS_SQLConnStmtUtils {
 
     final public static TS_Log d = TS_Log.of(TS_SQLConnStmtUtils.class);
 
+    public static TS_SQLConnStmtUpdatePack executeUpdate(PreparedStatement stmt) {
+        var bag = TS_SQLConnStmtUpdatePack.of(0, null);
+        TGS_UnSafe.execute(() -> {
+            bag.affectedRowCount = stmt.executeUpdate();
+            try ( var generatedKeys = stmt.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    bag.autoId = generatedKeys.getLong(1);
+                }
+            }
+        });
+        return bag;
+    }
+
     public static PreparedStatement stmt(Connection con, CharSequence sql) {
         return TGS_UnSafe.compile(() -> {
             if (!TS_SQLConnConUtils.scrollingSupported(con)) {
                 TGS_UnSafe.catchMeIfUCan(d.className, "stmt", "!TS_SQLConnConUtils.scrollingSupported(con)");
             }
-            return con.prepareStatement(sql.toString(), ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            return con.prepareStatement(sql.toString(), ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE, Statement.RETURN_GENERATED_KEYS);
         });
     }
 
