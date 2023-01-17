@@ -32,7 +32,7 @@ public class TS_SQLConnStmtUtils {
 
     public static PreparedStatement stmtUpdate(Connection con, CharSequence sql) {
         return TGS_UnSafe.compile(() -> {
-            return con.prepareStatement(sql.toString(), ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            return con.prepareStatement(sql.toString(), PreparedStatement.RETURN_GENERATED_KEYS);
         });
     }
 
@@ -41,7 +41,7 @@ public class TS_SQLConnStmtUtils {
             if (!TS_SQLConnConUtils.scrollingSupported(con)) {
                 TGS_UnSafe.catchMeIfUCan(d.className, "stmtQuery", "!TS_SQLConnConUtils.scrollingSupported(con)");
             }
-            return con.prepareStatement(sql.toString(), PreparedStatement.RETURN_GENERATED_KEYS);
+            return con.prepareStatement(sql.toString(), ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
         });
     }
 
