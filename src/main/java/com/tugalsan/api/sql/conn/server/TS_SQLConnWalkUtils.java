@@ -24,7 +24,7 @@ public class TS_SQLConnWalkUtils {
     public static boolean active(TS_SQLConnAnchor anchor) {
         TGS_Pack1<Boolean> result = new TGS_Pack1(false);
         var sqlStmt = "SELECT 'Hello world'  FROM DUAL";
-        TS_SQLConnWalkUtils.stmt(anchor, sqlStmt, stmt -> {
+        TS_SQLConnWalkUtils.stmtQuery(anchor, sqlStmt, stmt -> {
             TGS_UnSafe.execute(() -> {
                 try ( var resultSet = stmt.executeQuery();) {
                     var rs = new TS_SQLResultSet(resultSet);
@@ -39,10 +39,20 @@ public class TS_SQLConnWalkUtils {
         return result.value0;
     }
 
-    private static void stmt(TS_SQLConnAnchor anchor, CharSequence sql, TGS_ExecutableType1<PreparedStatement> stmt) {
+    private static void stmtQuery(TS_SQLConnAnchor anchor, CharSequence sql, TGS_ExecutableType1<PreparedStatement> stmt) {
         con(anchor, con -> {
             TGS_UnSafe.execute(() -> {
-                try ( var stmt0 = TS_SQLConnStmtUtils.stmt(con, sql);) {
+                try ( var stmt0 = TS_SQLConnStmtUtils.stmtQuery(con, sql);) {
+                    stmt.execute(stmt0);
+                }
+            });
+        });
+    }
+
+    private static void stmtUpdate(TS_SQLConnAnchor anchor, CharSequence sql, TGS_ExecutableType1<PreparedStatement> stmt) {
+        con(anchor, con -> {
+            TGS_UnSafe.execute(() -> {
+                try ( var stmt0 = TS_SQLConnStmtUtils.stmtUpdate(con, sql);) {
                     stmt.execute(stmt0);
                 }
             });
@@ -57,7 +67,7 @@ public class TS_SQLConnWalkUtils {
                 d.ci("query", "sqlStmt", sqlStmt);
             }
         }
-        TS_SQLConnWalkUtils.stmt(anchor, sqlStmt, stmt -> {
+        TS_SQLConnWalkUtils.stmtQuery(anchor, sqlStmt, stmt -> {
             fillStmt.execute(stmt);
             TGS_UnSafe.execute(() -> {
                 try ( var resultSet = stmt.executeQuery();) {
@@ -71,7 +81,7 @@ public class TS_SQLConnWalkUtils {
     public static TS_SQLConnStmtUpdateResult update(TS_SQLConnAnchor anchor, CharSequence sqlStmt, TGS_ExecutableType1<PreparedStatement> fillStmt) {
         d.ci("update", "sqlStmt", sqlStmt);
         TGS_Pack1<TS_SQLConnStmtUpdateResult> pack = TGS_Pack1.of();
-        TS_SQLConnWalkUtils.stmt(anchor, sqlStmt, stmt -> {
+        TS_SQLConnWalkUtils.stmtUpdate(anchor, sqlStmt, stmt -> {
             TGS_UnSafe.execute(() -> {
                 fillStmt.execute(stmt);
                 pack.value0 = TS_SQLConnStmtUtils.executeUpdate(stmt);
