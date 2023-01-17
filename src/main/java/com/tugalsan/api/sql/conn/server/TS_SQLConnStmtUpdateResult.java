@@ -13,4 +13,9 @@ public class TS_SQLConnStmtUpdateResult {
     public static TS_SQLConnStmtUpdateResult of(int affectedRowCount, Long autoId) {
         return new TS_SQLConnStmtUpdateResult(affectedRowCount, autoId);
     }
+
+    @Override
+    public String toString() {
+        return TS_SQLConnStmtUpdateResult.class.getSimpleName() + "{" + "affectedRowCount=" + affectedRowCount + ", autoId=" + autoId + '}';
+    }
 }
