@@ -35,7 +35,7 @@ public class TS_SQLConnStmtUtils {
             if (!TS_SQLConnConUtils.scrollingSupported(con)) {
                 TGS_UnSafe.catchMeIfUCan(d.className, "stmt", "!TS_SQLConnConUtils.scrollingSupported(con)");
             }
-            return con.prepareStatement(sql.toString(), ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE, Statement.RETURN_GENERATED_KEYS);
+            return con.prepareStatement(sql.toString(), Statement.RETURN_GENERATED_KEYS, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
         });
     }
 
