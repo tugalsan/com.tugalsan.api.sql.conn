@@ -68,9 +68,9 @@ public class TS_SQLConnWalkUtils {
         });
     }
 
-    public static TS_SQLConnStmtUpdatePack update(TS_SQLConnAnchor anchor, CharSequence sqlStmt, TGS_ExecutableType1<PreparedStatement> fillStmt) {
+    public static TS_SQLConnStmtUpdateResult update(TS_SQLConnAnchor anchor, CharSequence sqlStmt, TGS_ExecutableType1<PreparedStatement> fillStmt) {
         d.ci("update", "sqlStmt", sqlStmt);
-        TGS_Pack1<TS_SQLConnStmtUpdatePack> pack = TGS_Pack1.of();
+        TGS_Pack1<TS_SQLConnStmtUpdateResult> pack = TGS_Pack1.of();
         TS_SQLConnWalkUtils.stmt(anchor, sqlStmt, stmt -> {
             TGS_UnSafe.execute(() -> {
                 fillStmt.execute(stmt);

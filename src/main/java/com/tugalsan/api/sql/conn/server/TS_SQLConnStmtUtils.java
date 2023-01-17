@@ -17,8 +17,8 @@ public class TS_SQLConnStmtUtils {
 
     final public static TS_Log d = TS_Log.of(TS_SQLConnStmtUtils.class);
 
-    public static TS_SQLConnStmtUpdatePack executeUpdate(PreparedStatement stmt) {
-        var bag = TS_SQLConnStmtUpdatePack.of(0, null);
+    public static TS_SQLConnStmtUpdateResult executeUpdate(PreparedStatement stmt) {
+        var bag = TS_SQLConnStmtUpdateResult.of(0, null);
         TGS_UnSafe.execute(() -> {
             bag.affectedRowCount = stmt.executeUpdate();
             try ( var generatedKeys = stmt.getGeneratedKeys()) {
