@@ -44,12 +44,12 @@
         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-jdbc</artifactId>
-            <version>10.1.0-M14</version>
+            <version>11.0.0-M4</version><!-- 10.1.0-M14 was working -->
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.29</version>
+            <version>8.0.32</version><!-- 8.0.29 was working -->
             <scope>provided</scope><!-- it is in tomcat/lib directory !!!!-->
         </dependency>
         <dependency>
