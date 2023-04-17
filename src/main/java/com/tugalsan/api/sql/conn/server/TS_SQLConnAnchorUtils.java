@@ -23,7 +23,7 @@ public class TS_SQLConnAnchorUtils {
             TS_FileJsonUtils.toFile(jsonString, filePath, false, true);
         }
 
-        var jsonString = TGS_UnSafe.compile(() -> TS_FileTxtUtils.toString(filePath), e -> {
+        var jsonString = TGS_UnSafe.call(() -> TS_FileTxtUtils.toString(filePath), e -> {
             d.ct("getDefaultInstance", e);
             d.cr("getDefaultInstance", "writing default file");
             var tmp = new TS_SQLConnConfig(dbName);

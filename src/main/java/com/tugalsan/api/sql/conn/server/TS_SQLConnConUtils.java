@@ -14,12 +14,12 @@ public class TS_SQLConnConUtils {
     final private static TS_Log d = TS_Log.of(TS_SQLConnConUtils.class);
 
     public static boolean scrollingSupported(Connection con) {
-        return TGS_UnSafe.compile(() -> con.getMetaData().supportsResultSetType(ResultSet.TYPE_SCROLL_INSENSITIVE));
+        return TGS_UnSafe.call(() -> con.getMetaData().supportsResultSetType(ResultSet.TYPE_SCROLL_INSENSITIVE));
     }
 
     @Deprecated
     public static boolean valid(Connection con0, int timeoutSeconds) {
-        return TGS_UnSafe.compile(() -> {
+        return TGS_UnSafe.call(() -> {
             try ( var con = con0) {
                 return con.isValid(timeoutSeconds);
             }
@@ -28,10 +28,10 @@ public class TS_SQLConnConUtils {
 
     public static void destroy() {
         SYNC.forEach(item -> {
-            TGS_UnSafe.execute(() -> ((org.apache.tomcat.jdbc.pool.DataSource) item.value1).close(true), e -> TGS_UnSafe.doNothing());
-            TGS_UnSafe.execute(() -> ((org.apache.tomcat.jdbc.pool.DataSource) item.value1).close(), e -> TGS_UnSafe.doNothing());
-            TGS_UnSafe.execute(() -> ((org.apache.tomcat.jdbc.pool.DataSource) item.value2).close(true), e -> TGS_UnSafe.doNothing());
-            TGS_UnSafe.execute(() -> ((org.apache.tomcat.jdbc.pool.DataSource) item.value2).close(), e -> TGS_UnSafe.doNothing());
+            TGS_UnSafe.run(() -> ((org.apache.tomcat.jdbc.pool.DataSource) item.value1).close(true), e -> TGS_UnSafe.runNothing());
+            TGS_UnSafe.run(() -> ((org.apache.tomcat.jdbc.pool.DataSource) item.value1).close(), e -> TGS_UnSafe.runNothing());
+            TGS_UnSafe.run(() -> ((org.apache.tomcat.jdbc.pool.DataSource) item.value2).close(true), e -> TGS_UnSafe.runNothing());
+            TGS_UnSafe.run(() -> ((org.apache.tomcat.jdbc.pool.DataSource) item.value2).close(), e -> TGS_UnSafe.runNothing());
         });
     }
 
@@ -44,7 +44,7 @@ public class TS_SQLConnConUtils {
             if (driver.getClass().getClassLoader() == thread_currentThread_getContextClassLoader) {
                 var classLoaderName = thread_currentThread_getContextClassLoader.getName();
                 var classLoaderClassName = thread_currentThread_getContextClassLoader.getClass().getSimpleName();
-                TGS_UnSafe.execute(() -> {
+                TGS_UnSafe.run(() -> {
                     d.cr("destroy", "found", driverClassName, classLoaderName, classLoaderClassName);
                     DriverManager.deregisterDriver(driver);
                     d.cr("destroy", "successful");
@@ -56,14 +56,14 @@ public class TS_SQLConnConUtils {
     }
 
     private static Connection conProp(TS_SQLConnAnchor anchor) {
-        return TGS_UnSafe.compile(() -> {
+        return TGS_UnSafe.call(() -> {
             Class.forName(TS_SQLConnMethodUtils.getDriver(anchor.config)).getConstructor().newInstance();
             return DriverManager.getConnection(anchor.url(), anchor.properties());
         });
     }
 
     private static Connection conPool(TS_SQLConnAnchor anchor) {
-        return TGS_UnSafe.compile(() -> ds(anchor).getConnection());
+        return TGS_UnSafe.call(() -> ds(anchor).getConnection());
     }
 
     private static javax.sql.DataSource ds(TS_SQLConnAnchor anchor) {

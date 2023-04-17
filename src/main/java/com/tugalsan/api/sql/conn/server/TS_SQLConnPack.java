@@ -32,7 +32,7 @@ public class TS_SQLConnPack implements AutoCloseable {
     }
 
     private void closeSilently(CharSequence tag, Connection c) {
-        TGS_UnSafe.execute(() -> {
+        TGS_UnSafe.run(() -> {
             if (c != null && !c.isClosed()) {
                 c.close();
             }

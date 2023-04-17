@@ -19,7 +19,7 @@ public class TS_SQLConnStmtUtils {
 
     public static TS_SQLConnStmtUpdateResult executeUpdate(PreparedStatement stmt) {
         var bag = TS_SQLConnStmtUpdateResult.of(0, null);
-        TGS_UnSafe.execute(() -> {
+        TGS_UnSafe.run(() -> {
             bag.affectedRowCount = stmt.executeUpdate();
             try ( var generatedKeys = stmt.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
@@ -31,15 +31,15 @@ public class TS_SQLConnStmtUtils {
     }
 
     public static PreparedStatement stmtUpdate(Connection con, CharSequence sql) {
-        return TGS_UnSafe.compile(() -> {
+        return TGS_UnSafe.call(() -> {
             return con.prepareStatement(sql.toString(), PreparedStatement.RETURN_GENERATED_KEYS);
         });
     }
 
     public static PreparedStatement stmtQuery(Connection con, CharSequence sql) {
-        return TGS_UnSafe.compile(() -> {
+        return TGS_UnSafe.call(() -> {
             if (!TS_SQLConnConUtils.scrollingSupported(con)) {
-                TGS_UnSafe.catchMeIfUCan(d.className, "stmtQuery", "!TS_SQLConnConUtils.scrollingSupported(con)");
+                TGS_UnSafe.thrw(d.className, "stmtQuery", "!TS_SQLConnConUtils.scrollingSupported(con)");
             }
             return con.prepareStatement(sql.toString(), ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
         });
@@ -60,10 +60,10 @@ public class TS_SQLConnStmtUtils {
     }
 
     public static int fill(PreparedStatement fillStmt, CharSequence colName, Object param, int index) {
-        return TGS_UnSafe.compile(() -> {
+        return TGS_UnSafe.call(() -> {
             if (param instanceof byte[] val) {
                 if (!TGS_SQLColTypedUtils.familyBytes(colName)) {
-                    TGS_UnSafe.catchMeIfUCan(d.className, "fill", "param instanceof byte[] -> !TGS_SQLColTypedUtils.familyBytes(colName)");
+                    TGS_UnSafe.thrw(d.className, "fill", "param instanceof byte[] -> !TGS_SQLColTypedUtils.familyBytes(colName)");
                 }
                 d.ci("fill", index, "byte[]", "len", val.length);
                 fillStmt.setBytes(index + 1, val);
@@ -71,7 +71,7 @@ public class TS_SQLConnStmtUtils {
             }
             if (param instanceof Boolean val) {
                 if (!TGS_SQLColTypedUtils.familyLng(colName)) {
-                    TGS_UnSafe.catchMeIfUCan(d.className, "fill", "param instanceof Boolean -> !TGS_SQLColTypedUtils.familyLng(colName)");
+                    TGS_UnSafe.thrw(d.className, "fill", "param instanceof Boolean -> !TGS_SQLColTypedUtils.familyLng(colName)");
                 }
                 d.ci("fill", index, "bool", val);
                 fillStmt.setLong(index + 1, val ? 1L : 0L);
@@ -79,7 +79,7 @@ public class TS_SQLConnStmtUtils {
             }
             if (param instanceof Short val) {
                 if (!TGS_SQLColTypedUtils.familyLng(colName)) {
-                    TGS_UnSafe.catchMeIfUCan(d.className, "fill", "param instanceof Short -> !TGS_SQLColTypedUtils.familyLng(colName)");
+                    TGS_UnSafe.thrw(d.className, "fill", "param instanceof Short -> !TGS_SQLColTypedUtils.familyLng(colName)");
                 }
                 d.ci("fill", index, "Short", val);
                 fillStmt.setLong(index + 1, val);
@@ -87,7 +87,7 @@ public class TS_SQLConnStmtUtils {
             }
             if (param instanceof Integer val) {
                 if (!TGS_SQLColTypedUtils.familyLng(colName)) {
-                    TGS_UnSafe.catchMeIfUCan(d.className, "fill", "param instanceof Integer -> !TGS_SQLColTypedUtils.familyLng(colName)");
+                    TGS_UnSafe.thrw(d.className, "fill", "param instanceof Integer -> !TGS_SQLColTypedUtils.familyLng(colName)");
                 }
                 d.ci("fill", index, "Integer", val);
                 fillStmt.setLong(index + 1, val);
@@ -95,7 +95,7 @@ public class TS_SQLConnStmtUtils {
             }
             if (param instanceof Long val) {
                 if (!TGS_SQLColTypedUtils.familyLng(colName)) {
-                    TGS_UnSafe.catchMeIfUCan(d.className, "fill", "param instanceof Long -> !TGS_SQLColTypedUtils.familyLng(colName)");
+                    TGS_UnSafe.thrw(d.className, "fill", "param instanceof Long -> !TGS_SQLColTypedUtils.familyLng(colName)");
                 }
                 d.ci("fill", index, "Long", val);
                 fillStmt.setLong(index + 1, val);
@@ -103,7 +103,7 @@ public class TS_SQLConnStmtUtils {
             }
             if (param instanceof Object[] val) {
                 if (!TGS_SQLColTypedUtils.typeBytes(colName) && !TGS_SQLColTypedUtils.typeBytesRow(colName)) {
-                    TGS_UnSafe.catchMeIfUCan(d.className, "fill", "param instanceof Object[] -> !TGS_SQLColTypedUtils.typeBytes(colName) && !TGS_SQLColTypedUtils.typeBytesRow(colName)");
+                    TGS_UnSafe.thrw(d.className, "fill", "param instanceof Object[] -> !TGS_SQLColTypedUtils.typeBytes(colName) && !TGS_SQLColTypedUtils.typeBytesRow(colName)");
                 }
                 var obj = TS_FileObjUtils.toBytes(val);
                 d.ci("fill", index, "byte[].str", "len", obj.length);
@@ -123,9 +123,9 @@ public class TS_SQLConnStmtUtils {
                     fillStmt.setString(index + 1, str);
                     return index + 1;
                 }
-                TGS_UnSafe.catchMeIfUCan(d.className, "fill", "CharSequence on not typeBytes or typeBytesStr col: " + colName);
+                TGS_UnSafe.thrw(d.className, "fill", "CharSequence on not typeBytes or typeBytesStr col: " + colName);
             }
-            return TGS_UnSafe.catchMeIfUCanReturns(d.className, "fill", "Uncoded type! [" + param + "]");
+            return TGS_UnSafe.thrwReturns(d.className, "fill", "Uncoded type! [" + param + "]");
         });
     }
 }
