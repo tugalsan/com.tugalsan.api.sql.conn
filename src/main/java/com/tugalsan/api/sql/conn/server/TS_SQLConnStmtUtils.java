@@ -2,7 +2,7 @@ package com.tugalsan.api.sql.conn.server;
 
 import com.tugalsan.api.file.obj.server.*;
 import com.tugalsan.api.log.server.TS_Log;
-import com.tugalsan.api.pack.client.TGS_Pack2;
+import com.tugalsan.api.tuple.client.TGS_Tuple2;
 import com.tugalsan.api.sql.col.typed.client.TGS_SQLColTypedUtils;
 import com.tugalsan.api.string.server.*;
 import com.tugalsan.api.unsafe.client.*;

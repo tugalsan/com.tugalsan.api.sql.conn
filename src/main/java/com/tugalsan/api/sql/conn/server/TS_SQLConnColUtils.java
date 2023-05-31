@@ -1,7 +1,7 @@
 package com.tugalsan.api.sql.conn.server;
 
 import com.tugalsan.api.log.server.*;
-import com.tugalsan.api.pack.client.*;
+import com.tugalsan.api.tuple.client.*;
 import com.tugalsan.api.sql.col.typed.client.*;
 import com.tugalsan.api.sql.sanitize.server.*;
 import com.tugalsan.api.string.client.*;
@@ -18,7 +18,7 @@ public class TS_SQLConnColUtils {
                 "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '", tableName, "' AND table_schema= '", anchor.config.dbName, "' ORDER BY ORDINAL_POSITION"
         );
         d.ci("names", sqlStmt);
-        TGS_Pack1<List<String>> pack = new TGS_Pack1();
+        TGS_Tuple1<List<String>> pack = new TGS_Tuple1();
         TS_SQLConnWalkUtils.query(anchor, sqlStmt, fillStmt -> {
         }, rs -> pack.value0 = rs.strArr.get(0));
         return pack.value0;

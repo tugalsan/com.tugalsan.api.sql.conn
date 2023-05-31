@@ -2,7 +2,7 @@ package com.tugalsan.api.sql.conn.server;
 
 import com.tugalsan.api.runnable.client.TGS_RunnableType1;
 import com.tugalsan.api.log.server.TS_Log;
-import com.tugalsan.api.pack.client.TGS_Pack1;
+import com.tugalsan.api.tuple.client.TGS_Tuple1;
 import com.tugalsan.api.sql.resultset.server.TS_SQLResultSet;
 import com.tugalsan.api.unsafe.client.*;
 import java.sql.Connection;
@@ -22,7 +22,7 @@ public class TS_SQLConnWalkUtils {
     }
 
     public static boolean active(TS_SQLConnAnchor anchor) {
-        TGS_Pack1<Boolean> result = new TGS_Pack1(false);
+        TGS_Tuple1<Boolean> result = new TGS_Tuple1(false);
         var sqlStmt = "SELECT 'Hello world'  FROM DUAL";
         TS_SQLConnWalkUtils.stmtQuery(anchor, sqlStmt, stmt -> {
             TGS_UnSafe.run(() -> {
@@ -80,7 +80,7 @@ public class TS_SQLConnWalkUtils {
 
     public static TS_SQLConnStmtUpdateResult update(TS_SQLConnAnchor anchor, CharSequence sqlStmt, TGS_RunnableType1<PreparedStatement> fillStmt) {
         d.ci("update", "sqlStmt", sqlStmt);
-        TGS_Pack1<TS_SQLConnStmtUpdateResult> pack = TGS_Pack1.of();
+        TGS_Tuple1<TS_SQLConnStmtUpdateResult> pack = TGS_Tuple1.of();
         TS_SQLConnWalkUtils.stmtUpdate(anchor, sqlStmt, stmt -> {
             TGS_UnSafe.run(() -> {
                 fillStmt.run(stmt);
