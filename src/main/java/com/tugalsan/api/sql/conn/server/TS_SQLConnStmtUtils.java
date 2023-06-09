@@ -21,7 +21,7 @@ public class TS_SQLConnStmtUtils {
         var bag = TS_SQLConnStmtUpdateResult.of(0, null);
         TGS_UnSafe.run(() -> {
             bag.affectedRowCount = stmt.executeUpdate();
-            try ( var generatedKeys = stmt.getGeneratedKeys()) {
+            try (var generatedKeys = stmt.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     bag.autoId = generatedKeys.getLong(1);
                 }
@@ -105,7 +105,11 @@ public class TS_SQLConnStmtUtils {
                 if (!TGS_SQLColTypedUtils.typeBytes(colName) && !TGS_SQLColTypedUtils.typeBytesRow(colName)) {
                     TGS_UnSafe.thrw(d.className, "fill", "param instanceof Object[] -> !TGS_SQLColTypedUtils.typeBytes(colName) && !TGS_SQLColTypedUtils.typeBytesRow(colName)");
                 }
-                var obj = TS_FileObjUtils.toBytes(val);
+                var opObj = TS_FileObjUtils.toBytes(val);
+                if (opObj.isEmpty()) {
+                    TGS_UnSafe.thrw(d.className, "fill", "param instanceof Object[] -> TS_FileObjUtils.toBytes(val).isEmpty");
+                }
+                var obj = opObj.get();
                 d.ci("fill", index, "byte[].str", "len", obj.length);
                 fillStmt.setBytes(index + 1, obj);
                 return index + 1;
