@@ -6,7 +6,7 @@ import org.apache.tomcat.jdbc.pool.*;
 import com.tugalsan.api.log.server.TS_Log;
 import com.tugalsan.api.tuple.client.*;
 import com.tugalsan.api.profile.server.melody.*;
-import com.tugalsan.api.thread.server.safe.TS_ThreadSafeLst;
+import com.tugalsan.api.thread.server.sync.TS_ThreadSyncLst;
 import com.tugalsan.api.unsafe.client.*;
 
 public class TS_SQLConnConUtils {
@@ -76,7 +76,7 @@ public class TS_SQLConnConUtils {
         SYNC.add(new TGS_Tuple3(anchor, ds, dsProxy));
         return dsProxy;
     }
-    final private static TS_ThreadSafeLst<TGS_Tuple3<TS_SQLConnAnchor, javax.sql.DataSource, javax.sql.DataSource>> SYNC = new TS_ThreadSafeLst();
+    final private static TS_ThreadSyncLst<TGS_Tuple3<TS_SQLConnAnchor, javax.sql.DataSource, javax.sql.DataSource>> SYNC = new TS_ThreadSyncLst();
 
     public static TS_SQLConnPack conPack(TS_SQLConnAnchor anchor) {
         var main_con = anchor.config.isPooled ? conPool(anchor) : conProp(anchor);
