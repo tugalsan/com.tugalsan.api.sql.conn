@@ -17,6 +17,26 @@ public class TS_SQLConnConfig implements Serializable {
     public boolean charsetUTF8 = true;
     public boolean isPooled = true;
 
+    @Override
+    public int hashCode() {
+        var hash = 5;
+        hash = 71 * hash + this.method;
+        hash = 71 * hash + Objects.hashCode(this.dbName);
+        hash = 71 * hash + Objects.hashCode(this.dbIp);
+        hash = 71 * hash + this.dbPort;
+        hash = 71 * hash + Objects.hashCode(this.dbUser);
+        hash = 71 * hash + Objects.hashCode(this.dbPassword);
+        hash = 71 * hash + (this.autoReconnect ? 1 : 0);
+        hash = 71 * hash + (this.useSSL ? 1 : 0);
+        hash = 71 * hash + (this.region_ist ? 1 : 0);
+        hash = 71 * hash + (this.charsetUTF8 ? 1 : 0);
+        hash = 71 * hash + (this.isPooled ? 1 : 0);
+        return hash;
+    }
+
+    
+    
+    
     public TS_SQLConnConfig() {//NEEDED FOR SERILIZE
 
     }

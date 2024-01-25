@@ -6,7 +6,6 @@ import org.apache.tomcat.jdbc.pool.*;
 public class TS_SQLConnAnchor {
 
 //    final private static TS_Log d = TS_Log.of(TS_SQLConnAnchor.class);
-
     public TS_SQLConnAnchor(TS_SQLConnConfig config) {
         this.config = config;
     }
@@ -14,6 +13,16 @@ public class TS_SQLConnAnchor {
 
     public TS_SQLConnAnchor cloneItAs(CharSequence newDbName) {
         return new TS_SQLConnAnchor(config.cloneItAs(newDbName));
+    }
+
+    @Override
+    public int hashCode() {
+        var hash = 7;
+        hash = 97 * hash + Objects.hashCode(this.config);
+        hash = 97 * hash + Objects.hashCode(this.url);
+        hash = 97 * hash + Objects.hashCode(this.prop);
+        hash = 97 * hash + Objects.hashCode(this.pool);
+        return hash;
     }
 
     @Override

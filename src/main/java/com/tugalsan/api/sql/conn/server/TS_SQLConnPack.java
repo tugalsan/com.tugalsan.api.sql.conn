@@ -13,9 +13,9 @@ public class TS_SQLConnPack implements AutoCloseable {
         this.main = main;
         this.proxy = proxy;
     }
-    private TS_SQLConnAnchor anchor;
-    private Connection main;
-    private Connection proxy;
+    private final TS_SQLConnAnchor anchor;
+    private final Connection main;
+    private final Connection proxy;
 
     public TS_SQLConnAnchor anchor() {
         return anchor;
@@ -38,7 +38,7 @@ public class TS_SQLConnPack implements AutoCloseable {
             }
         }, e -> {
             d.ce("close", tag, "error on close");
-            e.printStackTrace();
+            d.ct("close", e);
         });
     }
 }

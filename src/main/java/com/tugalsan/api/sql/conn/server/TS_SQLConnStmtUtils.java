@@ -2,14 +2,12 @@ package com.tugalsan.api.sql.conn.server;
 
 import com.tugalsan.api.file.obj.server.*;
 import com.tugalsan.api.log.server.TS_Log;
-import com.tugalsan.api.tuple.client.TGS_Tuple2;
 import com.tugalsan.api.sql.col.typed.client.TGS_SQLColTypedUtils;
 import com.tugalsan.api.string.server.*;
 import com.tugalsan.api.unsafe.client.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.List;
 import java.util.stream.IntStream;
 
