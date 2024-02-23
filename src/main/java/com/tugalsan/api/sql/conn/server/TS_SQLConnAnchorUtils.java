@@ -14,7 +14,7 @@ public class TS_SQLConnAnchorUtils {
     public static TS_SQLConnAnchor createAnchor(Path dir, CharSequence dbName) {
         TS_DirectoryUtils.assureExists(dir);
         var filePath = dir.resolve(TS_SQLConnConfig.class.getSimpleName() + "_" + dbName + ".json");
-        d.cr("getInstance", filePath);
+        d.cr("createAnchor", filePath);
 
         if (!TS_FileUtils.isExistFile(filePath)) {
             TS_DirectoryUtils.createDirectoriesIfNotExists(filePath.getParent());
@@ -24,14 +24,14 @@ public class TS_SQLConnAnchorUtils {
         }
 
         var jsonString = TGS_UnSafe.call(() -> TS_FileTxtUtils.toString(filePath), e -> {
-            d.ct("getDefaultInstance", e);
-            d.cr("getDefaultInstance", "writing default file");
+            d.ct("createAnchor", e);
+            d.cr("createAnchor", "writing default file");
             var tmp = new TS_SQLConnConfig(dbName);
             var jsonString0 = TS_FileJsonUtils.toJSON(tmp, true);
             TS_FileTxtUtils.toFile(jsonString0, filePath, false);
             return jsonString0;
         });
-        d.ci("getDefaultInstance", jsonString);
+        d.ci("createAnchor", jsonString);
 
         var config = TS_FileJsonUtils.toObject(jsonString, TS_SQLConnConfig.class);
         return new TS_SQLConnAnchor(config);
