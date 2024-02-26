@@ -76,7 +76,7 @@ public class TS_SQLConnConUtils {
         SYNC.add(new TGS_Tuple3(anchor, ds, dsProxy));
         return dsProxy;
     }
-    final private static TS_ThreadSyncLst<TGS_Tuple3<TS_SQLConnAnchor, javax.sql.DataSource, javax.sql.DataSource>> SYNC = new TS_ThreadSyncLst();
+    final private static TS_ThreadSyncLst<TGS_Tuple3<TS_SQLConnAnchor, javax.sql.DataSource, javax.sql.DataSource>> SYNC = TS_ThreadSyncLst.of();
 
     public static TS_SQLConnPack conPack(TS_SQLConnAnchor anchor) {
         var main_con = anchor.config.isPooled ? conPool(anchor) : conProp(anchor);
