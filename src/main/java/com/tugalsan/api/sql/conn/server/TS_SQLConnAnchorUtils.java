@@ -34,6 +34,6 @@ public class TS_SQLConnAnchorUtils {
         d.ci("createAnchor", jsonString);
 
         var config = TS_FileJsonUtils.toObject(jsonString, TS_SQLConnConfig.class);
-        return new TS_SQLConnAnchor(config);
+        return TS_SQLConnAnchor.of(config);
     }
 }

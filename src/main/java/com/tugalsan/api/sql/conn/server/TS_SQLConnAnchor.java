@@ -6,10 +6,14 @@ import org.apache.tomcat.jdbc.pool.*;
 public class TS_SQLConnAnchor {
 
 //    final private static TS_Log d = TS_Log.of(TS_SQLConnAnchor.class);
-    public TS_SQLConnAnchor(TS_SQLConnConfig config) {
+    private TS_SQLConnAnchor(TS_SQLConnConfig config) {
         this.config = config;
     }
     public TS_SQLConnConfig config;
+
+    public static TS_SQLConnAnchor of(TS_SQLConnConfig config) {
+        return new TS_SQLConnAnchor(config);
+    }
 
     public TS_SQLConnAnchor cloneItAs(CharSequence newDbName) {
         return new TS_SQLConnAnchor(config.cloneItAs(newDbName));
