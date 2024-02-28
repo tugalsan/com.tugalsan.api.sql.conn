@@ -34,15 +34,17 @@ public class TS_SQLConnConfig implements Serializable {
         return hash;
     }
 
-    
-    
-    
-    public TS_SQLConnConfig() {//NEEDED FOR SERILIZE
+    @Deprecated//NEEDED FOR SERILIZE
+    public TS_SQLConnConfig() {
 
     }
 
-    public TS_SQLConnConfig(CharSequence dbName) {
+    private TS_SQLConnConfig(CharSequence dbName) {
         this.dbName = dbName == null ? null : dbName.toString();
+    }
+
+    public static TS_SQLConnConfig of(CharSequence dbName) {
+        return new TS_SQLConnConfig(dbName);
     }
 
     @Override
