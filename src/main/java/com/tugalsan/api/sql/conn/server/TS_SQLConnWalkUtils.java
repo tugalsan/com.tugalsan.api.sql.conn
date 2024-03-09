@@ -14,7 +14,7 @@ public class TS_SQLConnWalkUtils {
 
     public static void con(TS_SQLConnAnchor anchor, TGS_RunnableType1<Connection> con) {
         TGS_UnSafe.run(() -> {
-            try ( var conPack = TS_SQLConnConUtils.conPack(anchor);) {
+            try (var conPack = TS_SQLConnConUtils.conPack(anchor);) {
                 d.ci("con", anchor.config.dbName);
                 con.run(conPack.con());
             }
@@ -24,17 +24,21 @@ public class TS_SQLConnWalkUtils {
     public static boolean active(TS_SQLConnAnchor anchor) {
         TGS_Tuple1<Boolean> result = new TGS_Tuple1(false);
         var sqlStmt = "SELECT 'Hello world'  FROM DUAL";
-        TS_SQLConnWalkUtils.stmtQuery(anchor, sqlStmt, stmt -> {
-            TGS_UnSafe.run(() -> {
-                try ( var resultSet = stmt.executeQuery();) {
-                    var rs = new TS_SQLResultSet(resultSet);
-                    var val = rs.str.get(0, 0);
-                    d.ci("active", val);
-                    result.value0 = true;
-                }
-            }, exception -> {
-                d.ce("active", "Is database driver loaded? Try restart!", exception.getMessage());
+        TGS_UnSafe.run(() -> {
+            TS_SQLConnWalkUtils.stmtQuery(anchor, sqlStmt, stmt -> {
+                TGS_UnSafe.run(() -> {
+                    try (var resultSet = stmt.executeQuery();) {
+                        var rs = new TS_SQLResultSet(resultSet);
+                        var val = rs.str.get(0, 0);
+                        d.ci("active", val);
+                        result.value0 = true;
+                    }
+                }, e -> {
+                    d.ce("active", "Is database driver loaded? Try restart!", e.getMessage());
+                });
             });
+        }, e -> {
+            d.ce("active", "Is database online!", e.getMessage());
         });
         return result.value0;
     }
@@ -42,7 +46,7 @@ public class TS_SQLConnWalkUtils {
     private static void stmtQuery(TS_SQLConnAnchor anchor, CharSequence sql, TGS_RunnableType1<PreparedStatement> stmt) {
         con(anchor, con -> {
             TGS_UnSafe.run(() -> {
-                try ( var stmt0 = TS_SQLConnStmtUtils.stmtQuery(con, sql);) {
+                try (var stmt0 = TS_SQLConnStmtUtils.stmtQuery(con, sql);) {
                     stmt.run(stmt0);
                 }
             });
@@ -52,7 +56,7 @@ public class TS_SQLConnWalkUtils {
     private static void stmtUpdate(TS_SQLConnAnchor anchor, CharSequence sql, TGS_RunnableType1<PreparedStatement> stmt) {
         con(anchor, con -> {
             TGS_UnSafe.run(() -> {
-                try ( var stmt0 = TS_SQLConnStmtUtils.stmtUpdate(con, sql);) {
+                try (var stmt0 = TS_SQLConnStmtUtils.stmtUpdate(con, sql);) {
                     stmt.run(stmt0);
                 }
             });
@@ -70,7 +74,7 @@ public class TS_SQLConnWalkUtils {
         TS_SQLConnWalkUtils.stmtQuery(anchor, sqlStmt, stmt -> {
             fillStmt.run(stmt);
             TGS_UnSafe.run(() -> {
-                try ( var resultSet = stmt.executeQuery();) {
+                try (var resultSet = stmt.executeQuery();) {
                     var rso = new TS_SQLResultSet(resultSet);
                     rs.run(rso);
                 }
