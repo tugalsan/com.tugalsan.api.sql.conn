@@ -6,6 +6,7 @@ import org.apache.tomcat.jdbc.pool.*;
 import com.tugalsan.api.log.server.TS_Log;
 import com.tugalsan.api.tuple.client.*;
 import com.tugalsan.api.profile.server.melody.*;
+import com.tugalsan.api.thread.server.TS_ThreadWait;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncLst;
 import com.tugalsan.api.unsafe.client.*;
 
@@ -20,7 +21,7 @@ public class TS_SQLConnConUtils {
     @Deprecated
     public static boolean valid(Connection con0, int timeoutSeconds) {
         return TGS_UnSafe.call(() -> {
-            try ( var con = con0) {
+            try (var con = con0) {
                 return con.isValid(timeoutSeconds);
             }
         });
@@ -79,9 +80,18 @@ public class TS_SQLConnConUtils {
     final private static TS_ThreadSyncLst<TGS_Tuple3<TS_SQLConnAnchor, javax.sql.DataSource, javax.sql.DataSource>> SYNC = TS_ThreadSyncLst.of();
 
     public static TS_SQLConnPack conPack(TS_SQLConnAnchor anchor) {
-        var main_con = anchor.config.isPooled ? conPool(anchor) : conProp(anchor);
-        var proxy_con = TS_ProfileMelodyUtils.createProxy(main_con);
-        return new TS_SQLConnPack(anchor, main_con, proxy_con);
+        return TGS_UnSafe.call(() -> {
+            var main_con = anchor.config.isPooled ? conPool(anchor) : conProp(anchor);
+            var proxy_con = TS_ProfileMelodyUtils.createProxy(main_con);
+            return new TS_SQLConnPack(anchor, main_con, proxy_con);
+        }, e -> {
+            return TGS_UnSafe.call(() -> {
+                TS_ThreadWait.seconds(d.className, null, 3);
+                var main_con = anchor.config.isPooled ? conPool(anchor) : conProp(anchor);
+                var proxy_con = TS_ProfileMelodyUtils.createProxy(main_con);
+                return new TS_SQLConnPack(anchor, main_con, proxy_con);
+            });
+        });
     }
 
     public static String con_SKIP_TROW() {
