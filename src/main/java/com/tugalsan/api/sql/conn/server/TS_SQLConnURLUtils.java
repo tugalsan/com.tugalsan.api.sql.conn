@@ -48,7 +48,7 @@ public class TS_SQLConnURLUtils {
             sb.append(PARAMETER_AND()).append(PARAMETER_REGION_IST());
         }
         var url = sb.toString();
-        d.cr("create", url);
+        d.ci("create", url);
         return url;
     }
 }
