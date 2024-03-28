@@ -15,7 +15,7 @@ public class TS_SQLConnConfig implements Serializable {
     public boolean useSSL = false;
     public boolean region_ist = true;
     public boolean charsetUTF8 = true;
-    public boolean isPooled = false;
+    public boolean isPooled = true;
 
     @Override
     public int hashCode() {
