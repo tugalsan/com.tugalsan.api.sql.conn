@@ -14,7 +14,6 @@ module com.tugalsan.api.sql.conn {
     requires com.tugalsan.api.file.obj;
     requires com.tugalsan.api.file.json;
     requires com.tugalsan.api.file.txt;
-    requires com.tugalsan.api.tuple;
     requires com.tugalsan.api.sql.col.typed;
     requires com.tugalsan.api.sql.sanitize;
     requires com.tugalsan.api.sql.resultset;
