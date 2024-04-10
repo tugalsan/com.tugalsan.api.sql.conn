@@ -2,95 +2,130 @@ package com.tugalsan.api.sql.conn.server;
 
 import com.tugalsan.api.runnable.client.TGS_RunnableType1;
 import com.tugalsan.api.log.server.TS_Log;
-import com.tugalsan.api.tuple.client.TGS_Tuple1;
 import com.tugalsan.api.sql.resultset.server.TS_SQLResultSet;
-import com.tugalsan.api.unsafe.client.*;
+import com.tugalsan.api.union.client.TGS_UnionExcuse;
+import com.tugalsan.api.union.client.TGS_UnionExcuseVoid;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class TS_SQLConnWalkUtils {
 
     final private static TS_Log d = TS_Log.of(TS_SQLConnWalkUtils.class);
 
-    public static void con(TS_SQLConnAnchor anchor, TGS_RunnableType1<Connection> con) {
-        TGS_UnSafe.run(() -> {
-            try (var conPack = TS_SQLConnConUtils.conPack(anchor);) {
-                d.ci("con", anchor.config.dbName);
-                con.run(conPack.con());
-            }
-        });
-    }
-
-    public static boolean active(TS_SQLConnAnchor anchor) {
-        TGS_Tuple1<Boolean> result = new TGS_Tuple1(false);
-        var sqlStmt = "SELECT 'Hello world'  FROM DUAL";
-        TGS_UnSafe.run(() -> {
-            TS_SQLConnWalkUtils.stmtQuery(anchor, sqlStmt, stmt -> {
-                TGS_UnSafe.run(() -> {
-                    try (var resultSet = stmt.executeQuery();) {
-                        var rs = new TS_SQLResultSet(resultSet);
-                        var val = rs.str.get(0, 0);
-                        d.ci("active", val);
-                        result.value0 = true;
-                    }
-                }, e -> {
-                    d.ce("active", "Is database driver loaded? Try restart!", e.getMessage());
-                });
-            });
-        }, e -> {
-            d.ce("active", "Is database online!", e.getMessage());
-        });
-        return result.value0;
-    }
-
-    private static void stmtQuery(TS_SQLConnAnchor anchor, CharSequence sql, TGS_RunnableType1<PreparedStatement> stmt) {
-        con(anchor, con -> {
-            TGS_UnSafe.run(() -> {
-                try (var stmt0 = TS_SQLConnStmtUtils.stmtQuery(con, sql);) {
-                    stmt.run(stmt0);
-                }
-            });
-        });
-    }
-
-    private static void stmtUpdate(TS_SQLConnAnchor anchor, CharSequence sql, TGS_RunnableType1<PreparedStatement> stmt) {
-        con(anchor, con -> {
-            TGS_UnSafe.run(() -> {
-                try (var stmt0 = TS_SQLConnStmtUtils.stmtUpdate(con, sql);) {
-                    stmt.run(stmt0);
-                }
-            });
-        });
-    }
-
-    public static void query(TS_SQLConnAnchor anchor, CharSequence sqlStmt, TGS_RunnableType1<PreparedStatement> fillStmt, TGS_RunnableType1<TS_SQLResultSet> rs) {
-        if (d.infoEnable) {
-            var sqlMsg = sqlStmt.toString().startsWith("SELECT * FROM MESSAGE");
-            var sqlDom = sqlStmt.toString().startsWith("SELECT * FROM domain");
-            if (!sqlMsg && !sqlDom) {
-                d.ci("query", "sqlStmt", sqlStmt);
-            }
+    public static TGS_UnionExcuseVoid con(TS_SQLConnAnchor anchor, TGS_RunnableType1<Connection> con) {
+        var u_conPack = TS_SQLConnConUtils.conPack(anchor);
+        if (u_conPack.isExcuse()) {
+            return u_conPack.toExcuseVoid();
         }
-        TS_SQLConnWalkUtils.stmtQuery(anchor, sqlStmt, stmt -> {
-            fillStmt.run(stmt);
-            TGS_UnSafe.run(() -> {
-                try (var resultSet = stmt.executeQuery();) {
-                    var rso = new TS_SQLResultSet(resultSet);
-                    rs.run(rso);
-                }
-            });
-        });
+        try (var conPack = u_conPack.value()) {
+            d.ci("con", anchor.config.dbName);
+            con.run(conPack.con());
+            return TGS_UnionExcuseVoid.ofVoid();
+        } catch (SQLException ex) {
+            return TGS_UnionExcuseVoid.ofExcuse(ex);
+        }
     }
 
-    public static TS_SQLConnStmtUpdateResult update(TS_SQLConnAnchor anchor, CharSequence sqlStmt, TGS_RunnableType1<PreparedStatement> fillStmt) {
-        d.ci("update", "sqlStmt", sqlStmt);
-        TGS_Tuple1<TS_SQLConnStmtUpdateResult> pack = TGS_Tuple1.of();
-        TS_SQLConnWalkUtils.stmtUpdate(anchor, sqlStmt, stmt -> {
-            TGS_UnSafe.run(() -> {
-                fillStmt.run(stmt);
-                pack.value0 = TS_SQLConnStmtUtils.executeUpdate(stmt);
-            });
+    public static TGS_UnionExcuseVoid active(TS_SQLConnAnchor anchor) {
+        var wrap = new Object() {
+            TGS_UnionExcuseVoid result = null;
+        };
+        var sqlStmt = "SELECT 'Hello world'  FROM DUAL";
+        TS_SQLConnWalkUtils.stmtQuery(anchor, sqlStmt, stmt -> {
+            try (var resultSet = stmt.executeQuery();) {
+                var rs = new TS_SQLResultSet(resultSet);
+                var u_val = rs.str.get(0, 0);
+                if (u_val.isExcuse()) {
+                    wrap.result = u_val.toExcuseVoid();
+                }
+                d.ci("active", u_val.value());
+                wrap.result = TGS_UnionExcuseVoid.ofVoid();
+            } catch (SQLException ex) {
+                wrap.result = TGS_UnionExcuseVoid.ofExcuse(ex);
+            }
         });
-        return pack.value0;
+        return wrap.result;
+    }
+
+    private static TGS_UnionExcuseVoid stmtQuery(TS_SQLConnAnchor anchor, CharSequence sql, TGS_RunnableType1<PreparedStatement> stmt) {
+        var wrap = new Object() {
+            TGS_UnionExcuseVoid result = null;
+        };
+        var u_con = con(anchor, con -> {
+            var u = TS_SQLConnStmtUtils.stmtQuery(con, sql);
+            if (u.isExcuse()) {
+                wrap.result = u.toExcuseVoid();
+                return;
+            }
+            try (var stmt0 = u.value()) {
+                stmt.run(stmt0);
+                wrap.result = TGS_UnionExcuseVoid.ofVoid();
+            } catch (SQLException e) {
+                wrap.result = TGS_UnionExcuseVoid.ofExcuse(e);
+            }
+        });
+        if (u_con.isExcuse()) {
+            return u_con;
+        }
+        return wrap.result;
+    }
+
+    private static TGS_UnionExcuseVoid stmtUpdate(TS_SQLConnAnchor anchor, CharSequence sql, TGS_RunnableType1<PreparedStatement> stmt) {
+        var wrap = new Object() {
+            TGS_UnionExcuseVoid result = null;
+        };
+        var u_con = con(anchor, con -> {
+            var u = TS_SQLConnStmtUtils.stmtUpdate(con, sql);
+            if (u.isExcuse()) {
+                wrap.result = u.toExcuseVoid();
+                return;
+            }
+            try (var stmt0 = u.value()) {
+                stmt.run(stmt0);
+                wrap.result = TGS_UnionExcuseVoid.ofVoid();
+            } catch (SQLException e) {
+                wrap.result = TGS_UnionExcuseVoid.ofExcuse(e);
+            }
+        });
+        if (u_con.isExcuse()) {
+            return u_con;
+        }
+        return wrap.result;
+    }
+
+    public static TGS_UnionExcuseVoid query(TS_SQLConnAnchor anchor, CharSequence sqlStmt, TGS_RunnableType1<PreparedStatement> fillStmt, TGS_RunnableType1<TS_SQLResultSet> rs) {
+        var wrap = new Object() {
+            TGS_UnionExcuseVoid result = null;
+        };
+        var u_con = TS_SQLConnWalkUtils.stmtQuery(anchor, sqlStmt, stmt -> {
+            fillStmt.run(stmt);
+            try (var resultSet = stmt.executeQuery();) {
+                var rso = new TS_SQLResultSet(resultSet);
+                rs.run(rso);
+                wrap.result = TGS_UnionExcuseVoid.ofVoid();
+            } catch (SQLException e) {
+                wrap.result = TGS_UnionExcuseVoid.ofExcuse(e);
+            }
+        });
+        if (u_con.isExcuse()) {
+            return u_con;
+        }
+        return wrap.result;
+    }
+
+    public static TGS_UnionExcuse<TS_SQLConnStmtUpdateResult> update(TS_SQLConnAnchor anchor, CharSequence sqlStmt, TGS_RunnableType1<PreparedStatement> fillStmt) {
+        d.ci("update", "sqlStmt", sqlStmt);
+        var wrap = new Object() {
+            TGS_UnionExcuse<TS_SQLConnStmtUpdateResult> result = null;
+        };
+        var u_con = TS_SQLConnWalkUtils.stmtUpdate(anchor, sqlStmt, stmt -> {
+            fillStmt.run(stmt);
+            wrap.result = TS_SQLConnStmtUtils.executeUpdate(stmt);
+        });
+        if (u_con.isExcuse()) {
+            return u_con.toExcuse();
+        }
+        return wrap.result;
     }
 }

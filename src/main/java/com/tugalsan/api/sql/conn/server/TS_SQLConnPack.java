@@ -1,7 +1,6 @@
 package com.tugalsan.api.sql.conn.server;
 
 import com.tugalsan.api.log.server.*;
-import com.tugalsan.api.unsafe.client.*;
 import java.sql.*;
 
 public class TS_SQLConnPack implements AutoCloseable {
@@ -26,19 +25,25 @@ public class TS_SQLConnPack implements AutoCloseable {
     }
 
     @Override
-    public void close() {
-        closeSilently("main", main);
-        closeSilently("proxy", proxy);
+    public void close() throws SQLException {
+        var e_main = closeIt(main);
+        var e_proxy = closeIt(proxy);
+        if (e_main != null) {
+            throw e_main;
+        }
+        if (e_proxy != null) {
+            throw e_proxy;
+        }
     }
 
-    private void closeSilently(CharSequence tag, Connection c) {
-        TGS_UnSafe.run(() -> {
+    private SQLException closeIt(Connection c) {
+        try {
             if (c != null && !c.isClosed()) {
                 c.close();
             }
-        }, e -> {
-            d.ce("close", tag, "error on close");
-            d.ct("close", e);
-        });
+            return null;
+        } catch (SQLException ex) {
+            return ex;
+        }
     }
 }

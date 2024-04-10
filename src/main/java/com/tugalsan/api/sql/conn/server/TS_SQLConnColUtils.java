@@ -1,81 +1,87 @@
 package com.tugalsan.api.sql.conn.server;
 
 import com.tugalsan.api.log.server.*;
-import com.tugalsan.api.tuple.client.*;
 import com.tugalsan.api.sql.col.typed.client.*;
 import com.tugalsan.api.sql.sanitize.server.*;
 import com.tugalsan.api.string.client.*;
-import com.tugalsan.api.unsafe.client.*;
+import com.tugalsan.api.union.client.TGS_UnionExcuse;
 import java.util.*;
 
 public class TS_SQLConnColUtils {
 
     final private static TS_Log d = TS_Log.of(TS_SQLConnColUtils.class);
 
-    public static List<String> names(TS_SQLConnAnchor anchor, CharSequence tableName) {
+    public static TGS_UnionExcuse<List<String>> names(TS_SQLConnAnchor anchor, CharSequence tableName) {
+        var wrap = new Object() {
+            TGS_UnionExcuse<List<String>> result = null;
+        };
         TS_SQLSanitizeUtils.sanitize(tableName);
         var sqlStmt = TGS_StringUtils.concat(
                 "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '", tableName, "' AND table_schema= '", anchor.config.dbName, "' ORDER BY ORDINAL_POSITION"
         );
         d.ci("names", sqlStmt);
-        TGS_Tuple1<List<String>> pack = new TGS_Tuple1();
-        TS_SQLConnWalkUtils.query(anchor, sqlStmt, fillStmt -> {
-        }, rs -> pack.value0 = rs.strArr.get(0));
-        return pack.value0;
+        var u_con = TS_SQLConnWalkUtils.query(anchor, sqlStmt, fillStmt -> {
+        }, rs -> {
+            wrap.result = rs.strArr.get(0);
+        });
+        if (u_con.isExcuse()) {
+            return u_con.toExcuse();
+        }
+        return wrap.result;
     }
 
-    public static String creationType(TS_SQLConnAnchor anchor, TGS_SQLColTyped colType) {
+    public static TGS_UnionExcuse<String> creationType(TS_SQLConnAnchor anchor, TGS_SQLColTyped colType) {
         return creationType(anchor.config, colType);
     }
 
-    public static String creationType(TS_SQLConnConfig config, TGS_SQLColTyped colType) {
+    public static TGS_UnionExcuse<String> creationType(TS_SQLConnConfig config, TGS_SQLColTyped colType) {
         if (Objects.equals(config.method, TS_SQLConnMethodUtils.METHOD_MYSQL())) {
             if (colType.familyLng()) {
-                return "INTEGER NOT NULL";
+                return TGS_UnionExcuse.of("INTEGER NOT NULL");
             }
             if (colType.familyStr()) {
-                return "VARCHAR(254) NOT NULL";
+                return TGS_UnionExcuse.of("VARCHAR(254) NOT NULL");
             }
             if (colType.familyBytes()) {
-                return "LONGBLOB";
+                return TGS_UnionExcuse.of("LONGBLOB");
             }
-            return TGS_UnSafe.thrwReturns(d.className, "creationType(TS_SQLConnConfig config, TGS_SQLColTyped colType)", "Unrecognized SQL colType:" + colType);
+            return TGS_UnionExcuse.ofExcuse(d.className, "creationType(TS_SQLConnConfig config, TGS_SQLColTyped colType)", "Unrecognized SQL colType:" + colType);
         }
         if (Objects.equals(config.method, TS_SQLConnMethodUtils.METHOD_ODBC())) {
             if (colType.familyLng()) {
-                return "INTEGER NOT NULL";
+                return TGS_UnionExcuse.of("INTEGER NOT NULL");
             }
             if (colType.familyStr()) {
-                return "VARCHAR(254) NOT NULL";
+                return TGS_UnionExcuse.of("VARCHAR(254) NOT NULL");
             }
             if (colType.familyBytes()) {
-                return "LONGBINARY";
+                return TGS_UnionExcuse.of("LONGBINARY");
             }
-            return TGS_UnSafe.thrwReturns(d.className, "creationType(TS_SQLConnConfig config, TGS_SQLColTyped colType)", "Unrecognized SQL colType:" + colType);
+            return TGS_UnionExcuse.ofExcuse(d.className, "creationType(TS_SQLConnConfig config, TGS_SQLColTyped colType)", "Unrecognized SQL colType:" + colType);
         }
         if (Objects.equals(config.method, TS_SQLConnMethodUtils.METHOD_ORACLE())) {
             if (colType.familyLng()) {
-                return "INTEGER NOT NULL";
+                return TGS_UnionExcuse.of("INTEGER NOT NULL");
             }
             if (colType.familyStr()) {
-                return "VARCHAR2(254) NOT NULL";
+                return TGS_UnionExcuse.of("VARCHAR2(254) NOT NULL");
             }
             if (colType.familyBytes()) {
-                return "LONGBLOB";
+                return TGS_UnionExcuse.of("LONGBLOB");
             }
-            return TGS_UnSafe.thrwReturns(d.className, "creationType(TS_SQLConnConfig config, TGS_SQLColTyped colType)", "Unrecognized SQL colType:" + colType);
+            return TGS_UnionExcuse.ofExcuse(d.className, "creationType(TS_SQLConnConfig config, TGS_SQLColTyped colType)", "Unrecognized SQL colType:" + colType);
         }
         if (Objects.equals(config.method, TS_SQLConnMethodUtils.METHOD_SQLSERVER())) {
             if (colType.familyLng()) {
-                return "INT NOT NULL";
+                return TGS_UnionExcuse.of("INT NOT NULL");
             }
             if (colType.familyStr()) {
-                return "VARCHAR(254) NOT NULL";
+                return TGS_UnionExcuse.of("VARCHAR(254) NOT NULL");
             }
             if (colType.familyBytes()) {
-                return "IMAGE"; //BINARY, VARBIMARY, IMAGE
+                return TGS_UnionExcuse.of("IMAGE"); //BINARY, VARBIMARY, IMAGE
             }
-            return TGS_UnSafe.thrwReturns(d.className, "creationType(TS_SQLConnConfig config, TGS_SQLColTyped colType)", "Unrecognized SQL colType:" + colType);
+            return TGS_UnionExcuse.ofExcuse(d.className, "creationType(TS_SQLConnConfig config, TGS_SQLColTyped colType)", "Unrecognized SQL colType:" + colType);
         }
         if (Objects.equals(config.method, TS_SQLConnMethodUtils.METHOD_SMALLSQL())) {
             //BIT, BOOLEAN, BINARY, VARBINARY, RAW, LONGVARBINARY, BLOB,
@@ -84,16 +90,16 @@ public class TS_SQLConnColUtils {
             //SMALLDATETIME, CHAR, NCHAR, VARCHAR, NVARCHAR, LONG, LONGNVARCHAR,
             //LONGVARCHAR, CLOB, NCLOB, UNIQUEIDENTIFIER, JAVA_OBJECT or SYSNAME
             if (colType.familyLng()) {
-                return "INT NOT NULL";
+                return TGS_UnionExcuse.of("INT NOT NULL");
             }
             if (colType.familyStr()) {
-                return "VARCHAR(254) NOT NULL";
+                return TGS_UnionExcuse.of("VARCHAR(254) NOT NULL");
             }
             if (colType.familyBytes()) {
-                return "LONGVARBINARY";
+                return TGS_UnionExcuse.of("LONGVARBINARY");
             }
-            return TGS_UnSafe.thrwReturns(d.className, "creationType(TS_SQLConnConfig config, TGS_SQLColTyped colType)", "Unrecognized SQL colType:" + colType);
+            return TGS_UnionExcuse.ofExcuse(d.className, "creationType(TS_SQLConnConfig config, TGS_SQLColTyped colType)", "Unrecognized SQL colType:" + colType);
         }
-        return TGS_UnSafe.thrwReturns(d.className, "creationType(TS_SQLConnConfig config, TGS_SQLColTyped colType)", "Unrecognized SQL method:" + config.method);
+        return TGS_UnionExcuse.ofExcuse(d.className, "creationType(TS_SQLConnConfig config, TGS_SQLColTyped colType)", "Unrecognized SQL method:" + config.method);
     }
 }
