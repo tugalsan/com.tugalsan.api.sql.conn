@@ -13,7 +13,7 @@ public class TS_SQLConnColUtils {
 
     public static TGS_UnionExcuse<List<String>> names(TS_SQLConnAnchor anchor, CharSequence tableName) {
         var wrap = new Object() {
-            TGS_UnionExcuse<List<String>> result = null;
+            TGS_UnionExcuse<List<String>> u_rs_strArr_get = null;
         };
         TS_SQLSanitizeUtils.sanitize(tableName);
         var sqlStmt = TGS_StringUtils.concat(
@@ -22,12 +22,12 @@ public class TS_SQLConnColUtils {
         d.ci("names", sqlStmt);
         var u_con = TS_SQLConnWalkUtils.query(anchor, sqlStmt, fillStmt -> {
         }, rs -> {
-            wrap.result = rs.strArr.get(0);
+            wrap.u_rs_strArr_get = rs.strArr.get(0);
         });
         if (u_con.isExcuse()) {
             return u_con.toExcuse();
         }
-        return wrap.result;
+        return wrap.u_rs_strArr_get;
     }
 
     public static TGS_UnionExcuse<String> creationType(TS_SQLConnAnchor anchor, TGS_SQLColTyped colType) {
