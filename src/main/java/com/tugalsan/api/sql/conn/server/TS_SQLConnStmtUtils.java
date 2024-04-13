@@ -56,18 +56,27 @@ public class TS_SQLConnStmtUtils {
         }
     }
 
-    public static int fill(PreparedStatement fillStmt, List<String> colNames, List params, int index) {
-        IntStream.range(index, params.size()).forEachOrdered(i -> {
-            TS_SQLConnStmtUtils.fill(fillStmt, colNames.get(i), params.get(i), i);
-        });
-        return index + params.size();
+    public static TGS_UnionExcuse<Integer> fill(PreparedStatement fillStmt, List<String> colNames, List params, int index) {
+        for (var i = 0; i < params.size(); i++) {
+            var u = TS_SQLConnStmtUtils.fill(fillStmt, colNames.get(i), params.get(i), i);
+            if (u.isExcuse()) {
+                return u.toExcuse();
+            }
+        }
+        return TGS_UnionExcuse.of(index + params.size());
     }
 
-    public static int fill(PreparedStatement fillStmt, String[] colNames, Object[] params, int index) {
+    public static TGS_UnionExcuse<Integer> fill(PreparedStatement fillStmt, String[] colNames, Object[] params, int index) {
+        for (var i = 0; i < params.length; i++) {
+            var u = TS_SQLConnStmtUtils.fill(fillStmt, colNames[i], params[i], i);
+            if (u.isExcuse()) {
+                return u.toExcuse();
+            }
+        }
         IntStream.range(index, params.length).forEachOrdered(i -> {
-            TS_SQLConnStmtUtils.fill(fillStmt, colNames[i], params[i], i);
+
         });
-        return index + params.length;
+        return TGS_UnionExcuse.of(index + params.length);
     }
 
     public static TGS_UnionExcuse<Integer> fill(PreparedStatement fillStmt, CharSequence colName, Object param, int index) {
