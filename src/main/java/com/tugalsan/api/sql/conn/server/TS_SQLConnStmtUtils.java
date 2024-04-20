@@ -127,7 +127,7 @@ public class TS_SQLConnStmtUtils {
                 }
                 TGS_UnSafe.thrw(d.className, "fill", "CharSequence on not typeBytes or typeBytesStr col: " + colName);
             }
-            return TGS_UnSafe.thrwReturns(d.className, "fill", "Uncoded type! [" + param + "]");
+            return TGS_UnSafe.thrw(d.className, "fill", "Uncoded type! [" + param + "]");
         });
     }
 }
