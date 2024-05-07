@@ -20,7 +20,7 @@ public class TS_SQLConnURLUtils {
     }
 
     private static String PARAMETER_SSL_TRUE() {
-        return "useSSL=true";
+        return "useSSL=true" + PARAMETER_AND() + "sslMode=REQUIRED";
     }
 
     private static String PARAMETER_SSL_FALSE() {
@@ -48,7 +48,7 @@ public class TS_SQLConnURLUtils {
             sb.append(PARAMETER_AND()).append(PARAMETER_REGION_IST());
         }
         var url = sb.toString();
-        d.ci("create", url);
+        d.ce("create", url);
         return url;
     }
 }
