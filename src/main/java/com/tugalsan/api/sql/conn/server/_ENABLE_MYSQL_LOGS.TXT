@@ -1,2 +1,0 @@
-ENABLE MYSQL LOGS
-SET global general_log_file='D:/xampp/tomcat/logs/mysql.log'; SET global general_log = on; SET global log_output = 'file';
