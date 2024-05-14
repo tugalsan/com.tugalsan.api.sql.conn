@@ -8,6 +8,7 @@ import com.tugalsan.api.tuple.client.*;
 import com.tugalsan.api.profile.server.melody.*;
 import com.tugalsan.api.thread.server.TS_ThreadWait;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncLst;
+import com.tugalsan.api.union.client.TGS_UnionExcuse;
 import com.tugalsan.api.unsafe.client.*;
 
 public class TS_SQLConnConUtils {
@@ -56,21 +57,27 @@ public class TS_SQLConnConUtils {
         }
     }
 
-    private static Connection conProp(TS_SQLConnAnchor anchor) {
+    private static TGS_UnionExcuse<Connection> conProp(TS_SQLConnAnchor anchor) {
         return TGS_UnSafe.call(() -> {
             Class.forName(TS_SQLConnMethodUtils.getDriver(anchor.config)).getConstructor().newInstance();
-            return DriverManager.getConnection(anchor.url(), anchor.properties());
-        });
+            return TGS_UnionExcuse.of(DriverManager.getConnection(anchor.url(), anchor.properties()));
+        }, e -> TGS_UnionExcuse.ofExcuse(e));
     }
 
-    private static Connection conPool(TS_SQLConnAnchor anchor) {
-        return TGS_UnSafe.call(() -> ds(anchor).getConnection());
+    private static TGS_UnionExcuse<Connection> conPool(TS_SQLConnAnchor anchor) {
+        return TGS_UnSafe.call(() -> {
+            var u = ds(anchor);
+            if (u.isExcuse()) {
+                return u.toExcuse();
+            }
+            return TGS_UnionExcuse.of(u.value().getConnection());
+        }, e -> TGS_UnionExcuse.ofExcuse(e));
     }
 
-    private static javax.sql.DataSource ds(TS_SQLConnAnchor anchor) {
+    private static TGS_UnionExcuse<javax.sql.DataSource> ds(TS_SQLConnAnchor anchor) {
         var pack = SYNC.findFirst(c -> Objects.equals(c.value0, anchor));
         if (pack != null) {
-            return pack.value1;
+            return TGS_UnionExcuse.of(pack.value1);
         }
         var ds = new DataSource(anchor.pool());
         var dsProxy = TS_ProfileMelodyUtils.createProxy(ds);
@@ -79,17 +86,29 @@ public class TS_SQLConnConUtils {
     }
     final private static TS_ThreadSyncLst<TGS_Tuple3<TS_SQLConnAnchor, javax.sql.DataSource, javax.sql.DataSource>> SYNC = TS_ThreadSyncLst.of();
 
-    public static TS_SQLConnPack conPack(TS_SQLConnAnchor anchor) {
+    public static TGS_UnionExcuse<TS_SQLConnPack> conPack(TS_SQLConnAnchor anchor) {
         return TGS_UnSafe.call(() -> {
-            var main_con = anchor.config.isPooled ? conPool(anchor) : conProp(anchor);
-            var proxy_con = TS_ProfileMelodyUtils.createProxy(main_con);
-            return new TS_SQLConnPack(anchor, main_con, proxy_con);
+            var u_main_con = anchor.config.isPooled ? conPool(anchor) : conProp(anchor);
+            if (u_main_con.isExcuse()) {
+                TGS_UnSafe.thrw(u_main_con.excuse());
+            }
+            var u_proxy_con = TS_ProfileMelodyUtils.createProxy(u_main_con.value());
+            if (u_proxy_con.isExcuse()) {
+                TGS_UnSafe.thrw(u_proxy_con.excuse());
+            }
+            return TGS_UnionExcuse.of(new TS_SQLConnPack(anchor, u_main_con.value(), u_proxy_con.value()));
         }, e -> {
             return TGS_UnSafe.call(() -> {
                 TS_ThreadWait.seconds(d.className, null, 3);
-                var main_con = anchor.config.isPooled ? conPool(anchor) : conProp(anchor);
-                var proxy_con = TS_ProfileMelodyUtils.createProxy(main_con);
-                return new TS_SQLConnPack(anchor, main_con, proxy_con);
+                var u_main_con = anchor.config.isPooled ? conPool(anchor) : conProp(anchor);
+                if (u_main_con.isExcuse()) {
+                    return u_main_con.toExcuse();
+                }
+                var u_proxy_con = TS_ProfileMelodyUtils.createProxy(u_main_con.value());
+                if (u_proxy_con.isExcuse()) {
+                    return u_proxy_con.toExcuse();
+                }
+                return TGS_UnionExcuse.of(new TS_SQLConnPack(anchor, u_main_con.value(), u_proxy_con.value()));
             });
         });
     }

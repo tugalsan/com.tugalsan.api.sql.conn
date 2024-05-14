@@ -104,10 +104,10 @@ public class TS_SQLConnStmtUtils {
                     TGS_UnSafe.thrw(d.className, "fill", "param instanceof Object[] -> !TGS_SQLColTypedUtils.typeBytes(colName) && !TGS_SQLColTypedUtils.typeBytesRow(colName)");
                 }
                 var opObj = TS_FileObjUtils.toBytes(val);
-                if (opObj.isEmpty()) {
-                    TGS_UnSafe.thrw(d.className, "fill", "param instanceof Object[] -> TS_FileObjUtils.toBytes(val).isEmpty");
+                if (opObj.isExcuse()) {
+                    TGS_UnSafe.thrw(d.className, "fill", "param instanceof Object[] -> TS_FileObjUtils.toBytes(val).isEmpty:" + opObj.excuse().getMessage());
                 }
-                var obj = opObj.get();
+                var obj = opObj.value();
                 d.ci("fill", index, "byte[].str", "len", obj.length);
                 fillStmt.setBytes(index + 1, obj);
                 return index + 1;
