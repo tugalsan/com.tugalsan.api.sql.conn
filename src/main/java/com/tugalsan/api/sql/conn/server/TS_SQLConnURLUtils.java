@@ -24,7 +24,7 @@ public class TS_SQLConnURLUtils {
     }
 
     private static String PARAMETER_SSL_FALSE() {
-        return "useSSL=false";
+        return "useSSL=false" + PARAMETER_AND() + "sslMode=DISABLED";
     }
 
     private static String PARAMETER_REGION_IST() {
