@@ -15,9 +15,6 @@ public class TS_SQLConnWalkUtils {
     public static void con(TS_SQLConnAnchor anchor, TGS_RunnableType1<Connection> con) {
         TGS_UnSafe.run(() -> {
             var u_conPack = TS_SQLConnConUtils.conPack(anchor);
-            if (u_conPack.isExcuse()) {
-                TGS_UnSafe.thrw(u_conPack.excuse());
-            }
             try (var conPack = u_conPack.value()) {
                 d.ci("con", anchor.config.dbName);
                 con.run(conPack.con());

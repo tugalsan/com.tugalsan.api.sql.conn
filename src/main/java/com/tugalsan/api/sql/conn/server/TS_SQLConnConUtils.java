@@ -89,13 +89,7 @@ public class TS_SQLConnConUtils {
     public static TGS_UnionExcuse<TS_SQLConnPack> conPack(TS_SQLConnAnchor anchor) {
         return TGS_UnSafe.call(() -> {
             var u_main_con = anchor.config.isPooled ? conPool(anchor) : conProp(anchor);
-            if (u_main_con.isExcuse()) {
-                TGS_UnSafe.thrw(u_main_con.excuse());
-            }
             var u_proxy_con = TS_ProfileMelodyUtils.createProxy(u_main_con.value());
-            if (u_proxy_con.isExcuse()) {
-                TGS_UnSafe.thrw(u_proxy_con.excuse());
-            }
             return TGS_UnionExcuse.of(new TS_SQLConnPack(anchor, u_main_con.value(), u_proxy_con.value()));
         }, e -> {
             return TGS_UnSafe.call(() -> {
