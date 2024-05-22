@@ -20,11 +20,13 @@ public class TS_SQLConnURLUtils {
     }
 
     private static String PARAMETER_SSL_TRUE() {
-        return "useSSL=true" + PARAMETER_AND() + "sslMode=REQUIRED";
+        //return "useSSL=true" + PARAMETER_AND() + "sslMode=REQUIRED";
+        return "sslMode=REQUIRED";
     }
 
     private static String PARAMETER_SSL_FALSE() {
-        return "useSSL=false" + PARAMETER_AND() + "sslMode=DISABLED";
+        //return "useSSL=false" + PARAMETER_AND() + "sslMode=DISABLED";
+        return "sslMode=DISABLED";
     }
 
     private static String PARAMETER_REGION_IST() {
