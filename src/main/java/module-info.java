@@ -5,7 +5,7 @@ module com.tugalsan.api.sql.conn {
     requires com.tugalsan.api.validator;
     requires com.tugalsan.api.profile;
     requires com.tugalsan.api.callable;
-    requires com.tugalsan.api.runnable;
+    
     requires com.tugalsan.api.string;
     requires com.tugalsan.api.log;
     requires com.tugalsan.api.list;

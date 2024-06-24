@@ -1,6 +1,7 @@
 package com.tugalsan.api.sql.conn.server;
 
-import com.tugalsan.api.runnable.client.TGS_RunnableType1;
+
+import com.tugalsan.api.callable.client.TGS_CallableType1Void;
 import com.tugalsan.api.log.server.TS_Log;
 import com.tugalsan.api.tuple.client.TGS_Tuple1;
 import com.tugalsan.api.sql.resultset.server.TS_SQLResultSet;
@@ -12,7 +13,7 @@ public class TS_SQLConnWalkUtils {
 
     final private static TS_Log d = TS_Log.of(TS_SQLConnWalkUtils.class);
 
-    public static void con(TS_SQLConnAnchor anchor, TGS_RunnableType1<Connection> con) {
+    public static void con(TS_SQLConnAnchor anchor, TGS_CallableType1Void<Connection> con) {
         TGS_UnSafe.run(() -> {
             var u_conPack = TS_SQLConnConUtils.conPack(anchor);
             try (var conPack = u_conPack.value()) {
@@ -44,7 +45,7 @@ public class TS_SQLConnWalkUtils {
         return result.value0;
     }
 
-    private static void stmtQuery(TS_SQLConnAnchor anchor, CharSequence sql, TGS_RunnableType1<PreparedStatement> stmt) {
+    private static void stmtQuery(TS_SQLConnAnchor anchor, CharSequence sql, TGS_CallableType1Void<PreparedStatement> stmt) {
         con(anchor, con -> {
             TGS_UnSafe.run(() -> {
                 try (var stmt0 = TS_SQLConnStmtUtils.stmtQuery(con, sql);) {
@@ -54,7 +55,7 @@ public class TS_SQLConnWalkUtils {
         });
     }
 
-    private static void stmtUpdate(TS_SQLConnAnchor anchor, CharSequence sql, TGS_RunnableType1<PreparedStatement> stmt) {
+    private static void stmtUpdate(TS_SQLConnAnchor anchor, CharSequence sql, TGS_CallableType1Void<PreparedStatement> stmt) {
         con(anchor, con -> {
             TGS_UnSafe.run(() -> {
                 try (var stmt0 = TS_SQLConnStmtUtils.stmtUpdate(con, sql);) {
@@ -64,7 +65,7 @@ public class TS_SQLConnWalkUtils {
         });
     }
 
-    public static void query(TS_SQLConnAnchor anchor, CharSequence sqlStmt, TGS_RunnableType1<PreparedStatement> fillStmt, TGS_RunnableType1<TS_SQLResultSet> rs) {
+    public static void query(TS_SQLConnAnchor anchor, CharSequence sqlStmt, TGS_CallableType1Void<PreparedStatement> fillStmt, TGS_CallableType1Void<TS_SQLResultSet> rs) {
         if (d.infoEnable) {
             var sqlMsg = sqlStmt.toString().startsWith("SELECT * FROM MESSAGE");
             var sqlDom = sqlStmt.toString().startsWith("SELECT * FROM domain");
@@ -83,7 +84,7 @@ public class TS_SQLConnWalkUtils {
         });
     }
 
-    public static TS_SQLConnStmtUpdateResult update(TS_SQLConnAnchor anchor, CharSequence sqlStmt, TGS_RunnableType1<PreparedStatement> fillStmt) {
+    public static TS_SQLConnStmtUpdateResult update(TS_SQLConnAnchor anchor, CharSequence sqlStmt, TGS_CallableType1Void<PreparedStatement> fillStmt) {
         d.ci("update", "sqlStmt", sqlStmt);
         TGS_Tuple1<TS_SQLConnStmtUpdateResult> pack = TGS_Tuple1.of();
         TS_SQLConnWalkUtils.stmtUpdate(anchor, sqlStmt, stmt -> {
