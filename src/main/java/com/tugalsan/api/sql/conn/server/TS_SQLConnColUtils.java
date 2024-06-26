@@ -14,7 +14,7 @@ public class TS_SQLConnColUtils {
 
     public static List<String> names(TS_SQLConnAnchor anchor, CharSequence tableName) {
         TS_SQLSanitizeUtils.sanitize(tableName);
-        var sqlStmt = TGS_StringUtils.concat(
+        var sqlStmt = TGS_StringUtils.cmn().concat(
                 "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '", tableName, "' AND table_schema= '", anchor.config.dbName, "' ORDER BY ORDINAL_POSITION"
         );
         d.ci("names", sqlStmt);

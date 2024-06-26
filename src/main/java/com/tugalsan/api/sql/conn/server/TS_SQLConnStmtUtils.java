@@ -3,7 +3,7 @@ package com.tugalsan.api.sql.conn.server;
 import com.tugalsan.api.file.obj.server.*;
 import com.tugalsan.api.log.server.TS_Log;
 import com.tugalsan.api.sql.col.typed.client.TGS_SQLColTypedUtils;
-import com.tugalsan.api.string.server.*;
+import com.tugalsan.api.string.client.*;
 import com.tugalsan.api.unsafe.client.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -115,7 +115,7 @@ public class TS_SQLConnStmtUtils {
             if (param instanceof CharSequence val) {
                 var str = val.toString().replace("'", "\"");//JAVASCRIPT FIX
                 if (TGS_SQLColTypedUtils.typeBytes(colName) || TGS_SQLColTypedUtils.typeBytesStr(colName)) {
-                    var obj = TS_StringUtils.toByte(str);
+                    var obj = TGS_StringUtils.jre().toByte(str);
                     d.ci("fill", index, "byte[].str", "len", obj.length);
                     fillStmt.setBytes(index + 1, obj);
                     return index + 1;
