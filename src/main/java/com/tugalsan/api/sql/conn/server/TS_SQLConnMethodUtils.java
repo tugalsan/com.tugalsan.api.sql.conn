@@ -3,7 +3,7 @@ package com.tugalsan.api.sql.conn.server;
 public class TS_SQLConnMethodUtils {
 
     public static String get_METHOD_MYSQL_JAR_FILE_NAME() {
-        return "mysql-connector-j-8.3.0.jar";
+        return "mysql-connector-j-9.0.0.jar";
     }
 
     public static int METHOD_MYSQL() {
