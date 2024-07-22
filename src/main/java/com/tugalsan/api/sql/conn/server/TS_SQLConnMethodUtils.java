@@ -2,8 +2,8 @@ package com.tugalsan.api.sql.conn.server;
 
 public class TS_SQLConnMethodUtils {
 
-    public static String get_METHOD_MYSQL_JAR_FILE_NAME() {
-        return "mysql-connector-j-9.0.0.jar";
+    public static String get_METHOD_MYSQL_JAR_FILE_NAME_PREFIX() {
+        return "mysql-connector-j-";
     }
 
     public static int METHOD_MYSQL() {
