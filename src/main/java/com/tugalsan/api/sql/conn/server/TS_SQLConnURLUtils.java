@@ -20,7 +20,7 @@ public class TS_SQLConnURLUtils {
     }
 
     private static String PARAMETER_SSL_TRUE() {
-        return "sslMode=REQUIRED";
+        return TS_SQLConnMethodUtils.USE_MARIADB_DRIVER_AS_MYSQL_CONNECTOR ? "sslMode=TRUST" : "sslMode=REQUIRED";
     }
 
     private static String PARAMETER_SSL_FALSE() {
