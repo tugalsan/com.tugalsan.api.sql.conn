@@ -11,12 +11,19 @@
             <artifactId>tomcat-jdbc</artifactId>
             <version>11.0.0-M13</version><!-- 10.1.0-M14 was working -->
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client -->
         <dependency>
-            <groupId>com.mysql</groupId>
-            <artifactId>mysql-connector-j</artifactId>
-            <version>8.3.0</version><!-- 8.0.29 was working -->
+            <groupId>org.mariadb.jdbc</groupId>
+            <artifactId>mariadb-java-client</artifactId>
+            <version>3.4.1</version>
             <scope>provided</scope><!-- it is in tomcat/lib directory !!!!-->
         </dependency>
+        <!-- <dependency> u can try 9 too
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <version>8.3.0</version>
+            <scope>provided</scope>
+        </dependency> -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>com.tugalsan.api.file.json</artifactId>
@@ -96,7 +103,7 @@
                 <version>3.13.0</version>
                 <configuration>
                     <release>22</release>
-                     <!--  <enablePreview>true</enablePreview>
+                    <!--  <enablePreview>true</enablePreview>
                     <compilerArgs>
                        <arg>- -add-modules</arg>
                         <arg>jdk.incubator.vector</arg>
