@@ -1,5 +1,6 @@
 package com.tugalsan.api.sql.conn.server;
 
+import com.tugalsan.api.function.client.TGS_Func;
 import java.sql.*;
 import java.util.*;
 import org.apache.tomcat.jdbc.pool.*;
@@ -30,10 +31,10 @@ public class TS_SQLConnConUtils {
 
     public static void destroy() {
         SYNC.forEach(item -> {
-            TGS_UnSafe.run(() -> ((org.apache.tomcat.jdbc.pool.DataSource) item.value1).close(true), e -> TGS_UnSafe.runNothing());
-            TGS_UnSafe.run(() -> ((org.apache.tomcat.jdbc.pool.DataSource) item.value1).close(), e -> TGS_UnSafe.runNothing());
-            TGS_UnSafe.run(() -> ((org.apache.tomcat.jdbc.pool.DataSource) item.value2).close(true), e -> TGS_UnSafe.runNothing());
-            TGS_UnSafe.run(() -> ((org.apache.tomcat.jdbc.pool.DataSource) item.value2).close(), e -> TGS_UnSafe.runNothing());
+            TGS_UnSafe.run(() -> ((org.apache.tomcat.jdbc.pool.DataSource) item.value1).close(true), e -> TGS_Func.empty.run());
+            TGS_UnSafe.run(() -> ((org.apache.tomcat.jdbc.pool.DataSource) item.value1).close(), e -> TGS_Func.empty.run());
+            TGS_UnSafe.run(() -> ((org.apache.tomcat.jdbc.pool.DataSource) item.value2).close(true), e -> TGS_Func.empty.run());
+            TGS_UnSafe.run(() -> ((org.apache.tomcat.jdbc.pool.DataSource) item.value2).close(), e -> TGS_Func.empty.run());
         });
     }
 
@@ -70,7 +71,10 @@ public class TS_SQLConnConUtils {
             if (u.isExcuse()) {
                 return u.toExcuse();
             }
-            return TGS_UnionExcuse.of(u.value().getConnection());
+//            if (TGS_StringUtils.cmn().isNullOrEmpty(anchor.config.dbPassword)) {
+                return TGS_UnionExcuse.of(u.value().getConnection());
+//            }
+//            return TGS_UnionExcuse.of(u.value().getConnection(anchor.config.dbUser, anchor.config.dbPassword));
         }, e -> TGS_UnionExcuse.ofExcuse(e));
     }
 

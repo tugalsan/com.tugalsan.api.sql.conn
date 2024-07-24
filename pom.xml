@@ -9,16 +9,15 @@
         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-jdbc</artifactId>
-            <version>11.0.0-M13</version><!-- 10.1.0-M14 was working -->
+            <version>11.0.0-M22</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client -->
         <dependency>
             <groupId>org.mariadb.jdbc</groupId>
             <artifactId>mariadb-java-client</artifactId>
             <version>3.4.1</version>
-            <scope>provided</scope><!-- it is in tomcat/lib directory !!!!-->
+            <scope>provided</scope>
         </dependency>
-        <!-- <dependency> u can try 9 too
+        <!-- <dependency> 
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
             <version>8.3.0</version>

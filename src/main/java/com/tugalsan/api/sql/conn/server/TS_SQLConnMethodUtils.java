@@ -5,6 +5,7 @@ public class TS_SQLConnMethodUtils {
     public static boolean USE_MARIADB_DRIVER_AS_MYSQL_CONNECTOR = true;//change pom.xml too
 
     public static String get_METHOD_MYSQL_JAR_FILE_NAME_PREFIX() {
+        //https://mariadb.com/downloads/connectors/connectors-data-access/java8-connector/
         return USE_MARIADB_DRIVER_AS_MYSQL_CONNECTOR ? "mariadb-java-client" : "mysql-connector-j-";
     }
 

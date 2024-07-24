@@ -5,6 +5,8 @@ import java.nio.charset.StandardCharsets;
 
 public class TS_SQLConnURLUtils {
 
+    public static boolean USE_NEW_SSLMODE = true;
+
     final private static TS_Log d = TS_Log.of(TS_SQLConnURLUtils.class);
 
     private static String PARAMETER_AND() {
@@ -20,7 +22,7 @@ public class TS_SQLConnURLUtils {
     }
 
     private static String PARAMETER_SSL_TRUE() {
-        return TS_SQLConnMethodUtils.USE_MARIADB_DRIVER_AS_MYSQL_CONNECTOR ? "sslMode=TRUST" : "sslMode=REQUIRED";
+        return USE_NEW_SSLMODE ? "sslMode=TRUST" : "sslMode=REQUIRED";
     }
 
     private static String PARAMETER_SSL_FALSE() {
