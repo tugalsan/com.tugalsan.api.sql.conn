@@ -30,7 +30,7 @@ public class TS_SQLConnConUtils {
     }
 
     public static void destroy() {
-        SYNC.forEach(item -> {
+        SYNC.forEach(true, item -> {
             TGS_UnSafe.run(() -> ((org.apache.tomcat.jdbc.pool.DataSource) item.value1).close(true), e -> TGS_Func.empty.run());
             TGS_UnSafe.run(() -> ((org.apache.tomcat.jdbc.pool.DataSource) item.value1).close(), e -> TGS_Func.empty.run());
             TGS_UnSafe.run(() -> ((org.apache.tomcat.jdbc.pool.DataSource) item.value2).close(true), e -> TGS_Func.empty.run());
