@@ -88,7 +88,7 @@ public class TS_SQLConnConUtils {
         SYNC.add(new TGS_Tuple3(anchor, ds, dsProxy));
         return dsProxy;
     }
-    final private static TS_ThreadSyncLst<TGS_Tuple3<TS_SQLConnAnchor, javax.sql.DataSource, javax.sql.DataSource>> SYNC = TS_ThreadSyncLst.of();
+    final private static TS_ThreadSyncLst<TGS_Tuple3<TS_SQLConnAnchor, javax.sql.DataSource, javax.sql.DataSource>> SYNC = TS_ThreadSyncLst.ofSlowWrite();
 
     public static TGS_UnionExcuse<TS_SQLConnPack> conPack(TS_SQLConnAnchor anchor) {
         return TGS_UnSafe.call(() -> {
