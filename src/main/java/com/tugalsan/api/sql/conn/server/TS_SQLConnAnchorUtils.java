@@ -3,9 +3,10 @@ package com.tugalsan.api.sql.conn.server;
 import com.tugalsan.api.file.json.server.*;
 import com.tugalsan.api.file.server.*;
 import com.tugalsan.api.file.txt.server.*;
+import com.tugalsan.api.function.client.maythrow.checkedexceptions.TGS_FuncMTCEUtils;
 import com.tugalsan.api.log.server.*;
 import com.tugalsan.api.union.client.TGS_UnionExcuse;
-import com.tugalsan.api.unsafe.client.*;
+
 import java.nio.file.*;
 
 public class TS_SQLConnAnchorUtils {
@@ -24,7 +25,7 @@ public class TS_SQLConnAnchorUtils {
             TS_FileJsonUtils.toFile(jsonString, filePath, false, true);
         }
 
-        var jsonString = TGS_UnSafe.call(() -> TS_FileTxtUtils.toString(filePath), e -> {
+        var jsonString = TGS_FuncMTCEUtils.call(() -> TS_FileTxtUtils.toString(filePath), e -> {
             d.ct("createAnchor", e);
             d.cr("createAnchor", "writing default file");
             var tmp = TS_SQLConnConfig.of(dbName);

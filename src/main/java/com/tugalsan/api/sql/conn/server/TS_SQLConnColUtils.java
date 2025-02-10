@@ -1,11 +1,12 @@
 package com.tugalsan.api.sql.conn.server;
 
+import com.tugalsan.api.function.client.maythrow.uncheckedexceptions.TGS_FuncMTUCEUtils;
 import com.tugalsan.api.log.server.*;
 import com.tugalsan.api.tuple.client.*;
 import com.tugalsan.api.sql.col.typed.client.*;
 import com.tugalsan.api.sql.sanitize.server.*;
 import com.tugalsan.api.string.client.*;
-import com.tugalsan.api.unsafe.client.*;
+
 import java.util.*;
 
 public class TS_SQLConnColUtils {
@@ -39,7 +40,7 @@ public class TS_SQLConnColUtils {
             if (colType.familyBytes()) {
                 return "LONGBLOB";
             }
-            return TGS_UnSafe.thrw(d.className, "creationType(TS_SQLConnConfig config, TGS_SQLColTyped colType)", "Unrecognized SQL colType:" + colType);
+            return TGS_FuncMTUCEUtils.thrw(d.className, "creationType(TS_SQLConnConfig config, TGS_SQLColTyped colType)", "Unrecognized SQL colType:" + colType);
         }
         if (Objects.equals(config.method, TS_SQLConnMethodUtils.METHOD_ODBC())) {
             if (colType.familyLng()) {
@@ -51,7 +52,7 @@ public class TS_SQLConnColUtils {
             if (colType.familyBytes()) {
                 return "LONGBINARY";
             }
-            return TGS_UnSafe.thrw(d.className, "creationType(TS_SQLConnConfig config, TGS_SQLColTyped colType)", "Unrecognized SQL colType:" + colType);
+            return TGS_FuncMTUCEUtils.thrw(d.className, "creationType(TS_SQLConnConfig config, TGS_SQLColTyped colType)", "Unrecognized SQL colType:" + colType);
         }
         if (Objects.equals(config.method, TS_SQLConnMethodUtils.METHOD_ORACLE())) {
             if (colType.familyLng()) {
@@ -63,7 +64,7 @@ public class TS_SQLConnColUtils {
             if (colType.familyBytes()) {
                 return "LONGBLOB";
             }
-            return TGS_UnSafe.thrw(d.className, "creationType(TS_SQLConnConfig config, TGS_SQLColTyped colType)", "Unrecognized SQL colType:" + colType);
+            return TGS_FuncMTUCEUtils.thrw(d.className, "creationType(TS_SQLConnConfig config, TGS_SQLColTyped colType)", "Unrecognized SQL colType:" + colType);
         }
         if (Objects.equals(config.method, TS_SQLConnMethodUtils.METHOD_SQLSERVER())) {
             if (colType.familyLng()) {
@@ -75,7 +76,7 @@ public class TS_SQLConnColUtils {
             if (colType.familyBytes()) {
                 return "IMAGE"; //BINARY, VARBIMARY, IMAGE
             }
-            return TGS_UnSafe.thrw(d.className, "creationType(TS_SQLConnConfig config, TGS_SQLColTyped colType)", "Unrecognized SQL colType:" + colType);
+            return TGS_FuncMTUCEUtils.thrw(d.className, "creationType(TS_SQLConnConfig config, TGS_SQLColTyped colType)", "Unrecognized SQL colType:" + colType);
         }
         if (Objects.equals(config.method, TS_SQLConnMethodUtils.METHOD_SMALLSQL())) {
             //BIT, BOOLEAN, BINARY, VARBINARY, RAW, LONGVARBINARY, BLOB,
@@ -92,8 +93,8 @@ public class TS_SQLConnColUtils {
             if (colType.familyBytes()) {
                 return "LONGVARBINARY";
             }
-            return TGS_UnSafe.thrw(d.className, "creationType(TS_SQLConnConfig config, TGS_SQLColTyped colType)", "Unrecognized SQL colType:" + colType);
+            return TGS_FuncMTUCEUtils.thrw(d.className, "creationType(TS_SQLConnConfig config, TGS_SQLColTyped colType)", "Unrecognized SQL colType:" + colType);
         }
-        return TGS_UnSafe.thrw(d.className, "creationType(TS_SQLConnConfig config, TGS_SQLColTyped colType)", "Unrecognized SQL method:" + config.method);
+        return TGS_FuncMTUCEUtils.thrw(d.className, "creationType(TS_SQLConnConfig config, TGS_SQLColTyped colType)", "Unrecognized SQL method:" + config.method);
     }
 }

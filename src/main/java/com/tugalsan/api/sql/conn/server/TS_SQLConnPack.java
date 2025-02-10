@@ -1,7 +1,8 @@
 package com.tugalsan.api.sql.conn.server;
 
+import com.tugalsan.api.function.client.maythrow.checkedexceptions.TGS_FuncMTCEUtils;
 import com.tugalsan.api.log.server.*;
-import com.tugalsan.api.unsafe.client.*;
+
 import java.sql.*;
 
 public class TS_SQLConnPack implements AutoCloseable {
@@ -32,7 +33,7 @@ public class TS_SQLConnPack implements AutoCloseable {
     }
 
     private void closeSilently(CharSequence tag, Connection c) {
-        TGS_UnSafe.run(() -> {
+        TGS_FuncMTCEUtils.run(() -> {
             if (c != null && !c.isClosed()) {
                 c.close();
             }
