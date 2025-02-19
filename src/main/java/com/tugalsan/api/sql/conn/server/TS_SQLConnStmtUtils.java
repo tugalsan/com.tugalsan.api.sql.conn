@@ -1,8 +1,10 @@
 package com.tugalsan.api.sql.conn.server;
 
 import com.tugalsan.api.file.obj.server.*;
+import com.tugalsan.api.function.client.TGS_FuncUtils;
 import com.tugalsan.api.function.client.maythrow.checkedexceptions.TGS_FuncMTCEUtils;
 import com.tugalsan.api.function.client.maythrow.uncheckedexceptions.TGS_FuncMTUCEUtils;
+import com.tugalsan.api.function.client.maythrow.uncheckedexceptions.TGS_FuncMTUCE_In1;
 import com.tugalsan.api.log.server.TS_Log;
 import com.tugalsan.api.sql.col.typed.client.TGS_SQLColTypedUtils;
 import com.tugalsan.api.string.client.*;
@@ -26,14 +28,26 @@ public class TS_SQLConnStmtUtils {
                     bag.autoId = generatedKeys.getLong(1);
                 }
             }
+        }, e -> {
+            TGS_FuncMTCEUtils.run(() -> {
+                d.ce("executeUpdate", "sql", stmt.getResultSet().getStatement());
+            }, TGS_FuncMTUCE_In1.empty);
+            d.ct("executeUpdate", e);
+            TGS_FuncUtils.thrw(e);
         });
         return bag;
     }
 
     public static PreparedStatement stmtUpdate(Connection con, CharSequence sql) {
-        
+
         return TGS_FuncMTCEUtils.call(() -> {
             return con.prepareStatement(sql.toString(), PreparedStatement.RETURN_GENERATED_KEYS);
+        }, e -> {
+            TGS_FuncMTCEUtils.run(() -> {
+                d.ce("stmtUpdate", "sql", sql);
+            }, TGS_FuncMTUCE_In1.empty);
+            d.ct("stmtUpdate", e);
+            return TGS_FuncUtils.thrw(e);
         });
     }
 
@@ -43,6 +57,12 @@ public class TS_SQLConnStmtUtils {
                 TGS_FuncMTUCEUtils.thrw(d.className, "stmtQuery", "!TS_SQLConnConUtils.scrollingSupported(con)");
             }
             return con.prepareStatement(sql.toString(), ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+        }, e -> {
+            TGS_FuncMTCEUtils.run(() -> {
+                d.ce("stmtQuery", "sql", sql);
+            }, TGS_FuncMTUCE_In1.empty);
+            d.ct("stmtQuery", e);
+            return TGS_FuncUtils.thrw(e);
         });
     }
 
@@ -131,6 +151,12 @@ public class TS_SQLConnStmtUtils {
                 TGS_FuncMTUCEUtils.thrw(d.className, "fill", "CharSequence on not typeBytes or typeBytesStr col: " + colName);
             }
             return TGS_FuncMTUCEUtils.thrw(d.className, "fill", "Uncoded type! [" + param + "]");
+        }, e -> {
+            TGS_FuncMTCEUtils.run(() -> {
+                d.ce("fill", "sql", fillStmt.getResultSet().getStatement());
+            }, TGS_FuncMTUCE_In1.empty);
+            d.ct("fill", e);
+            return TGS_FuncUtils.thrw(e);
         });
     }
 }
