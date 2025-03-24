@@ -10,20 +10,20 @@ import com.tugalsan.api.thread.server.sync.TS_ThreadSyncWait;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncLst;
 import com.tugalsan.api.union.client.TGS_UnionExcuse;
 
-import com.tugalsan.api.function.client.maythrow.uncheckedexceptions.TGS_FuncMTUCE;
-import com.tugalsan.api.function.client.maythrow.checkedexceptions.TGS_FuncMTCEUtils;
+import com.tugalsan.api.function.client.maythrowexceptions.unchecked.TGS_FuncMTU;
+import com.tugalsan.api.function.client.maythrowexceptions.checked.TGS_FuncMTCUtils;
 
 public class TS_SQLConnConUtils {
 
     final private static TS_Log d = TS_Log.of(TS_SQLConnConUtils.class);
 
     public static boolean scrollingSupported(Connection con) {
-        return TGS_FuncMTCEUtils.call(() -> con.getMetaData().supportsResultSetType(ResultSet.TYPE_SCROLL_INSENSITIVE));
+        return TGS_FuncMTCUtils.call(() -> con.getMetaData().supportsResultSetType(ResultSet.TYPE_SCROLL_INSENSITIVE));
     }
 
     @Deprecated
     public static boolean valid(Connection con0, int timeoutSeconds) {
-        return TGS_FuncMTCEUtils.call(() -> {
+        return TGS_FuncMTCUtils.call(() -> {
             try (var con = con0) {
                 return con.isValid(timeoutSeconds);
             }
@@ -32,10 +32,10 @@ public class TS_SQLConnConUtils {
 
     public static void destroy() {
         SYNC.forEach(true, item -> {
-            TGS_FuncMTCEUtils.run(() -> ((org.apache.tomcat.jdbc.pool.DataSource) item.value1).close(true), e -> TGS_FuncMTUCE.empty.run());
-            TGS_FuncMTCEUtils.run(() -> ((org.apache.tomcat.jdbc.pool.DataSource) item.value1).close(), e -> TGS_FuncMTUCE.empty.run());
-            TGS_FuncMTCEUtils.run(() -> ((org.apache.tomcat.jdbc.pool.DataSource) item.value2).close(true), e -> TGS_FuncMTUCE.empty.run());
-            TGS_FuncMTCEUtils.run(() -> ((org.apache.tomcat.jdbc.pool.DataSource) item.value2).close(), e -> TGS_FuncMTUCE.empty.run());
+            TGS_FuncMTCUtils.run(() -> ((org.apache.tomcat.jdbc.pool.DataSource) item.value1).close(true), e -> TGS_FuncMTU.empty.run());
+            TGS_FuncMTCUtils.run(() -> ((org.apache.tomcat.jdbc.pool.DataSource) item.value1).close(), e -> TGS_FuncMTU.empty.run());
+            TGS_FuncMTCUtils.run(() -> ((org.apache.tomcat.jdbc.pool.DataSource) item.value2).close(true), e -> TGS_FuncMTU.empty.run());
+            TGS_FuncMTCUtils.run(() -> ((org.apache.tomcat.jdbc.pool.DataSource) item.value2).close(), e -> TGS_FuncMTU.empty.run());
         });
     }
 
@@ -48,7 +48,7 @@ public class TS_SQLConnConUtils {
             if (driver.getClass().getClassLoader() == thread_currentThread_getContextClassLoader) {
                 var classLoaderName = thread_currentThread_getContextClassLoader.getName();
                 var classLoaderClassName = thread_currentThread_getContextClassLoader.getClass().getSimpleName();
-                TGS_FuncMTCEUtils.run(() -> {
+                TGS_FuncMTCUtils.run(() -> {
                     d.cr("destroy", "found", driverClassName, classLoaderName, classLoaderClassName);
                     DriverManager.deregisterDriver(driver);
                     d.cr("destroy", "successful");
@@ -60,14 +60,14 @@ public class TS_SQLConnConUtils {
     }
 
     private static TGS_UnionExcuse<Connection> conProp(TS_SQLConnAnchor anchor) {
-        return TGS_FuncMTCEUtils.call(() -> {
+        return TGS_FuncMTCUtils.call(() -> {
             Class.forName(TS_SQLConnMethodUtils.getDriver(anchor.config)).getConstructor().newInstance();
             return TGS_UnionExcuse.of(DriverManager.getConnection(anchor.url(), anchor.properties()));
         }, e -> TGS_UnionExcuse.ofExcuse(e));
     }
 
     private static TGS_UnionExcuse<Connection> conPool(TS_SQLConnAnchor anchor) {
-        return TGS_FuncMTCEUtils.call(() -> {
+        return TGS_FuncMTCUtils.call(() -> {
             var u = ds(anchor);
             if (u.isExcuse()) {
                 return u.toExcuse();
@@ -92,12 +92,12 @@ public class TS_SQLConnConUtils {
     final private static TS_ThreadSyncLst<TGS_Tuple3<TS_SQLConnAnchor, javax.sql.DataSource, javax.sql.DataSource>> SYNC = TS_ThreadSyncLst.ofSlowWrite();
 
     public static TGS_UnionExcuse<TS_SQLConnPack> conPack(TS_SQLConnAnchor anchor) {
-        return TGS_FuncMTCEUtils.call(() -> {
+        return TGS_FuncMTCUtils.call(() -> {
             var u_main_con = anchor.config.isPooled ? conPool(anchor) : conProp(anchor);
             var u_proxy_con = TS_ProfileMelodyUtils.createProxy(u_main_con.value());
             return TGS_UnionExcuse.of(new TS_SQLConnPack(anchor, u_main_con.value(), u_proxy_con.value()));
         }, e -> {
-            return TGS_FuncMTCEUtils.call(() -> {
+            return TGS_FuncMTCUtils.call(() -> {
                 TS_ThreadSyncWait.seconds(d.className, null, 3);
                 var u_main_con = anchor.config.isPooled ? conPool(anchor) : conProp(anchor);
                 if (u_main_con.isExcuse()) {

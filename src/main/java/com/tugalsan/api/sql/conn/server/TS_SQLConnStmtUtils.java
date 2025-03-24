@@ -2,9 +2,9 @@ package com.tugalsan.api.sql.conn.server;
 
 import com.tugalsan.api.file.obj.server.*;
 import com.tugalsan.api.function.client.TGS_FuncUtils;
-import com.tugalsan.api.function.client.maythrow.checkedexceptions.TGS_FuncMTCEUtils;
-import com.tugalsan.api.function.client.maythrow.uncheckedexceptions.TGS_FuncMTUCEUtils;
-import com.tugalsan.api.function.client.maythrow.uncheckedexceptions.TGS_FuncMTUCE_In1;
+import com.tugalsan.api.function.client.maythrowexceptions.checked.TGS_FuncMTCUtils;
+import com.tugalsan.api.function.client.maythrowexceptions.unchecked.TGS_FuncMTUUtils;
+import com.tugalsan.api.function.client.maythrowexceptions.unchecked.TGS_FuncMTU_In1;
 import com.tugalsan.api.log.server.TS_Log;
 import com.tugalsan.api.sql.col.typed.client.TGS_SQLColTypedUtils;
 import com.tugalsan.api.string.client.*;
@@ -21,7 +21,7 @@ public class TS_SQLConnStmtUtils {
 
     public static TS_SQLConnStmtUpdateResult executeUpdate(PreparedStatement stmt) {
         var bag = TS_SQLConnStmtUpdateResult.of(0, null);
-        TGS_FuncMTCEUtils.run(() -> {
+        TGS_FuncMTCUtils.run(() -> {
             bag.affectedRowCount = stmt.executeUpdate();
             try (var generatedKeys = stmt.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
@@ -29,9 +29,9 @@ public class TS_SQLConnStmtUtils {
                 }
             }
         }, e -> {
-            TGS_FuncMTCEUtils.run(() -> {
+            TGS_FuncMTCUtils.run(() -> {
                 d.ce("executeUpdate", "sql", stmt.getResultSet().getStatement());
-            }, TGS_FuncMTUCE_In1.empty);
+            }, TGS_FuncMTU_In1.empty);
             d.ct("executeUpdate", e);
             TGS_FuncUtils.thrw(e);
         });
@@ -40,27 +40,27 @@ public class TS_SQLConnStmtUtils {
 
     public static PreparedStatement stmtUpdate(Connection con, CharSequence sql) {
 
-        return TGS_FuncMTCEUtils.call(() -> {
+        return TGS_FuncMTCUtils.call(() -> {
             return con.prepareStatement(sql.toString(), PreparedStatement.RETURN_GENERATED_KEYS);
         }, e -> {
-            TGS_FuncMTCEUtils.run(() -> {
+            TGS_FuncMTCUtils.run(() -> {
                 d.ce("stmtUpdate", "sql", sql);
-            }, TGS_FuncMTUCE_In1.empty);
+            }, TGS_FuncMTU_In1.empty);
             d.ct("stmtUpdate", e);
             return TGS_FuncUtils.thrw(e);
         });
     }
 
     public static PreparedStatement stmtQuery(Connection con, CharSequence sql) {
-        return TGS_FuncMTCEUtils.call(() -> {
+        return TGS_FuncMTCUtils.call(() -> {
             if (!TS_SQLConnConUtils.scrollingSupported(con)) {
-                TGS_FuncMTUCEUtils.thrw(d.className, "stmtQuery", "!TS_SQLConnConUtils.scrollingSupported(con)");
+                TGS_FuncMTUUtils.thrw(d.className, "stmtQuery", "!TS_SQLConnConUtils.scrollingSupported(con)");
             }
             return con.prepareStatement(sql.toString(), ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
         }, e -> {
-            TGS_FuncMTCEUtils.run(() -> {
+            TGS_FuncMTCUtils.run(() -> {
                 d.ce("stmtQuery", "sql", sql);
-            }, TGS_FuncMTUCE_In1.empty);
+            }, TGS_FuncMTU_In1.empty);
             d.ct("stmtQuery", e);
             return TGS_FuncUtils.thrw(e);
         });
@@ -81,10 +81,10 @@ public class TS_SQLConnStmtUtils {
     }
 
     public static int fill(PreparedStatement fillStmt, CharSequence colName, Object param, int index) {
-        return TGS_FuncMTCEUtils.call(() -> {
+        return TGS_FuncMTCUtils.call(() -> {
             if (param instanceof byte[] val) {
                 if (!TGS_SQLColTypedUtils.familyBytes(colName)) {
-                    TGS_FuncMTUCEUtils.thrw(d.className, "fill", "param instanceof byte[] -> !TGS_SQLColTypedUtils.familyBytes(colName)");
+                    TGS_FuncMTUUtils.thrw(d.className, "fill", "param instanceof byte[] -> !TGS_SQLColTypedUtils.familyBytes(colName)");
                 }
                 d.ci("fill", index, "byte[]", "len", val.length);
                 fillStmt.setBytes(index + 1, val);
@@ -92,7 +92,7 @@ public class TS_SQLConnStmtUtils {
             }
             if (param instanceof Boolean val) {
                 if (!TGS_SQLColTypedUtils.familyLng(colName)) {
-                    TGS_FuncMTUCEUtils.thrw(d.className, "fill", "param instanceof Boolean -> !TGS_SQLColTypedUtils.familyLng(colName)");
+                    TGS_FuncMTUUtils.thrw(d.className, "fill", "param instanceof Boolean -> !TGS_SQLColTypedUtils.familyLng(colName)");
                 }
                 d.ci("fill", index, "bool", val);
                 fillStmt.setLong(index + 1, val ? 1L : 0L);
@@ -100,7 +100,7 @@ public class TS_SQLConnStmtUtils {
             }
             if (param instanceof Short val) {
                 if (!TGS_SQLColTypedUtils.familyLng(colName)) {
-                    TGS_FuncMTUCEUtils.thrw(d.className, "fill", "param instanceof Short -> !TGS_SQLColTypedUtils.familyLng(colName)");
+                    TGS_FuncMTUUtils.thrw(d.className, "fill", "param instanceof Short -> !TGS_SQLColTypedUtils.familyLng(colName)");
                 }
                 d.ci("fill", index, "Short", val);
                 fillStmt.setLong(index + 1, val);
@@ -108,7 +108,7 @@ public class TS_SQLConnStmtUtils {
             }
             if (param instanceof Integer val) {
                 if (!TGS_SQLColTypedUtils.familyLng(colName)) {
-                    TGS_FuncMTUCEUtils.thrw(d.className, "fill", "param instanceof Integer -> !TGS_SQLColTypedUtils.familyLng(colName)");
+                    TGS_FuncMTUUtils.thrw(d.className, "fill", "param instanceof Integer -> !TGS_SQLColTypedUtils.familyLng(colName)");
                 }
                 d.ci("fill", index, "Integer", val);
                 fillStmt.setLong(index + 1, val);
@@ -116,7 +116,7 @@ public class TS_SQLConnStmtUtils {
             }
             if (param instanceof Long val) {
                 if (!TGS_SQLColTypedUtils.familyLng(colName)) {
-                    TGS_FuncMTUCEUtils.thrw(d.className, "fill", "param instanceof Long -> !TGS_SQLColTypedUtils.familyLng(colName)");
+                    TGS_FuncMTUUtils.thrw(d.className, "fill", "param instanceof Long -> !TGS_SQLColTypedUtils.familyLng(colName)");
                 }
                 d.ci("fill", index, "Long", val);
                 fillStmt.setLong(index + 1, val);
@@ -124,11 +124,11 @@ public class TS_SQLConnStmtUtils {
             }
             if (param instanceof Object[] val) {
                 if (!TGS_SQLColTypedUtils.typeBytes(colName) && !TGS_SQLColTypedUtils.typeBytesRow(colName)) {
-                    TGS_FuncMTUCEUtils.thrw(d.className, "fill", "param instanceof Object[] -> !TGS_SQLColTypedUtils.typeBytes(colName) && !TGS_SQLColTypedUtils.typeBytesRow(colName)");
+                    TGS_FuncMTUUtils.thrw(d.className, "fill", "param instanceof Object[] -> !TGS_SQLColTypedUtils.typeBytes(colName) && !TGS_SQLColTypedUtils.typeBytesRow(colName)");
                 }
                 var opObj = TS_FileObjUtils.toBytes(val);
                 if (opObj.isExcuse()) {
-                    TGS_FuncMTUCEUtils.thrw(d.className, "fill", "param instanceof Object[] -> TS_FileObjUtils.toBytes(val).isEmpty:" + opObj.excuse().getMessage());
+                    TGS_FuncMTUUtils.thrw(d.className, "fill", "param instanceof Object[] -> TS_FileObjUtils.toBytes(val).isEmpty:" + opObj.excuse().getMessage());
                 }
                 var obj = opObj.value();
                 d.ci("fill", index, "byte[].str", "len", obj.length);
@@ -148,13 +148,13 @@ public class TS_SQLConnStmtUtils {
                     fillStmt.setString(index + 1, str);
                     return index + 1;
                 }
-                TGS_FuncMTUCEUtils.thrw(d.className, "fill", "CharSequence on not typeBytes or typeBytesStr col: " + colName);
+                TGS_FuncMTUUtils.thrw(d.className, "fill", "CharSequence on not typeBytes or typeBytesStr col: " + colName);
             }
-            return TGS_FuncMTUCEUtils.thrw(d.className, "fill", "Uncoded type! [" + param + "]");
+            return TGS_FuncMTUUtils.thrw(d.className, "fill", "Uncoded type! [" + param + "]");
         }, e -> {
-            TGS_FuncMTCEUtils.run(() -> {
+            TGS_FuncMTCUtils.run(() -> {
                 d.ce("fill", "sql", fillStmt.getResultSet().getStatement());
-            }, TGS_FuncMTUCE_In1.empty);
+            }, TGS_FuncMTU_In1.empty);
             d.ct("fill", e);
             return TGS_FuncUtils.thrw(e);
         });
