@@ -5,6 +5,10 @@ import java.nio.charset.StandardCharsets;
 
 public class TS_SQLConnURLUtils {
 
+    private TS_SQLConnURLUtils() {
+
+    }
+
     public static boolean USE_NEW_SSLMODE = true;
 
     final private static TS_Log d = TS_Log.of(TS_SQLConnURLUtils.class);
