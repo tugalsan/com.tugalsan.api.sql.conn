@@ -91,9 +91,9 @@ public class TS_SQLConnConUtils {
             }
         }
         var ds = new DataSource(anchor.pool());
-        var dsProxy = TS_ProfileMelodyUtils.createProxy(ds);
-        SYNC.add(new TS_ConnPackSource(anchor, ds, dsProxy));
-        return dsProxy;
+        var dsThroughProxy = TS_ProfileMelodyUtils.createProxy(ds);
+        SYNC.add(new TS_ConnPackSource(anchor, ds, dsThroughProxy));
+        return dsThroughProxy;
     }
     final private static TS_ThreadSyncLst<TS_ConnPackSource> SYNC = TS_ThreadSyncLst.ofSlowWrite();
 
