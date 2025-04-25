@@ -81,19 +81,14 @@ public class TS_SQLConnConUtils {
         }, e -> TGS_UnionExcuse.ofExcuse(e));
     }
 
-//    @Deprecated // NOT WORKING AS INTENDED
-//    private static boolean isClosed(javax.sql.DataSource con) {
-//        if (con == null) {
-//            return true;
-//        }
-//        return TGS_FuncMTCUtils.call(() -> con.getConnection().isClosed(), e -> true);
-//    }
     private static TGS_UnionExcuse<javax.sql.DataSource> throughProxy(TS_SQLConnAnchor anchor) {
         var pack = SYNC.findFirst(c -> Objects.equals(c.anchor(), anchor));
-//        if (pack != null && !isClosed(pack.main()) && !isClosed(pack.proxy().orElse(null))) { // NOT WORKING AS INTENDED
-        if (pack != null && isActive(pack.main()) && isActive(pack.proxy().orElse(null))) {
-//        if (pack != null) {
-            return TGS_UnionExcuse.of(pack.main());
+        if (pack != null) {
+            if (isActive(pack.main()) && isActive(pack.proxy().orElse(null))) {
+                return TGS_UnionExcuse.of(pack.main());
+            } else {
+                SYNC.removeAndPopFirst(pack);
+            }
         }
         var ds = new DataSource(anchor.pool());
         var dsProxy = TS_ProfileMelodyUtils.createProxy(ds);
