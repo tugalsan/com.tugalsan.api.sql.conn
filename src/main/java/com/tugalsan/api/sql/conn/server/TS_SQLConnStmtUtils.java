@@ -17,6 +17,10 @@ import java.util.stream.IntStream;
 
 public class TS_SQLConnStmtUtils {
 
+    private TS_SQLConnStmtUtils() {
+
+    }
+
     final public static TS_Log d = TS_Log.of(TS_SQLConnStmtUtils.class);
 
     public static TS_SQLConnStmtUpdateResult executeUpdate(PreparedStatement stmt) {

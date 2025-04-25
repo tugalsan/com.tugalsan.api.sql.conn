@@ -11,6 +11,8 @@ import com.tugalsan.api.union.client.TGS_UnionExcuse;
 
 import com.tugalsan.api.function.client.maythrowexceptions.unchecked.TGS_FuncMTU;
 import com.tugalsan.api.function.client.maythrowexceptions.checked.TGS_FuncMTCUtils;
+import com.tugalsan.api.sql.resultset.server.TS_SQLResultSet;
+import com.tugalsan.api.tuple.client.TGS_Tuple1;
 
 public class TS_SQLConnConUtils {
 
@@ -71,7 +73,7 @@ public class TS_SQLConnConUtils {
 
     private static TGS_UnionExcuse<Connection> conPool(TS_SQLConnAnchor anchor) {
         return TGS_FuncMTCUtils.call(() -> {
-            var u = ds(anchor);
+            var u = throughProxy(anchor);
             if (u.isExcuse()) {
                 return u.toExcuse();
             }
@@ -79,16 +81,18 @@ public class TS_SQLConnConUtils {
         }, e -> TGS_UnionExcuse.ofExcuse(e));
     }
 
-    private static boolean isClosed(javax.sql.DataSource con) {
-        if (con == null) {
-            return true;
-        }
-        return TGS_FuncMTCUtils.call(() -> con.getConnection().isClosed(), e -> true);
-    }
-
-    private static TGS_UnionExcuse<javax.sql.DataSource> ds(TS_SQLConnAnchor anchor) {
+//    @Deprecated // NOT WORKING AS INTENDED
+//    private static boolean isClosed(javax.sql.DataSource con) {
+//        if (con == null) {
+//            return true;
+//        }
+//        return TGS_FuncMTCUtils.call(() -> con.getConnection().isClosed(), e -> true);
+//    }
+    private static TGS_UnionExcuse<javax.sql.DataSource> throughProxy(TS_SQLConnAnchor anchor) {
         var pack = SYNC.findFirst(c -> Objects.equals(c.anchor(), anchor));
-        if (pack != null && !isClosed(pack.main()) && !isClosed(pack.proxy().orElse(null))) {
+//        if (pack != null && !isClosed(pack.main()) && !isClosed(pack.proxy().orElse(null))) { // NOT WORKING AS INTENDED
+        if (pack != null && isActive(pack.main()) && isActive(pack.proxy().orElse(null))) {
+//        if (pack != null) {
             return TGS_UnionExcuse.of(pack.main());
         }
         var ds = new DataSource(anchor.pool());
@@ -117,6 +121,24 @@ public class TS_SQLConnConUtils {
                 return TGS_UnionExcuse.of(new TS_SQLConnPack(anchor, u_main_con.value(), u_proxy_con.value()));
             });
         });
+    }
+
+    private static boolean isActive(javax.sql.DataSource con) {
+        if (con == null) {
+            return false;
+        }
+        return TGS_FuncMTCUtils.call(() -> {
+            TGS_Tuple1<Boolean> result = new TGS_Tuple1(false);
+            var sqlStmt = "SELECT 'Hello world'  FROM DUAL";
+            TGS_FuncMTCUtils.run(() -> {
+                try (var resultSet = TS_SQLConnStmtUtils.stmtQuery(con.getConnection(), sqlStmt).executeQuery()) {
+                    var rs = new TS_SQLResultSet(resultSet);
+                    var val = rs.str.get(0, 0);
+                    result.value0 = true;
+                }
+            });
+            return result.value0;
+        }, e -> false);
     }
 
     public static String con_SKIP_TROW() {

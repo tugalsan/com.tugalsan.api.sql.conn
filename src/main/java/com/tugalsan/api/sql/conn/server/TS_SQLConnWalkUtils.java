@@ -1,6 +1,5 @@
 package com.tugalsan.api.sql.conn.server;
 
-
 import com.tugalsan.api.function.client.maythrowexceptions.checked.TGS_FuncMTCUtils;
 import com.tugalsan.api.function.client.maythrowexceptions.unchecked.TGS_FuncMTU_In1;
 import com.tugalsan.api.log.server.TS_Log;
@@ -11,6 +10,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 
 public class TS_SQLConnWalkUtils {
+
+    private TS_SQLConnWalkUtils() {
+
+    }
 
     final private static TS_Log d = TS_Log.of(TS_SQLConnWalkUtils.class);
 
