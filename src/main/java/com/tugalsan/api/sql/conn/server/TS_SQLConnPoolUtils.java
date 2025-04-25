@@ -29,20 +29,20 @@ public class TS_SQLConnPoolUtils {
         pool.setTimeBetweenEvictionRunsMillis(30000);
         
         pool.setMaxActive(100);
-        pool.setInitialSize(10);//x < setMaxActive
+        pool.setInitialSize(1);//x < setMaxActive
         
         pool.setMaxWait(10000);
         pool.setRemoveAbandonedTimeout(60);//seconds
         pool.setMinEvictableIdleTimeMillis(30000);
 
-        pool.setMinIdle(10);// minIdle < x < maxIdle & maxActive
+        pool.setMinIdle(1);// minIdle < x < maxIdle & maxActive
         pool.setMaxIdle(100);//x < setMaxActive
-        pool.setLogAbandoned(true);
+        pool.setLogAbandoned(false);
         pool.setRemoveAbandoned(true);
 
         pool.setJdbcInterceptors(
                 "org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;"
-                + "org.apache.tomcat.jdbc.pool.interceptor.ResetAbandonedTimer;"
+//                + "org.apache.tomcat.jdbc.pool.interceptor.ResetAbandonedTimer;"
                 + "org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer");
 
         return pool;

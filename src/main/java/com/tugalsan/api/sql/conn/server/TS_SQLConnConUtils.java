@@ -76,12 +76,12 @@ public class TS_SQLConnConUtils {
         if (source != null) {
             if (isActive(source.main()) && isActive(source.proxy().orElse(null))) {
                 if (d.infoEnable) {
-                    d.cr("conPoolPack", anchor, "ACTIVE");
+                    d.cr("conPoolPack", anchor.config.dbName, "ACTIVE");
                 }
                 return source;
             } else {
                 if (d.infoEnable) {
-                    d.ce("conPoolPack", anchor, "NOT ACTIVE");
+                    d.ce("conPoolPack", anchor.config.dbName, "NOT ACTIVE");
                 }
                 destroy(SYNC.removeAndPopFirst(source));
             }
