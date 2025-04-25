@@ -4,7 +4,6 @@ import java.sql.*;
 import java.util.*;
 import org.apache.tomcat.jdbc.pool.*;
 import com.tugalsan.api.log.server.TS_Log;
-import com.tugalsan.api.tuple.client.*;
 import com.tugalsan.api.profile.server.melody.*;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncWait;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncLst;
@@ -14,6 +13,10 @@ import com.tugalsan.api.function.client.maythrowexceptions.unchecked.TGS_FuncMTU
 import com.tugalsan.api.function.client.maythrowexceptions.checked.TGS_FuncMTCUtils;
 
 public class TS_SQLConnConUtils {
+
+    private TS_SQLConnConUtils() {
+
+    }
 
     final private static TS_Log d = TS_Log.of(TS_SQLConnConUtils.class);
 
@@ -32,10 +35,10 @@ public class TS_SQLConnConUtils {
 
     public static void destroy() {
         SYNC.forEach(true, item -> {
-            TGS_FuncMTCUtils.run(() -> ((org.apache.tomcat.jdbc.pool.DataSource) item.value1).close(true), e -> TGS_FuncMTU.empty.run());
-            TGS_FuncMTCUtils.run(() -> ((org.apache.tomcat.jdbc.pool.DataSource) item.value1).close(), e -> TGS_FuncMTU.empty.run());
-            TGS_FuncMTCUtils.run(() -> ((org.apache.tomcat.jdbc.pool.DataSource) item.value2).close(true), e -> TGS_FuncMTU.empty.run());
-            TGS_FuncMTCUtils.run(() -> ((org.apache.tomcat.jdbc.pool.DataSource) item.value2).close(), e -> TGS_FuncMTU.empty.run());
+            TGS_FuncMTCUtils.run(() -> ((org.apache.tomcat.jdbc.pool.DataSource) item.main()).close(true), e -> TGS_FuncMTU.empty.run());
+            TGS_FuncMTCUtils.run(() -> ((org.apache.tomcat.jdbc.pool.DataSource) item.main()).close(), e -> TGS_FuncMTU.empty.run());
+            TGS_FuncMTCUtils.run(() -> ((org.apache.tomcat.jdbc.pool.DataSource) item.main()).close(true), e -> TGS_FuncMTU.empty.run());
+            TGS_FuncMTCUtils.run(() -> ((org.apache.tomcat.jdbc.pool.DataSource) item.main()).close(), e -> TGS_FuncMTU.empty.run());
         });
     }
 
@@ -77,20 +80,23 @@ public class TS_SQLConnConUtils {
     }
 
     private static boolean isClosed(javax.sql.DataSource con) {
+        if (con == null) {
+            return true;
+        }
         return TGS_FuncMTCUtils.call(() -> con.getConnection().isClosed(), e -> true);
     }
 
     private static TGS_UnionExcuse<javax.sql.DataSource> ds(TS_SQLConnAnchor anchor) {
-        var pack = SYNC.findFirst(c -> Objects.equals(c.value0, anchor));
-        if (pack != null && !isClosed(pack.value1) && !isClosed(pack.value2)) {
-            return TGS_UnionExcuse.of(pack.value1);
+        var pack = SYNC.findFirst(c -> Objects.equals(c.anchor(), anchor));
+        if (pack != null && !isClosed(pack.main()) && !isClosed(pack.proxy().orElse(null))) {
+            return TGS_UnionExcuse.of(pack.main());
         }
         var ds = new DataSource(anchor.pool());
         var dsProxy = TS_ProfileMelodyUtils.createProxy(ds);
-        SYNC.add(new TGS_Tuple3(anchor, ds, dsProxy));
+        SYNC.add(new TS_ConnPackSource(anchor, ds, dsProxy));
         return dsProxy;
     }
-    final private static TS_ThreadSyncLst<TGS_Tuple3<TS_SQLConnAnchor, javax.sql.DataSource, javax.sql.DataSource>> SYNC = TS_ThreadSyncLst.ofSlowWrite();
+    final private static TS_ThreadSyncLst<TS_ConnPackSource> SYNC = TS_ThreadSyncLst.ofSlowWrite();
 
     public static TGS_UnionExcuse<TS_SQLConnPack> conPack(TS_SQLConnAnchor anchor) {
         return TGS_FuncMTCUtils.call(() -> {
