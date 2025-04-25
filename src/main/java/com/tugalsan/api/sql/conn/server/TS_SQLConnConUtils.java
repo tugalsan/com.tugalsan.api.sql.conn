@@ -28,7 +28,7 @@ public class TS_SQLConnConUtils {
 
     private static void destroy(TS_SQLConnSource source) {
         if (d.infoEnable) {
-            d.ci("destroy", "source", source.anchor());
+            d.ci("destroy", "source", source.anchor().config.dbName);
         }
         TGS_FuncMTCUtils.run(() -> ((org.apache.tomcat.jdbc.pool.DataSource) source.main()).close(true), e -> TGS_FuncMTU.empty.run());
         TGS_FuncMTCUtils.run(() -> ((org.apache.tomcat.jdbc.pool.DataSource) source.main()).close(), e -> TGS_FuncMTU.empty.run());
@@ -70,7 +70,7 @@ public class TS_SQLConnConUtils {
     public static TS_SQLConnSource conPoolPack(TS_SQLConnAnchor anchor) {
         if (d.infoEnable) {
             d.ci("conPoolPack", "size", SYNC.size());
-            SYNC.forEach(false, item -> d.ci("conPoolPack", "item", item.anchor()));
+            SYNC.forEach(false, item -> d.ci("conPoolPack", "item", item.anchor().config.dbName));
         }
         var source = SYNC.findFirst(c -> Objects.equals(c.anchor(), anchor));
         if (source != null) {
