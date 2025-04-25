@@ -26,15 +26,6 @@ public class TS_SQLConnConUtils {
         return TGS_FuncMTCUtils.call(() -> con.getMetaData().supportsResultSetType(ResultSet.TYPE_SCROLL_INSENSITIVE));
     }
 
-    @Deprecated
-    public static boolean valid(Connection con0, int timeoutSeconds) {
-        return TGS_FuncMTCUtils.call(() -> {
-            try (var con = con0) {
-                return con.isValid(timeoutSeconds);
-            }
-        });
-    }
-
     public static void destroy() {
         SYNC.forEach(true, item -> {
             TGS_FuncMTCUtils.run(() -> ((org.apache.tomcat.jdbc.pool.DataSource) item.main()).close(true), e -> TGS_FuncMTU.empty.run());
