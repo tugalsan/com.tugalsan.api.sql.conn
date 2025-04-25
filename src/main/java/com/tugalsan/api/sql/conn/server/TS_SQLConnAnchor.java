@@ -39,17 +39,38 @@ public class TS_SQLConnAnchor {
     }
 
     public String url() {
-        return url == null ? url = TS_SQLConnURLUtils.create(config) : url;
+        if (url == null) {
+            synchronized (this) {
+                if (url == null) {
+                    url = TS_SQLConnURLUtils.create(config);
+                }
+            }
+        }
+        return url;
     }
-    private String url = null;
+    private volatile String url = null;
 
     public Properties properties() {
-        return prop == null ? TS_SQLConnPropsUtils.create(config) : prop;
+        if (prop == null) {
+            synchronized (this) {
+                if (prop == null) {
+                    prop = TS_SQLConnPropsUtils.create(config);
+                }
+            }
+        }
+        return prop;
     }
-    private Properties prop;
+    private volatile Properties prop;
 
     public PoolProperties pool() {
-        return pool == null ? pool = TS_SQLConnPoolUtils.create(config) : pool;
+        if (pool == null) {
+            synchronized (this) {
+                if (pool == null) {
+                    pool = TS_SQLConnPoolUtils.create(config);
+                }
+            }
+        }
+        return pool;
     }
-    private PoolProperties pool = null;
+    private volatile PoolProperties pool = null;
 }

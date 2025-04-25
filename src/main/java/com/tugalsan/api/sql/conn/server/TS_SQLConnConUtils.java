@@ -72,10 +72,7 @@ public class TS_SQLConnConUtils {
             if (u.isExcuse()) {
                 return u.toExcuse();
             }
-//            if (TGS_StringUtils.cmn().isNullOrEmpty(anchor.config.dbPassword)) {
             return TGS_UnionExcuse.of(u.value().getConnection());
-//            }
-//            return TGS_UnionExcuse.of(u.value().getConnection(anchor.config.dbUser, anchor.config.dbPassword));
         }, e -> TGS_UnionExcuse.ofExcuse(e));
     }
 

@@ -4,6 +4,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 public class TS_SQLConnPropsUtils {
+    
+    private TS_SQLConnPropsUtils(){
+        
+    }
 
     public static Properties create(TS_SQLConnConfig config) {
         var prop = new Properties();
