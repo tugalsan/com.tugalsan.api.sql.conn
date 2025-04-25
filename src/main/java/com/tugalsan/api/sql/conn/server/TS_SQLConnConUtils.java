@@ -5,7 +5,6 @@ import java.util.*;
 import org.apache.tomcat.jdbc.pool.*;
 import com.tugalsan.api.log.server.TS_Log;
 import com.tugalsan.api.profile.server.melody.*;
-import com.tugalsan.api.thread.server.sync.TS_ThreadSyncWait;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncLst;
 import com.tugalsan.api.union.client.TGS_UnionExcuse;
 
@@ -62,54 +61,25 @@ public class TS_SQLConnConUtils {
         }, e -> TGS_UnionExcuse.ofExcuse(e));
     }
 
-    private static TGS_UnionExcuse<Connection> conPool(TS_SQLConnAnchor anchor) {
-        return TGS_FuncMTCUtils.call(() -> {
-            var u = throughProxy(anchor);
-            if (u.isExcuse()) {
-                return u.toExcuse();
-            }
-            return TGS_UnionExcuse.of(u.value().getConnection());
-        }, e -> TGS_UnionExcuse.ofExcuse(e));
-    }
-
-    private static TGS_UnionExcuse<javax.sql.DataSource> throughProxy(TS_SQLConnAnchor anchor) {
-        var pack = SYNC.findFirst(c -> Objects.equals(c.anchor(), anchor));
-        if (pack != null) {
-            if (isActive(pack.main()) && isActive(pack.proxy().orElse(null))) {
-                return TGS_UnionExcuse.of(pack.main());
+    public static TS_ConnPackSource conPoolPack(TS_SQLConnAnchor anchor) {
+        d.ce("conPoolPack", "size", SYNC.size());
+        var packSource = SYNC.findFirst(c -> Objects.equals(c.anchor(), anchor));
+        if (packSource != null) {
+            if (isActive(packSource.main()) && isActive(packSource.proxy().orElse(null))) {
+                return packSource;
             } else {
-                SYNC.removeAndPopFirst(pack);
+                SYNC.removeAndPopFirst(packSource);
             }
         }
         var ds = new DataSource(anchor.pool());
         var dsThroughProxy = TS_ProfileMelodyUtils.createProxy(ds);
-        SYNC.add(new TS_ConnPackSource(anchor, ds, dsThroughProxy));
-        return dsThroughProxy;
+        packSource = new TS_ConnPackSource(anchor, ds, dsThroughProxy);
+        SYNC.add(packSource);
+        return packSource;
     }
     final private static TS_ThreadSyncLst<TS_ConnPackSource> SYNC = TS_ThreadSyncLst.ofSlowWrite();
 
-    public static TGS_UnionExcuse<TS_SQLConnPack> conPack(TS_SQLConnAnchor anchor) {
-        return TGS_FuncMTCUtils.call(() -> {
-            var u_main_con = anchor.config.isPooled ? conPool(anchor) : conProp(anchor);
-            var u_proxy_con = TS_ProfileMelodyUtils.createProxy(u_main_con.value());
-            return TGS_UnionExcuse.of(new TS_SQLConnPack(anchor, u_main_con.value(), u_proxy_con.value()));
-        }, e -> {
-            return TGS_FuncMTCUtils.call(() -> {
-                TS_ThreadSyncWait.seconds(d.className, null, 3);
-                var u_main_con = anchor.config.isPooled ? conPool(anchor) : conProp(anchor);
-                if (u_main_con.isExcuse()) {
-                    return u_main_con.toExcuse();
-                }
-                var u_proxy_con = TS_ProfileMelodyUtils.createProxy(u_main_con.value());
-                if (u_proxy_con.isExcuse()) {
-                    return u_proxy_con.toExcuse();
-                }
-                return TGS_UnionExcuse.of(new TS_SQLConnPack(anchor, u_main_con.value(), u_proxy_con.value()));
-            });
-        });
-    }
-
-    private static boolean isActive(javax.sql.DataSource con) {
+    public static boolean isActive(javax.sql.DataSource con) {
         if (con == null) {
             return false;
         }
@@ -125,6 +95,49 @@ public class TS_SQLConnConUtils {
             });
             return result.value0;
         }, e -> false);
+    }
+
+    public static TGS_UnionExcuse<TS_SQLConnPack> conPack(TS_SQLConnAnchor anchor) {
+//        return TGS_FuncMTCUtils.call(() -> {
+        return conPack_silent(anchor);
+//        }, e -> {
+//            return TGS_FuncMTCUtils.call(() -> {
+//                TS_ThreadSyncWait.seconds(d.className, null, 3);
+//                return conPack_silent(anchor);
+//            });
+//        });
+    }
+
+    private static TGS_UnionExcuse<TS_SQLConnPack> conPack_silent(TS_SQLConnAnchor anchor) {
+        return TGS_FuncMTCUtils.call(() -> {
+            if (anchor.config.isPooled) {
+                var conPoolPack = conPoolPack(anchor);
+                if (conPoolPack.proxy().isExcuse()) {
+                    return conPoolPack.proxy().toExcuse();
+                }
+                var newConPack = new TS_SQLConnPack(
+                        anchor,
+                        conPoolPack.main().getConnection(),
+                        conPoolPack.proxy().value().getConnection()
+                );
+                return TGS_UnionExcuse.of(newConPack);
+            } else {
+                var u_main_con = conProp(anchor);
+                if (u_main_con.isExcuse()) {
+                    return u_main_con.toExcuse();
+                }
+                var u_proxy_con = TS_ProfileMelodyUtils.createProxy(u_main_con.value());
+                if (u_proxy_con.isExcuse()) {
+                    return u_proxy_con.toExcuse();
+                }
+                var newConPack = new TS_SQLConnPack(
+                        anchor,
+                        u_main_con.value(),
+                        u_proxy_con.value()
+                );
+                return TGS_UnionExcuse.of(newConPack);
+            }
+        }, e -> TGS_UnionExcuse.ofExcuse(e));
     }
 
     public static String con_SKIP_TROW() {
