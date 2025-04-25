@@ -73,7 +73,7 @@ public class TS_SQLConnConUtils {
                 return u.toExcuse();
             }
 //            if (TGS_StringUtils.cmn().isNullOrEmpty(anchor.config.dbPassword)) {
-                return TGS_UnionExcuse.of(u.value().getConnection());
+            return TGS_UnionExcuse.of(u.value().getConnection());
 //            }
 //            return TGS_UnionExcuse.of(u.value().getConnection(anchor.config.dbUser, anchor.config.dbPassword));
         }, e -> TGS_UnionExcuse.ofExcuse(e));
@@ -81,7 +81,7 @@ public class TS_SQLConnConUtils {
 
     private static TGS_UnionExcuse<javax.sql.DataSource> ds(TS_SQLConnAnchor anchor) {
         var pack = SYNC.findFirst(c -> Objects.equals(c.value0, anchor));
-        if (pack != null) {
+        if (pack != null && !TGS_FuncMTCUtils.call(() -> pack.value1.getConnection().isClosed(), e -> true) && !TGS_FuncMTCUtils.call(() -> pack.value2.getConnection().isClosed(), e -> true)) {
             return TGS_UnionExcuse.of(pack.value1);
         }
         var ds = new DataSource(anchor.pool());
