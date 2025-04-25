@@ -76,9 +76,13 @@ public class TS_SQLConnConUtils {
         }, e -> TGS_UnionExcuse.ofExcuse(e));
     }
 
+    private static boolean isClosed(javax.sql.DataSource con) {
+        return TGS_FuncMTCUtils.call(() -> con.getConnection().isClosed(), e -> true);
+    }
+
     private static TGS_UnionExcuse<javax.sql.DataSource> ds(TS_SQLConnAnchor anchor) {
         var pack = SYNC.findFirst(c -> Objects.equals(c.value0, anchor));
-        if (pack != null && !TGS_FuncMTCUtils.call(() -> pack.value1.getConnection().isClosed(), e -> true) && !TGS_FuncMTCUtils.call(() -> pack.value2.getConnection().isClosed(), e -> true)) {
+        if (pack != null && !isClosed(pack.value1) && !isClosed(pack.value2)) {
             return TGS_UnionExcuse.of(pack.value1);
         }
         var ds = new DataSource(anchor.pool());
