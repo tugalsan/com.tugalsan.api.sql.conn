@@ -27,10 +27,7 @@ public class TS_SQLConnConUtils {
         if (d.infoEnable) {
             d.ci("destroy", "source", source.anchor().config.dbName);
         }
-        TGS_FuncMTCUtils.run(() -> ((org.apache.tomcat.jdbc.pool.DataSource) source.main()).close(true), e -> d.ce("destroy", "INFO: " + e.getMessage()));
-        TGS_FuncMTCUtils.run(() -> ((org.apache.tomcat.jdbc.pool.DataSource) source.main()).close(), e -> d.ce("destroy", "INFO: " + e.getMessage()));
-        TGS_FuncMTCUtils.run(() -> ((org.apache.tomcat.jdbc.pool.DataSource) source.proxy().value()).close(true), e -> d.ce("destroy", "INFO: " + e.getMessage()));
-        TGS_FuncMTCUtils.run(() -> ((org.apache.tomcat.jdbc.pool.DataSource) source.proxy().value()).close(), e -> d.ce("destroy", "INFO: " + e.getMessage()));
+        TGS_FuncMTCUtils.run(() -> (source.main()).close(true), e -> d.ce("destroy", "INFO: " + e.getMessage()));
     }
 
     public static void destroy() {

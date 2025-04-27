@@ -8,7 +8,7 @@ public class TS_SQLConnPoolUtils {
     private TS_SQLConnPoolUtils() {
 
     }
-    final private static TS_Log d = TS_Log.of(TS_SQLConnPoolUtils.class);
+    final private static TS_Log d = TS_Log.of(true, TS_SQLConnPoolUtils.class);
 
     //https://tomcat.apache.org/tomcat-11.0-doc/jdbc-pool.html
     public static PoolProperties create(TS_SQLConnConfig config) {
