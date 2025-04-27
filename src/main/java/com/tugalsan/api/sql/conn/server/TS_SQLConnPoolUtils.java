@@ -30,7 +30,7 @@ public class TS_SQLConnPoolUtils {
         pool.setTestOnReturn(false);
         pool.setTimeBetweenEvictionRunsMillis(30000);
 
-        pool.setMaxActive(99999);//my.ini > [mysql] > max_connections=x & max_user_connections=x
+        pool.setMaxActive(15000);//my.ini > [mysql] > max_connections=x & max_user_connections=x
         pool.setInitialSize(1);//x < setMaxActive
 
         pool.setMaxWait(30000);
