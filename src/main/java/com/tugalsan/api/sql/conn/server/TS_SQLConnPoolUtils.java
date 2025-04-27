@@ -36,7 +36,7 @@ public class TS_SQLConnPoolUtils {
         pool.setMinEvictableIdleTimeMillis(30000);
 
         pool.setMinIdle(1);// minIdle < x < maxIdle & maxActive
-        pool.setMaxIdle(100);//x < setMaxActive
+        pool.setMaxIdle(8);//x < setMaxActive
         pool.setLogAbandoned(false);
         pool.setRemoveAbandoned(true);
 
