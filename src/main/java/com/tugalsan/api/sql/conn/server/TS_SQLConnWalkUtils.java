@@ -19,8 +19,7 @@ public class TS_SQLConnWalkUtils {
 
     public static void con(TS_SQLConnAnchor anchor, TGS_FuncMTU_In1<Connection> con) {
         TGS_FuncMTCUtils.run(() -> {
-            var u_conPack = TS_SQLConnConUtils.conPack(anchor);
-            try (var conPack = u_conPack.value()) {
+            try (var conPack = TS_SQLConnConUtils.conPack(anchor).value()) {
                 d.ci("con", anchor.config.dbName);
                 con.run(conPack.con());
             }
