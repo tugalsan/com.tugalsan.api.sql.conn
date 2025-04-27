@@ -4,7 +4,7 @@ import javax.sql.DataSource;
 import com.tugalsan.api.union.client.TGS_UnionExcuse;
 import java.util.Objects;
 
-public record TS_SQLConnSource(TS_SQLConnAnchor anchor, DataSource main, TGS_UnionExcuse<DataSource> proxy) {
+public record TS_SQLConnSource(TS_SQLConnAnchor anchor, org.apache.tomcat.jdbc.pool.DataSource main, TGS_UnionExcuse<DataSource> proxy) {
 
     @Override
     public int hashCode() {

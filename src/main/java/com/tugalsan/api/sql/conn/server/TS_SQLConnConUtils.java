@@ -28,10 +28,10 @@ public class TS_SQLConnConUtils {
         if (d.infoEnable) {
             d.ci("destroy", "source", source.anchor().config.dbName);
         }
-        TGS_FuncMTCUtils.run(() -> ((org.apache.tomcat.jdbc.pool.DataSource) source.main()).close(true), e -> TGS_FuncMTU.empty.run());
-        TGS_FuncMTCUtils.run(() -> ((org.apache.tomcat.jdbc.pool.DataSource) source.main()).close(), e -> TGS_FuncMTU.empty.run());
-        TGS_FuncMTCUtils.run(() -> ((org.apache.tomcat.jdbc.pool.DataSource) source.proxy().value()).close(true), e -> TGS_FuncMTU.empty.run());
-        TGS_FuncMTCUtils.run(() -> ((org.apache.tomcat.jdbc.pool.DataSource) source.proxy().value()).close(), e -> TGS_FuncMTU.empty.run());
+        TGS_FuncMTCUtils.run(() -> ((org.apache.tomcat.jdbc.pool.DataSource) source.main()).close(true), e -> d.ce("destroy", "INFO: " + e.getMessage()));
+        TGS_FuncMTCUtils.run(() -> ((org.apache.tomcat.jdbc.pool.DataSource) source.main()).close(), e -> d.ce("destroy", "INFO: " + e.getMessage()));
+        TGS_FuncMTCUtils.run(() -> ((org.apache.tomcat.jdbc.pool.DataSource) source.proxy().value()).close(true), e -> d.ce("destroy", "INFO: " + e.getMessage()));
+        TGS_FuncMTCUtils.run(() -> ((org.apache.tomcat.jdbc.pool.DataSource) source.proxy().value()).close(), e -> d.ce("destroy", "INFO: " + e.getMessage()));
     }
 
     public static void destroy() {
@@ -75,6 +75,22 @@ public class TS_SQLConnConUtils {
             if (isActive(source.main()) && isActive(source.proxy().orElse(null))) {
                 if (d.infoEnable) {
                     d.cr("conPoolPack", anchor.config.dbName, "ACTIVE");
+                    d.ci("conPoolPack", "source.main().getAbandonWhenPercentageFull()", source.main().getAbandonWhenPercentageFull());
+                    d.ci("conPoolPack", "source.main().getActive", source.main().getActive());
+                    d.ci("conPoolPack", "source.main().getBorrowedCount()", source.main().getBorrowedCount());
+                    d.ci("conPoolPack", "source.main().getCreatedCount()", source.main().getCreatedCount());
+                    d.ci("conPoolPack", "source.main().getIdle()", source.main().getIdle());
+                    d.ci("conPoolPack", "source.main().getInitialSize()", source.main().getInitialSize());
+                    d.ci("conPoolPack", "source.main().getNumIdle()", source.main().getNumIdle());
+                    d.ci("conPoolPack", "source.main().getNumActive()", source.main().getNumActive());
+                    d.ci("conPoolPack", "source.main().getPoolSize()", source.main().getPoolSize());
+                    d.ci("conPoolPack", "source.main().getReconnectedCount()", source.main().getReconnectedCount());
+                    d.ci("conPoolPack", "source.main().getReleasedCount()", source.main().getReleasedCount());
+                    d.ci("conPoolPack", "source.main().getReleasedIdleCount()", source.main().getReleasedIdleCount());
+                    d.ci("conPoolPack", "source.main().getRemoveAbandonedCount()", source.main().getRemoveAbandonedCount());
+                    d.ci("conPoolPack", "source.main().getReturnedCount()", source.main().getReturnedCount());
+                    d.ci("conPoolPack", "source.main().getSize()", source.main().getSize());
+                    d.ci("conPoolPack", "source.main().getWaitCount()", source.main().getWaitCount());
                 }
                 return source;
             } else {
@@ -87,6 +103,25 @@ public class TS_SQLConnConUtils {
         var ds = new DataSource(anchor.pool());
         var dsThroughProxy = TS_ProfileMelodyUtils.createProxy(ds);
         source = new TS_SQLConnSource(anchor, ds, dsThroughProxy);
+        if (d.infoEnable) {
+            d.cr("conPoolPack", anchor.config.dbName, "NEW");
+            d.ci("conPoolPack", "source.main().getAbandonWhenPercentageFull()", source.main().getAbandonWhenPercentageFull());
+            d.ci("conPoolPack", "source.main().getActive", source.main().getActive());
+            d.ci("conPoolPack", "source.main().getBorrowedCount()", source.main().getBorrowedCount());
+            d.ci("conPoolPack", "source.main().getCreatedCount()", source.main().getCreatedCount());
+            d.ci("conPoolPack", "source.main().getIdle()", source.main().getIdle());
+            d.ci("conPoolPack", "source.main().getInitialSize()", source.main().getInitialSize());
+            d.ci("conPoolPack", "source.main().getNumIdle()", source.main().getNumIdle());
+            d.ci("conPoolPack", "source.main().getNumActive()", source.main().getNumActive());
+            d.ci("conPoolPack", "source.main().getPoolSize()", source.main().getPoolSize());
+            d.ci("conPoolPack", "source.main().getReconnectedCount()", source.main().getReconnectedCount());
+            d.ci("conPoolPack", "source.main().getReleasedCount()", source.main().getReleasedCount());
+            d.ci("conPoolPack", "source.main().getReleasedIdleCount()", source.main().getReleasedIdleCount());
+            d.ci("conPoolPack", "source.main().getRemoveAbandonedCount()", source.main().getRemoveAbandonedCount());
+            d.ci("conPoolPack", "source.main().getReturnedCount()", source.main().getReturnedCount());
+            d.ci("conPoolPack", "source.main().getSize()", source.main().getSize());
+            d.ci("conPoolPack", "source.main().getWaitCount()", source.main().getWaitCount());
+        }
         SYNC.add(source);
         return source;
     }
