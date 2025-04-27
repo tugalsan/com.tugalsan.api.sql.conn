@@ -16,6 +16,7 @@ public class TS_SQLConnConfig implements Serializable {
     public boolean region_ist = true;
     public boolean charsetUTF8 = true;
     public boolean isPooled = true;
+    public boolean pool_debug = false;
 
     @Override
     public int hashCode() {
@@ -31,6 +32,7 @@ public class TS_SQLConnConfig implements Serializable {
         hash = 71 * hash + (this.region_ist ? 1 : 0);
         hash = 71 * hash + (this.charsetUTF8 ? 1 : 0);
         hash = 71 * hash + (this.isPooled ? 1 : 0);
+        hash = 71 * hash + (this.pool_debug ? 1 : 0);
         return hash;
     }
 
@@ -49,7 +51,7 @@ public class TS_SQLConnConfig implements Serializable {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "{" + "method=" + method + ", dbName=" + dbName + ", dbIp=" + dbIp + ", dbPort=" + dbPort + ", dbUser=" + dbUser + ", dbPassword=" + dbPassword + ", autoReconnect=" + autoReconnect + ", useSSL=" + useSSL + ", region_ist=" + region_ist + ", charsetUTF8=" + charsetUTF8 + ", isPooled=" + isPooled + '}';
+        return getClass().getSimpleName() + "{" + "method=" + method + ", dbName=" + dbName + ", dbIp=" + dbIp + ", dbPort=" + dbPort + ", dbUser=" + dbUser + ", dbPassword=" + dbPassword + ", autoReconnect=" + autoReconnect + ", useSSL=" + useSSL + ", region_ist=" + region_ist + ", charsetUTF8=" + charsetUTF8 + ", isPooled=" + isPooled+ ", pool_debug=" + pool_debug + '}';
     }
 
     @Override
@@ -61,6 +63,7 @@ public class TS_SQLConnConfig implements Serializable {
         return o.autoReconnect == autoReconnect
                 && o.charsetUTF8 == charsetUTF8
                 && o.isPooled == isPooled
+                && o.pool_debug == pool_debug
                 && o.region_ist == region_ist
                 && o.useSSL == useSSL
                 && Objects.equals(o.dbIp, dbIp)
@@ -80,6 +83,7 @@ public class TS_SQLConnConfig implements Serializable {
         cfg.dbPort = dbPort;
         cfg.dbUser = dbUser;
         cfg.isPooled = isPooled;
+        cfg.pool_debug = pool_debug;
         cfg.method = method;
         cfg.region_ist = region_ist;
         cfg.useSSL = useSSL;

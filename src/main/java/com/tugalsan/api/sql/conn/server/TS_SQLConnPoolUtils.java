@@ -8,7 +8,7 @@ public class TS_SQLConnPoolUtils {
     private TS_SQLConnPoolUtils() {
 
     }
-    final private static TS_Log d = TS_Log.of(true, TS_SQLConnPoolUtils.class);
+    final private static TS_Log d = TS_Log.of(TS_SQLConnPoolUtils.class);
 
     //https://tomcat.apache.org/tomcat-11.0-doc/jdbc-pool.html
     public static PoolProperties create(TS_SQLConnConfig config) {
@@ -51,21 +51,21 @@ public class TS_SQLConnPoolUtils {
     }
 
     public static void printStats(org.apache.tomcat.jdbc.pool.DataSource ds) {
-        d.ci("printStats", "ds.getAbandonWhenPercentageFull()", ds.getAbandonWhenPercentageFull());
-        d.ci("printStats", "ds.getActive", ds.getActive());
-        d.ci("printStats", "ds.getBorrowedCount()", ds.getBorrowedCount());
-        d.ci("printStats", "ds.getCreatedCount()", ds.getCreatedCount());
-        d.ci("printStats", "ds.getIdle()", ds.getIdle());
-        d.ci("printStats", "ds.getInitialSize()", ds.getInitialSize());
-        d.ci("printStats", "ds.getNumIdle()", ds.getNumIdle());
-        d.ci("printStats", "ds.getNumActive()", ds.getNumActive());
-        d.ci("printStats", "ds.getPoolSize()", ds.getPoolSize());
-        d.ci("printStats", "ds.getReconnectedCount()", ds.getReconnectedCount());
-        d.ci("printStats", "ds.getReleasedCount()", ds.getReleasedCount());
-        d.ci("printStats", "ds.getReleasedIdleCount()", ds.getReleasedIdleCount());
-        d.ci("printStats", "ds.getRemoveAbandonedCount()", ds.getRemoveAbandonedCount());
-        d.ci("printStats", "ds.getReturnedCount()", ds.getReturnedCount());
-        d.ci("printStats", "ds.getSize()", ds.getSize());
-        d.ci("printStats", "ds.getWaitCount()", ds.getWaitCount());
+        d.cr("printStats", "ds.getAbandonWhenPercentageFull()", ds.getAbandonWhenPercentageFull());
+        d.cr("printStats", "ds.getActive", ds.getActive());
+        d.cr("printStats", "ds.getBorrowedCount()", ds.getBorrowedCount());
+        d.cr("printStats", "ds.getCreatedCount()", ds.getCreatedCount());
+        d.cr("printStats", "ds.getIdle()", ds.getIdle());
+        d.cr("printStats", "ds.getInitialSize()", ds.getInitialSize());
+        d.cr("printStats", "ds.getNumIdle()", ds.getNumIdle());
+        d.cr("printStats", "ds.getNumActive()", ds.getNumActive());
+        d.cr("printStats", "ds.getPoolSize()", ds.getPoolSize());
+        d.cr("printStats", "ds.getReconnectedCount()", ds.getReconnectedCount());
+        d.cr("printStats", "ds.getReleasedCount()", ds.getReleasedCount());
+        d.cr("printStats", "ds.getReleasedIdleCount()", ds.getReleasedIdleCount());
+        d.cr("printStats", "ds.getRemoveAbandonedCount()", ds.getRemoveAbandonedCount());
+        d.cr("printStats", "ds.getReturnedCount()", ds.getReturnedCount());
+        d.cr("printStats", "ds.getSize()", ds.getSize());
+        d.cr("printStats", "ds.getWaitCount()", ds.getWaitCount());
     }
 }

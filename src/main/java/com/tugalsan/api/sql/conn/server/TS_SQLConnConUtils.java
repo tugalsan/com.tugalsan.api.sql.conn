@@ -71,7 +71,9 @@ public class TS_SQLConnConUtils {
             if (isActive(source.main()) && isActive(source.proxy().orElse(null))) {
                 if (d.infoEnable) {
                     d.cr("conPoolPack", anchor.config.dbName, "ACTIVE");
-                    TS_SQLConnPoolUtils.printStats(source.main());
+                    if (anchor.config.pool_debug) {
+                        TS_SQLConnPoolUtils.printStats(source.main());
+                    }
                 }
                 return source;
             } else {
@@ -86,7 +88,9 @@ public class TS_SQLConnConUtils {
         source = new TS_SQLConnSource(anchor, ds, dsThroughProxy);
         if (d.infoEnable) {
             d.cr("conPoolPack", anchor.config.dbName, "NEW");
-            TS_SQLConnPoolUtils.printStats(source.main());
+            if (anchor.config.pool_debug) {
+                TS_SQLConnPoolUtils.printStats(source.main());
+            }
         }
         SYNC.add(source);
         return source;
