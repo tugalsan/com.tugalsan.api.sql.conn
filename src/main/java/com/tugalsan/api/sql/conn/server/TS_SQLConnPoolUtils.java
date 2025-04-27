@@ -30,10 +30,10 @@ public class TS_SQLConnPoolUtils {
         pool.setTestOnReturn(false);
         pool.setTimeBetweenEvictionRunsMillis(30000);
 
-        pool.setMaxActive(100);
+        pool.setMaxActive(99999);//my.ini 
         pool.setInitialSize(1);//x < setMaxActive
 
-        pool.setMaxWait(10000);
+        pool.setMaxWait(30000);
         pool.setRemoveAbandonedTimeout(60);//seconds
         pool.setMinEvictableIdleTimeMillis(30000);
 
