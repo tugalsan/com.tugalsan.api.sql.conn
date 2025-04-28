@@ -20,7 +20,7 @@ public class TS_SQLConnConfig implements Serializable {
     public boolean pool_debug = false;
     public int pool_max_active_ms = 15000;
     public int pool_max_wait_ms = 30000;
-    public int pool_concurrent = 1000 / TS_OsCpuUtils.getProcessorCount();
+    public int pool_concurrent = TS_OsCpuUtils.getProcessorCount() * 2;
 
     @Override
     public int hashCode() {
