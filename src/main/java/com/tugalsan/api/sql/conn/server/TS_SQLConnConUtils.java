@@ -96,7 +96,11 @@ public class TS_SQLConnConUtils {
     }
     final private static TS_ThreadSyncLst<TS_SQLConnSource> SYNC = TS_ThreadSyncLst.ofSlowWrite();
 
-    public static boolean isActive(javax.sql.DataSource con) {
+    @Deprecated
+    private static boolean isActive(javax.sql.DataSource con) {
+        if (true) {
+            return true;
+        }
         if (con == null) {
             return false;
         }

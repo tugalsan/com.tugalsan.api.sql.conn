@@ -30,7 +30,7 @@ public class TS_SQLConnPoolUtils {
         pool.setTestOnReturn(false);
         pool.setTimeBetweenEvictionRunsMillis(30000);
 
-        pool.setMaxActive(15000);//my.ini > [mysql] > max_connections=x & max_user_connections=x
+        pool.setMaxActive(config.pool_concurrent);//my.ini > [mysql] > max_connections=x & max_user_connections=x
         pool.setInitialSize(1);//x < setMaxActive
 
         pool.setMaxWait(30000);
@@ -38,7 +38,7 @@ public class TS_SQLConnPoolUtils {
         pool.setMinEvictableIdleTimeMillis(30000);
 
         pool.setMinIdle(1);// minIdle < x < maxIdle & maxActive
-        pool.setMaxIdle(8);//x < setMaxActive
+        pool.setMaxIdle(Math.min(config.pool_concurrent, 4));//x < setMaxActive
         pool.setLogAbandoned(false);
         pool.setRemoveAbandoned(true);
 
