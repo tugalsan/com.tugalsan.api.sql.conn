@@ -16,7 +16,7 @@ public class TS_SQLConnConUtils {
 
     }
 
-    final private static TS_Log d = TS_Log.of(true, TS_SQLConnConUtils.class);
+    final private static TS_Log d = TS_Log.of(TS_SQLConnConUtils.class);
 
     public static boolean scrollingSupported(Connection con) {
         return TGS_FuncMTCUtils.call(() -> con.getMetaData().supportsResultSetType(ResultSet.TYPE_SCROLL_INSENSITIVE));
@@ -61,6 +61,9 @@ public class TS_SQLConnConUtils {
     }
 
     synchronized public static TS_SQLConnSource conPoolPack(TS_SQLConnAnchor anchor) {
+        if (anchor.config.pool_debug && !d.infoEnable) {
+            d.infoEnable = anchor.config.pool_debug;
+        }
         if (d.infoEnable) {
             d.ci("conPoolPack", "size", SYNC.size());
             SYNC.forEach(false, item -> d.ci("conPoolPack", "item", item.anchor().config.dbName));
