@@ -6,7 +6,6 @@ import com.tugalsan.api.log.server.TS_Log;
 import com.tugalsan.api.tuple.client.TGS_Tuple1;
 import com.tugalsan.api.sql.resultset.server.TS_SQLResultSet;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 
 public class TS_SQLConnWalkUtils {
@@ -16,11 +15,6 @@ public class TS_SQLConnWalkUtils {
     }
 
     final private static TS_Log d = TS_Log.of(TS_SQLConnWalkUtils.class);
-
-    @Deprecated //just use anchor.conRatedLimited(...);
-    public static void con(TS_SQLConnAnchor anchor, TGS_FuncMTU_In1<Connection> con) {
-        anchor.conRatedLimited(anchor, con);
-    }
 
     public static boolean active(TS_SQLConnAnchor anchor) {
         TGS_Tuple1<Boolean> result = new TGS_Tuple1(false);
@@ -45,7 +39,7 @@ public class TS_SQLConnWalkUtils {
     }
 
     private static void stmtQuery(TS_SQLConnAnchor anchor, CharSequence sql, TGS_FuncMTU_In1<PreparedStatement> stmt) {
-        con(anchor, con -> {
+        anchor.conRatedLimited(con -> {
             TGS_FuncMTCUtils.run(() -> {
                 try (var stmt0 = TS_SQLConnStmtUtils.stmtQuery(con, sql);) {
                     stmt.run(stmt0);
@@ -55,7 +49,7 @@ public class TS_SQLConnWalkUtils {
     }
 
     private static void stmtUpdate(TS_SQLConnAnchor anchor, CharSequence sql, TGS_FuncMTU_In1<PreparedStatement> stmt) {
-        con(anchor, con -> {
+        anchor.conRatedLimited(con -> {
             TGS_FuncMTCUtils.run(() -> {
                 try (var stmt0 = TS_SQLConnStmtUtils.stmtUpdate(con, sql);) {
                     stmt.run(stmt0);

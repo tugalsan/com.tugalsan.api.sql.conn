@@ -2,7 +2,6 @@ package com.tugalsan.api.sql.conn.server;
 
 import com.tugalsan.api.function.client.maythrowexceptions.unchecked.TGS_FuncMTU_In1;
 import com.tugalsan.api.thread.server.sync.rateLimited.TS_ThreadSyncRateLimitedRun;
-import com.tugalsan.api.union.client.TGS_UnionExcuse;
 import java.sql.Connection;
 import java.time.Duration;
 import java.util.*;
@@ -21,9 +20,9 @@ public class TS_SQLConnAnchor {
     final private Duration durWait;
     final private TS_ThreadSyncRateLimitedRun conRatedLimited;
 
-    public void conRatedLimited(TS_SQLConnAnchor anchor, TGS_FuncMTU_In1<Connection> con) {
+    public void conRatedLimited(TGS_FuncMTU_In1<Connection> con) {
         conRatedLimited.runUntil(() -> {
-            try (var conPack = TS_SQLConnConUtils.conPack(anchor).value()) {
+            try (var conPack = TS_SQLConnConUtils.conPack(TS_SQLConnAnchor.this).value()) {
                 con.run(conPack.con());
             }
         }, durWait);
