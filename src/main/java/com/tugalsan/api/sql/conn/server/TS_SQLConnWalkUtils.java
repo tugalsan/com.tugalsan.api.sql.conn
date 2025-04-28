@@ -17,13 +17,9 @@ public class TS_SQLConnWalkUtils {
 
     final private static TS_Log d = TS_Log.of(TS_SQLConnWalkUtils.class);
 
+    @Deprecated //just use anchor.conRatedLimited(...);
     public static void con(TS_SQLConnAnchor anchor, TGS_FuncMTU_In1<Connection> con) {
-        TGS_FuncMTCUtils.run(() -> {
-            try (var conPack = TS_SQLConnConUtils.conPack(anchor).value()) {
-                d.ci("con", anchor.config.dbName);
-                con.run(conPack.con());
-            }
-        });
+        anchor.conRatedLimited(anchor, con);
     }
 
     public static boolean active(TS_SQLConnAnchor anchor) {

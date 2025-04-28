@@ -1,7 +1,9 @@
 package com.tugalsan.api.sql.conn.server;
 
-import com.tugalsan.api.thread.server.sync.rateLimited.TS_ThreadSyncRateLimitedCall;
+import com.tugalsan.api.function.client.maythrowexceptions.unchecked.TGS_FuncMTU_In1;
+import com.tugalsan.api.thread.server.sync.rateLimited.TS_ThreadSyncRateLimitedRun;
 import com.tugalsan.api.union.client.TGS_UnionExcuse;
+import java.sql.Connection;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.Semaphore;
@@ -13,16 +15,17 @@ public class TS_SQLConnAnchor {
     private TS_SQLConnAnchor(TS_SQLConnConfig config) {
         this.config = config;
         durWait = Duration.ofMillis(config.pool_max_wait_ms);
-        conPack_rateLimited = TS_ThreadSyncRateLimitedCall.of(new Semaphore(config.pool_concurrent));
+        conRatedLimited = TS_ThreadSyncRateLimitedRun.of(new Semaphore(config.pool_concurrent));
     }
     public volatile TS_SQLConnConfig config;
     final private Duration durWait;
-    final private TS_ThreadSyncRateLimitedCall<TS_SQLConnPack> conPack_rateLimited;
+    final private TS_ThreadSyncRateLimitedRun conRatedLimited;
 
-    public TGS_UnionExcuse<TS_SQLConnPack> conPack() {
-        return conPack_rateLimited.callUntil(() -> {
-            var u = config.isPooled ? TS_SQLConnConUtils.conPack_pool(TS_SQLConnAnchor.this) : TS_SQLConnConUtils.conPack_prop(TS_SQLConnAnchor.this);
-            return u.value();//will throw, will be catched again
+    public void conRatedLimited(TS_SQLConnAnchor anchor, TGS_FuncMTU_In1<Connection> con) {
+        conRatedLimited.runUntil(() -> {
+            try (var conPack = TS_SQLConnConUtils.conPack(anchor).value()) {
+                con.run(conPack.con());
+            }
         }, durWait);
     }
 

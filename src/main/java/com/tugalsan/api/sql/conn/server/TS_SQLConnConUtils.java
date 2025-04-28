@@ -114,12 +114,11 @@ public class TS_SQLConnConUtils {
         }, e -> false);
     }
 
-    @Deprecated //just use anchor.conPack();
     public static TGS_UnionExcuse<TS_SQLConnPack> conPack(TS_SQLConnAnchor anchor) {
-        return anchor.conPack();
+        return anchor.config.isPooled ? conPack_pool(anchor) : conPack_prop(anchor);
     }
 
-    public static TGS_UnionExcuse<TS_SQLConnPack> conPack_pool(TS_SQLConnAnchor anchor) {
+    private static TGS_UnionExcuse<TS_SQLConnPack> conPack_pool(TS_SQLConnAnchor anchor) {
         return TGS_FuncMTCUtils.call(() -> {
             var conPoolPack = conPoolPack(anchor);
             if (conPoolPack.proxy().isExcuse()) {
@@ -134,7 +133,7 @@ public class TS_SQLConnConUtils {
         }, e -> TGS_UnionExcuse.ofExcuse(e));
     }
 
-    public static TGS_UnionExcuse<TS_SQLConnPack> conPack_prop(TS_SQLConnAnchor anchor) {
+    private static TGS_UnionExcuse<TS_SQLConnPack> conPack_prop(TS_SQLConnAnchor anchor) {
         return TGS_FuncMTCUtils.call(() -> {
             var u_main_con = conProp(anchor);
             if (u_main_con.isExcuse()) {
