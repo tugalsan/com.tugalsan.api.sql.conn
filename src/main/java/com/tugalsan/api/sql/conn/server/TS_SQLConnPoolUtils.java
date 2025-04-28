@@ -25,7 +25,7 @@ public class TS_SQLConnPoolUtils {
         pool.setTestWhileIdle(false);
         pool.setTestOnBorrow(true);
         pool.setValidationQuery("SELECT 'Hello world'  FROM DUAL");//SELECT 1
-        pool.setValidationInterval(30000);
+        pool.setValidationInterval(3000);
         pool.setValidationQueryTimeout(10);
         pool.setTestOnReturn(false);
         pool.setTimeBetweenEvictionRunsMillis(30000);
