@@ -2,7 +2,6 @@ package com.tugalsan.api.sql.conn.server;
 
 import java.sql.*;
 import java.util.*;
-import org.apache.tomcat.jdbc.pool.*;
 import com.tugalsan.api.log.server.TS_Log;
 import com.tugalsan.api.profile.server.melody.*;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncLst;
@@ -83,7 +82,7 @@ public class TS_SQLConnConUtils {
                 destroy(SYNC.removeAndPopFirst(source));
             }
         }
-        var ds = new DataSource(anchor.pool());
+        var ds = new org.apache.tomcat.jdbc.pool.DataSource(anchor.pool());
         var dsThroughProxy = TS_ProfileMelodyUtils.createProxy(ds);
         source = new TS_SQLConnSource(anchor, ds, dsThroughProxy);
         if (d.infoEnable) {
@@ -115,11 +114,12 @@ public class TS_SQLConnConUtils {
         }, e -> false);
     }
 
+    @Deprecated //just use anchor.conPack();
     public static TGS_UnionExcuse<TS_SQLConnPack> conPack(TS_SQLConnAnchor anchor) {
-        return anchor.config.isPooled ? conPack_pool(anchor) : conPack_prop(anchor);
+        return anchor.conPack();
     }
 
-    private static TGS_UnionExcuse<TS_SQLConnPack> conPack_pool(TS_SQLConnAnchor anchor) {
+    public static TGS_UnionExcuse<TS_SQLConnPack> conPack_pool(TS_SQLConnAnchor anchor) {
         return TGS_FuncMTCUtils.call(() -> {
             var conPoolPack = conPoolPack(anchor);
             if (conPoolPack.proxy().isExcuse()) {
@@ -134,7 +134,7 @@ public class TS_SQLConnConUtils {
         }, e -> TGS_UnionExcuse.ofExcuse(e));
     }
 
-    private static TGS_UnionExcuse<TS_SQLConnPack> conPack_prop(TS_SQLConnAnchor anchor) {
+    public static TGS_UnionExcuse<TS_SQLConnPack> conPack_prop(TS_SQLConnAnchor anchor) {
         return TGS_FuncMTCUtils.call(() -> {
             var u_main_con = conProp(anchor);
             if (u_main_con.isExcuse()) {

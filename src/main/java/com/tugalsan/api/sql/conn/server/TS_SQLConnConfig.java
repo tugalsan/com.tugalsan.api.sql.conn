@@ -1,5 +1,6 @@
 package com.tugalsan.api.sql.conn.server;
 
+import com.tugalsan.api.os.server.TS_OsCpuUtils;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -17,6 +18,9 @@ public class TS_SQLConnConfig implements Serializable {
     public boolean charsetUTF8 = true;
     public boolean isPooled = true;
     public boolean pool_debug = false;
+    public int pool_max_active_ms = 15000;
+    public int pool_max_wait_ms = 30000;
+    public int pool_concurrent = 1000 / TS_OsCpuUtils.getProcessorCount();
 
     @Override
     public int hashCode() {
@@ -51,7 +55,7 @@ public class TS_SQLConnConfig implements Serializable {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "{" + "method=" + method + ", dbName=" + dbName + ", dbIp=" + dbIp + ", dbPort=" + dbPort + ", dbUser=" + dbUser + ", dbPassword=" + dbPassword + ", autoReconnect=" + autoReconnect + ", useSSL=" + useSSL + ", region_ist=" + region_ist + ", charsetUTF8=" + charsetUTF8 + ", isPooled=" + isPooled+ ", pool_debug=" + pool_debug + '}';
+        return getClass().getSimpleName() + "{" + "method=" + method + ", dbName=" + dbName + ", dbIp=" + dbIp + ", dbPort=" + dbPort + ", dbUser=" + dbUser + ", dbPassword=" + dbPassword + ", autoReconnect=" + autoReconnect + ", useSSL=" + useSSL + ", region_ist=" + region_ist + ", charsetUTF8=" + charsetUTF8 + ", isPooled=" + isPooled + ", pool_debug=" + pool_debug + '}';
     }
 
     @Override
