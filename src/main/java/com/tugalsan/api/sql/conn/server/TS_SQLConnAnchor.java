@@ -21,6 +21,11 @@ public class TS_SQLConnAnchor {
     final private TS_ThreadSyncRateLimitedRun conRatedLimited;
 
     public void conRatedLimited(TGS_FuncMTU_In1<Connection> con) {
+        if (config.rateLimit < 1) {
+            try (var conPack = TS_SQLConnConUtils.conPack(TS_SQLConnAnchor.this).value()) {
+                con.run(conPack.con());
+            }
+        }
         conRatedLimited.runUntil(() -> {
             try (var conPack = TS_SQLConnConUtils.conPack(TS_SQLConnAnchor.this).value()) {
                 con.run(conPack.con());
