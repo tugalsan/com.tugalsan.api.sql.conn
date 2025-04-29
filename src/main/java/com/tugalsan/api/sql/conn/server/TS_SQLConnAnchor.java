@@ -25,6 +25,7 @@ public class TS_SQLConnAnchor {
             try (var conPack = TS_SQLConnConUtils.conPack(TS_SQLConnAnchor.this).value()) {
                 con.run(conPack.con());
             }
+            return;
         }
         conRatedLimited.runUntil(() -> {
             try (var conPack = TS_SQLConnConUtils.conPack(TS_SQLConnAnchor.this).value()) {
