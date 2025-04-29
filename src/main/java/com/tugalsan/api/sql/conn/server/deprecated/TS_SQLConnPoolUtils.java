@@ -1,9 +1,9 @@
-package com.tugalsan.api.sql.conn.server;
+package com.tugalsan.api.sql.conn.server.deprecated;
 
 //import com.tugalsan.api.log.server.TS_Log;
 //import org.apache.tomcat.jdbc.pool.PoolProperties;
 
-@Deprecated //NO PERFORMANCE IMPROVEMENT
+@Deprecated //NO PERFORMANCE GAIN
 public class TS_SQLConnPoolUtils {
 
     private TS_SQLConnPoolUtils() {

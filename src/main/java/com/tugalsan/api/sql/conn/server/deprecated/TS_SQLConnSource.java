@@ -1,10 +1,11 @@
-package com.tugalsan.api.sql.conn.server;
+package com.tugalsan.api.sql.conn.server.deprecated;
 
+import com.tugalsan.api.sql.conn.server.TS_SQLConnAnchor;
 import javax.sql.DataSource;
 import com.tugalsan.api.union.client.TGS_UnionExcuse;
 import java.util.Objects;
 
-@Deprecated //NO PERFORMANCE IMPROVEMENT
+@Deprecated //NO PERFORMANCE GAIN
 public record TS_SQLConnSource(TS_SQLConnAnchor anchor, org.apache.tomcat.jdbc.pool.DataSource main, TGS_UnionExcuse<DataSource> proxy) {
 
     @Override
