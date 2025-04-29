@@ -7,7 +7,6 @@ module com.tugalsan.api.sql.conn {
     requires com.tugalsan.api.function;
     requires com.tugalsan.api.string;
     requires com.tugalsan.api.log;
-    requires com.tugalsan.api.os;
     requires com.tugalsan.api.list;
     requires com.tugalsan.api.thread;
     requires com.tugalsan.api.file;

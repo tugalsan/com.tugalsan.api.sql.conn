@@ -1,6 +1,5 @@
 package com.tugalsan.api.sql.conn.server;
 
-import com.tugalsan.api.os.server.TS_OsCpuUtils;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -20,7 +19,7 @@ public class TS_SQLConnConfig implements Serializable {
 //    public boolean pool_debug = false;
 //    public int pool_max_active_ms = 15000;
     public int max_wait_ms = 30000;
-    public int rateLimit = TS_OsCpuUtils.getProcessorCount() * 2;
+    public int rateLimit = 0;
 
     @Override
     public int hashCode() {
