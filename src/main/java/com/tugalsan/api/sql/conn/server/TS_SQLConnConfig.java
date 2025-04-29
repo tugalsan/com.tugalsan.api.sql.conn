@@ -16,28 +16,81 @@ public class TS_SQLConnConfig implements Serializable {
     public boolean useSSL = false;
     public boolean region_ist = true;
     public boolean charsetUTF8 = true;
-    public boolean isPooled = true;
-    public boolean pool_debug = false;
-    public int pool_max_active_ms = 15000;
-    public int pool_max_wait_ms = 30000;
-    public int pool_concurrent = TS_OsCpuUtils.getProcessorCount() * 2;
+//    public boolean isPooled = true;
+//    public boolean pool_debug = false;
+//    public int pool_max_active_ms = 15000;
+    public int max_wait_ms = 30000;
+    public int rateLimit = TS_OsCpuUtils.getProcessorCount() * 2;
 
     @Override
     public int hashCode() {
-        var hash = 5;
-        hash = 71 * hash + this.method;
-        hash = 71 * hash + Objects.hashCode(this.dbName);
-        hash = 71 * hash + Objects.hashCode(this.dbIp);
-        hash = 71 * hash + this.dbPort;
-        hash = 71 * hash + Objects.hashCode(this.dbUser);
-        hash = 71 * hash + Objects.hashCode(this.dbPassword);
-        hash = 71 * hash + (this.autoReconnect ? 1 : 0);
-        hash = 71 * hash + (this.useSSL ? 1 : 0);
-        hash = 71 * hash + (this.region_ist ? 1 : 0);
-        hash = 71 * hash + (this.charsetUTF8 ? 1 : 0);
-        hash = 71 * hash + (this.isPooled ? 1 : 0);
-        hash = 71 * hash + (this.pool_debug ? 1 : 0);
+        int hash = 7;
+        hash = 89 * hash + this.method;
+        hash = 89 * hash + Objects.hashCode(this.dbName);
+        hash = 89 * hash + Objects.hashCode(this.dbIp);
+        hash = 89 * hash + this.dbPort;
+        hash = 89 * hash + Objects.hashCode(this.dbUser);
+        hash = 89 * hash + Objects.hashCode(this.dbPassword);
+        hash = 89 * hash + (this.autoReconnect ? 1 : 0);
+        hash = 89 * hash + (this.useSSL ? 1 : 0);
+        hash = 89 * hash + (this.region_ist ? 1 : 0);
+        hash = 89 * hash + (this.charsetUTF8 ? 1 : 0);
+        hash = 89 * hash + this.max_wait_ms;
+        hash = 89 * hash + this.rateLimit;
         return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final TS_SQLConnConfig other = (TS_SQLConnConfig) obj;
+        if (this.method != other.method) {
+            return false;
+        }
+        if (this.dbPort != other.dbPort) {
+            return false;
+        }
+        if (this.autoReconnect != other.autoReconnect) {
+            return false;
+        }
+        if (this.useSSL != other.useSSL) {
+            return false;
+        }
+        if (this.region_ist != other.region_ist) {
+            return false;
+        }
+        if (this.charsetUTF8 != other.charsetUTF8) {
+            return false;
+        }
+        if (!Objects.equals(this.dbName, other.dbName)) {
+            return false;
+        }
+        if (!Objects.equals(this.dbIp, other.dbIp)) {
+            return false;
+        }
+        if (!Objects.equals(this.dbUser, other.dbUser)) {
+            return false;
+        }
+        if (this.max_wait_ms != other.max_wait_ms) {
+            return false;
+        }
+        if (this.rateLimit != other.rateLimit) {
+            return false;
+        }
+        return Objects.equals(this.dbPassword, other.dbPassword);
+    }
+
+    @Override
+    public String toString() {
+        return "TS_SQLConnConfig{" + "method=" + method + ", dbName=" + dbName + ", dbIp=" + dbIp + ", dbPort=" + dbPort + ", dbUser=" + dbUser + ", dbPassword=" + dbPassword + ", autoReconnect=" + autoReconnect + ", useSSL=" + useSSL + ", region_ist=" + region_ist + ", charsetUTF8=" + charsetUTF8 + ", max_wait_ms=" + max_wait_ms+ ", rateLimit=" + rateLimit + '}';
     }
 
     @Deprecated//NEEDED FOR SERILIZE
@@ -53,31 +106,6 @@ public class TS_SQLConnConfig implements Serializable {
         return new TS_SQLConnConfig(dbName);
     }
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "{" + "method=" + method + ", dbName=" + dbName + ", dbIp=" + dbIp + ", dbPort=" + dbPort + ", dbUser=" + dbUser + ", dbPassword=" + dbPassword + ", autoReconnect=" + autoReconnect + ", useSSL=" + useSSL + ", region_ist=" + region_ist + ", charsetUTF8=" + charsetUTF8 + ", isPooled=" + isPooled + ", pool_debug=" + pool_debug + '}';
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (!(obj instanceof TS_SQLConnConfig)) {
-            return false;
-        }
-        var o = (TS_SQLConnConfig) obj;
-        return o.autoReconnect == autoReconnect
-                && o.charsetUTF8 == charsetUTF8
-                && o.isPooled == isPooled
-                && o.pool_debug == pool_debug
-                && o.region_ist == region_ist
-                && o.useSSL == useSSL
-                && Objects.equals(o.dbIp, dbIp)
-                && Objects.equals(o.dbName, dbName)
-                && Objects.equals(o.dbPassword, dbPassword)
-                && o.dbPort == dbPort
-                && Objects.equals(o.dbUser, dbUser)
-                && o.method == method;
-    }
-
     public TS_SQLConnConfig cloneItAs(CharSequence newDbName) {
         var cfg = new TS_SQLConnConfig(newDbName);
         cfg.autoReconnect = autoReconnect;
@@ -86,11 +114,11 @@ public class TS_SQLConnConfig implements Serializable {
         cfg.dbPassword = dbPassword;
         cfg.dbPort = dbPort;
         cfg.dbUser = dbUser;
-        cfg.isPooled = isPooled;
-        cfg.pool_debug = pool_debug;
         cfg.method = method;
         cfg.region_ist = region_ist;
         cfg.useSSL = useSSL;
+        cfg.max_wait_ms = max_wait_ms;
+        cfg.rateLimit = rateLimit;
         return cfg;
     }
 

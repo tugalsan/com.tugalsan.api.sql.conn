@@ -1,14 +1,10 @@
 package com.tugalsan.api.sql.conn.server;
 
 import java.sql.*;
-import java.util.*;
 import com.tugalsan.api.log.server.TS_Log;
 import com.tugalsan.api.profile.server.melody.*;
-import com.tugalsan.api.thread.server.sync.TS_ThreadSyncLst;
 import com.tugalsan.api.union.client.TGS_UnionExcuse;
 import com.tugalsan.api.function.client.maythrowexceptions.checked.TGS_FuncMTCUtils;
-import com.tugalsan.api.sql.resultset.server.TS_SQLResultSet;
-import com.tugalsan.api.tuple.client.TGS_Tuple1;
 
 public class TS_SQLConnConUtils {
 
@@ -22,15 +18,15 @@ public class TS_SQLConnConUtils {
         return TGS_FuncMTCUtils.call(() -> con.getMetaData().supportsResultSetType(ResultSet.TYPE_SCROLL_INSENSITIVE));
     }
 
-    private static void destroy(TS_SQLConnSource source) {
-        if (d.infoEnable) {
-            d.ci("destroy", "source", source.anchor().config.dbName);
-        }
-        TGS_FuncMTCUtils.run(() -> (source.main()).close(true), e -> d.ce("destroy", "INFO: " + e.getMessage()));
-    }
+//    private static void destroy(TS_SQLConnSource source) {
+//        if (d.infoEnable) {
+//            d.ci("destroy", "source", source.anchor().config.dbName);
+//        }
+//        TGS_FuncMTCUtils.run(() -> (source.main()).close(true), e -> d.ce("destroy", "INFO: " + e.getMessage()));
+//    }
 
     public static void destroy() {
-        SYNC.forEach(true, item -> destroy(item));
+//        SYNC.forEach(true, item -> destroy(item));
     }
 
     @Deprecated //DOES IT EVEN WORK?
@@ -60,85 +56,86 @@ public class TS_SQLConnConUtils {
         }, e -> TGS_UnionExcuse.ofExcuse(e));
     }
 
-    synchronized public static TS_SQLConnSource conPoolPack(TS_SQLConnAnchor anchor) {
-        if (anchor.config.pool_debug && !d.infoEnable) {
-            d.infoEnable = anchor.config.pool_debug;
-        }
-        if (d.infoEnable) {
-            d.ci("conPoolPack", "size", SYNC.size());
-            SYNC.forEach(false, item -> d.ci("conPoolPack", "item", item.anchor().config.dbName));
-        }
-        var source = SYNC.findFirst(c -> Objects.equals(c.anchor(), anchor));
-        if (source != null) {
-            if (isActive(source.main()) && isActive(source.proxy().orElse(null))) {
-                if (d.infoEnable) {
-                    d.cr("conPoolPack", anchor.config.dbName, "ACTIVE");
-                    if (anchor.config.pool_debug) {
-                        TS_SQLConnPoolUtils.printStats(source.main());
-                    }
-                }
-                return source;
-            } else {
-                if (d.infoEnable) {
-                    d.ce("conPoolPack", anchor.config.dbName, "NOT ACTIVE");
-                }
-                destroy(SYNC.removeAndPopFirst(source));
-            }
-        }
-        var ds = new org.apache.tomcat.jdbc.pool.DataSource(anchor.pool());
-        var dsThroughProxy = TS_ProfileMelodyUtils.createProxy(ds);
-        source = new TS_SQLConnSource(anchor, ds, dsThroughProxy);
-        if (d.infoEnable) {
-            d.cr("conPoolPack", anchor.config.dbName, "NEW");
-            if (anchor.config.pool_debug) {
-                TS_SQLConnPoolUtils.printStats(source.main());
-            }
-        }
-        SYNC.add(source);
-        return source;
-    }
-    final private static TS_ThreadSyncLst<TS_SQLConnSource> SYNC = TS_ThreadSyncLst.ofSlowWrite();
-
-    @Deprecated
-    private static boolean isActive(javax.sql.DataSource con) {
-        if (true) {
-            return true;
-        }
-        if (con == null) {
-            return false;
-        }
-        return TGS_FuncMTCUtils.call(() -> {
-            TGS_Tuple1<Boolean> result = new TGS_Tuple1(false);
-            var sqlStmt = "SELECT 'Hello world'  FROM DUAL";
-            TGS_FuncMTCUtils.run(() -> {
-                try (var resultSet = TS_SQLConnStmtUtils.stmtQuery(con.getConnection(), sqlStmt).executeQuery()) {
-                    var rs = new TS_SQLResultSet(resultSet);
-                    var val = rs.str.get(0, 0);
-                    result.value0 = true;
-                }
-            });
-            return result.value0;
-        }, e -> false);
-    }
+//    synchronized public static TS_SQLConnSource conPoolPack(TS_SQLConnAnchor anchor) {
+//        if (anchor.config.pool_debug && !d.infoEnable) {
+//            d.infoEnable = anchor.config.pool_debug;
+//        }
+//        if (d.infoEnable) {
+//            d.ci("conPoolPack", "size", SYNC.size());
+//            SYNC.forEach(false, item -> d.ci("conPoolPack", "item", item.anchor().config.dbName));
+//        }
+//        var source = SYNC.findFirst(c -> Objects.equals(c.anchor(), anchor));
+//        if (source != null) {
+//            if (isActive(source.main()) && isActive(source.proxy().orElse(null))) {
+//                if (d.infoEnable) {
+//                    d.cr("conPoolPack", anchor.config.dbName, "ACTIVE");
+//                    if (anchor.config.pool_debug) {
+//                        TS_SQLConnPoolUtils.printStats(source.main());
+//                    }
+//                }
+//                return source;
+//            } else {
+//                if (d.infoEnable) {
+//                    d.ce("conPoolPack", anchor.config.dbName, "NOT ACTIVE");
+//                }
+//                destroy(SYNC.removeAndPopFirst(source));
+//            }
+//        }
+//        var ds = new org.apache.tomcat.jdbc.pool.DataSource(anchor.pool());
+//        var dsThroughProxy = TS_ProfileMelodyUtils.createProxy(ds);
+//        source = new TS_SQLConnSource(anchor, ds, dsThroughProxy);
+//        if (d.infoEnable) {
+//            d.cr("conPoolPack", anchor.config.dbName, "NEW");
+//            if (anchor.config.pool_debug) {
+//                TS_SQLConnPoolUtils.printStats(source.main());
+//            }
+//        }
+//        SYNC.add(source);
+//        return source;
+//    }
+//    final private static TS_ThreadSyncLst<TS_SQLConnSource> SYNC = TS_ThreadSyncLst.ofSlowWrite();
+//
+//    @Deprecated
+//    private static boolean isActive(javax.sql.DataSource con) {
+//        if (true) {
+//            return true;
+//        }
+//        if (con == null) {
+//            return false;
+//        }
+//        return TGS_FuncMTCUtils.call(() -> {
+//            TGS_Tuple1<Boolean> result = new TGS_Tuple1(false);
+//            var sqlStmt = "SELECT 'Hello world'  FROM DUAL";
+//            TGS_FuncMTCUtils.run(() -> {
+//                try (var resultSet = TS_SQLConnStmtUtils.stmtQuery(con.getConnection(), sqlStmt).executeQuery()) {
+//                    var rs = new TS_SQLResultSet(resultSet);
+//                    var val = rs.str.get(0, 0);
+//                    result.value0 = true;
+//                }
+//            });
+//            return result.value0;
+//        }, e -> false);
+//    }
 
     public static TGS_UnionExcuse<TS_SQLConnPack> conPack(TS_SQLConnAnchor anchor) {
-        return anchor.config.isPooled ? conPack_pool(anchor) : conPack_prop(anchor);
+//        return anchor.config.isPooled ? conPack_pool(anchor) : conPack_prop(anchor);
+        return conPack_prop(anchor);
     }
 
-    private static TGS_UnionExcuse<TS_SQLConnPack> conPack_pool(TS_SQLConnAnchor anchor) {
-        return TGS_FuncMTCUtils.call(() -> {
-            var conPoolPack = conPoolPack(anchor);
-            if (conPoolPack.proxy().isExcuse()) {
-                return conPoolPack.proxy().toExcuse();
-            }
-            var newConPack = new TS_SQLConnPack(
-                    anchor,
-                    conPoolPack.main().getConnection(),
-                    conPoolPack.proxy().value().getConnection()
-            );
-            return TGS_UnionExcuse.of(newConPack);
-        }, e -> TGS_UnionExcuse.ofExcuse(e));
-    }
+//    private static TGS_UnionExcuse<TS_SQLConnPack> conPack_pool(TS_SQLConnAnchor anchor) {
+//        return TGS_FuncMTCUtils.call(() -> {
+//            var conPoolPack = conPoolPack(anchor);
+//            if (conPoolPack.proxy().isExcuse()) {
+//                return conPoolPack.proxy().toExcuse();
+//            }
+//            var newConPack = new TS_SQLConnPack(
+//                    anchor,
+//                    conPoolPack.main().getConnection(),
+//                    conPoolPack.proxy().value().getConnection()
+//            );
+//            return TGS_UnionExcuse.of(newConPack);
+//        }, e -> TGS_UnionExcuse.ofExcuse(e));
+//    }
 
     private static TGS_UnionExcuse<TS_SQLConnPack> conPack_prop(TS_SQLConnAnchor anchor) {
         return TGS_FuncMTCUtils.call(() -> {

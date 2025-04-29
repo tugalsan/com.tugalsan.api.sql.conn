@@ -6,15 +6,15 @@ import java.sql.Connection;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.Semaphore;
-import org.apache.tomcat.jdbc.pool.*;
+//import org.apache.tomcat.jdbc.pool.*;
 
 public class TS_SQLConnAnchor {
 
 //    final private static TS_Log d = TS_Log.of(TS_SQLConnAnchor.class);
     private TS_SQLConnAnchor(TS_SQLConnConfig config) {
         this.config = config;
-        durWait = Duration.ofMillis(config.pool_max_wait_ms);
-        conRatedLimited = TS_ThreadSyncRateLimitedRun.of(new Semaphore(config.pool_concurrent));
+        durWait = Duration.ofMillis(config.max_wait_ms);
+        conRatedLimited = TS_ThreadSyncRateLimitedRun.of(new Semaphore(config.rateLimit));
     }
     public volatile TS_SQLConnConfig config;
     final private Duration durWait;
@@ -42,7 +42,7 @@ public class TS_SQLConnAnchor {
         hash = 97 * hash + Objects.hashCode(this.config);
         hash = 97 * hash + Objects.hashCode(this.url);
         hash = 97 * hash + Objects.hashCode(this.prop);
-        hash = 97 * hash + Objects.hashCode(this.pool);
+//        hash = 97 * hash + Objects.hashCode(this.pool);
         return hash;
     }
 
@@ -79,15 +79,15 @@ public class TS_SQLConnAnchor {
     }
     private volatile Properties prop;
 
-    public PoolProperties pool() {
-        if (pool == null) {
-            synchronized (this) {
-                if (pool == null) {
-                    pool = TS_SQLConnPoolUtils.create(config);
-                }
-            }
-        }
-        return pool;
-    }
-    private volatile PoolProperties pool = null;
+//    public PoolProperties pool() {
+//        if (pool == null) {
+//            synchronized (this) {
+//                if (pool == null) {
+//                    pool = TS_SQLConnPoolUtils.create(config);
+//                }
+//            }
+//        }
+//        return pool;
+//    }
+//    private volatile PoolProperties pool = null;
 }
