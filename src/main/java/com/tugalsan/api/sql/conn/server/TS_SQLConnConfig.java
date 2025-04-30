@@ -18,8 +18,8 @@ public class TS_SQLConnConfig implements Serializable {
 //    public boolean isPooled = true;
 //    public boolean pool_debug = false;
 //    public int pool_max_active_ms = 15000;
-    public int rateLimit_maxTimeoutSec = 2147483647;
-    public int rateLimit = 0;
+//    public int rateLimit_maxTimeoutSec = 2147483647;
+//    public int rateLimit = 0;
 
     @Override
     public int hashCode() {
@@ -34,8 +34,8 @@ public class TS_SQLConnConfig implements Serializable {
         hash = 89 * hash + (this.useSSL ? 1 : 0);
         hash = 89 * hash + (this.region_ist ? 1 : 0);
         hash = 89 * hash + (this.charsetUTF8 ? 1 : 0);
-        hash = 89 * hash + this.rateLimit_maxTimeoutSec;
-        hash = 89 * hash + this.rateLimit;
+//        hash = 89 * hash + this.rateLimit_maxTimeoutSec;
+//        hash = 89 * hash + this.rateLimit;
         return hash;
     }
 
@@ -78,18 +78,18 @@ public class TS_SQLConnConfig implements Serializable {
         if (!Objects.equals(this.dbUser, other.dbUser)) {
             return false;
         }
-        if (this.rateLimit_maxTimeoutSec != other.rateLimit_maxTimeoutSec) {
-            return false;
-        }
-        if (this.rateLimit != other.rateLimit) {
-            return false;
-        }
+//        if (this.rateLimit_maxTimeoutSec != other.rateLimit_maxTimeoutSec) {
+//            return false;
+//        }
+//        if (this.rateLimit != other.rateLimit) {
+//            return false;
+//        }
         return Objects.equals(this.dbPassword, other.dbPassword);
     }
 
     @Override
     public String toString() {
-        return "TS_SQLConnConfig{" + "method=" + method + ", dbName=" + dbName + ", dbIp=" + dbIp + ", dbPort=" + dbPort + ", dbUser=" + dbUser + ", dbPassword=" + dbPassword + ", autoReconnect=" + autoReconnect + ", useSSL=" + useSSL + ", region_ist=" + region_ist + ", charsetUTF8=" + charsetUTF8 + ", rateLimit_maxTimeoutSec=" + rateLimit_maxTimeoutSec+ ", rateLimit=" + rateLimit + '}';
+        return "TS_SQLConnConfig{" + "method=" + method + ", dbName=" + dbName + ", dbIp=" + dbIp + ", dbPort=" + dbPort + ", dbUser=" + dbUser + ", dbPassword=" + dbPassword + ", autoReconnect=" + autoReconnect + ", useSSL=" + useSSL + ", region_ist=" + region_ist + ", charsetUTF8=" + charsetUTF8 /*+ ", rateLimit_maxTimeoutSec=" + rateLimit_maxTimeoutSec+ ", rateLimit=" + rateLimit*/ + '}';
     }
 
     @Deprecated//NEEDED FOR SERILIZE
@@ -116,8 +116,8 @@ public class TS_SQLConnConfig implements Serializable {
         cfg.method = method;
         cfg.region_ist = region_ist;
         cfg.useSSL = useSSL;
-        cfg.rateLimit_maxTimeoutSec = rateLimit_maxTimeoutSec;
-        cfg.rateLimit = rateLimit;
+//        cfg.rateLimit_maxTimeoutSec = rateLimit_maxTimeoutSec;
+//        cfg.rateLimit = rateLimit;
         return cfg;
     }
 

@@ -13,14 +13,14 @@ public class TS_SQLConnAnchor {
 //    final private static TS_Log d = TS_Log.of(TS_SQLConnAnchor.class);
     private TS_SQLConnAnchor(TS_SQLConnConfig config) {
         this.config = config;
-        if (config.rateLimit < 1) {
-            config.rateLimit = 0;
-        }
-        if (config.rateLimit_maxTimeoutSec < 1) {
-            config.rateLimit_maxTimeoutSec = 0;
-        }
-        durRateLimit_maxTimeoutSec = Duration.ofSeconds(config.rateLimit_maxTimeoutSec);
-        exeRateLimited = TS_ThreadSyncRateLimitedRun.of(new Semaphore(config.rateLimit));
+//        if (config.rateLimit < 1) {
+//            config.rateLimit = 0;
+//        }
+//        if (config.rateLimit_maxTimeoutSec < 1) {
+//            config.rateLimit_maxTimeoutSec = 0;
+//        }
+//        durRateLimit_maxTimeoutSec = Duration.ofSeconds(config.rateLimit_maxTimeoutSec);
+//        exeRateLimited = TS_ThreadSyncRateLimitedRun.of(new Semaphore(config.rateLimit));
         exeRun = con -> {
             try (var conPack = TS_SQLConnConUtils.conPack(TS_SQLConnAnchor.this).value()) {
                 con.run(conPack.con());
@@ -28,20 +28,20 @@ public class TS_SQLConnAnchor {
         };
     }
     public volatile TS_SQLConnConfig config;
-    final private Duration durRateLimit_maxTimeoutSec;
-    final private TS_ThreadSyncRateLimitedRun exeRateLimited;
+//    final private Duration durRateLimit_maxTimeoutSec;
+//    final private TS_ThreadSyncRateLimitedRun exeRateLimited;
     final private TGS_FuncMTU_In1<TGS_FuncMTU_In1<Connection>> exeRun;
 
     public void con_RatedLimited_MaxTimeout(TGS_FuncMTU_In1<Connection> con) {
-        if (config.rateLimit == 0) {
+//        if (config.rateLimit == 0) {
             exeRun.run(con);
-            return;
-        }
-        if (config.rateLimit_maxTimeoutSec == 0) {
-            exeRateLimited.run(() -> exeRun.run(con));
-            return;
-        }
-        exeRateLimited.runUntil(() -> exeRun.run(con), durRateLimit_maxTimeoutSec);
+//            return;
+//        }
+//        if (config.rateLimit_maxTimeoutSec == 0) {
+//            exeRateLimited.run(() -> exeRun.run(con));
+//            return;
+//        }
+//        exeRateLimited.runUntil(() -> exeRun.run(con), durRateLimit_maxTimeoutSec);
     }
 
     public static TS_SQLConnAnchor of(TS_SQLConnConfig config) {
