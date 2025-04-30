@@ -39,7 +39,7 @@ public class TS_SQLConnWalkUtils {
     }
 
     private static void stmtQuery(TS_SQLConnAnchor anchor, CharSequence sql, TGS_FuncMTU_In1<PreparedStatement> stmt) {
-        anchor.conRatedLimited(con -> {
+        anchor.con_RatedLimited_MaxTimeout(con -> {
             TGS_FuncMTCUtils.run(() -> {
                 try (var stmt0 = TS_SQLConnStmtUtils.stmtQuery(con, sql);) {
                     stmt.run(stmt0);
@@ -49,7 +49,7 @@ public class TS_SQLConnWalkUtils {
     }
 
     private static void stmtUpdate(TS_SQLConnAnchor anchor, CharSequence sql, TGS_FuncMTU_In1<PreparedStatement> stmt) {
-        anchor.conRatedLimited(con -> {
+        anchor.con_RatedLimited_MaxTimeout(con -> {
             TGS_FuncMTCUtils.run(() -> {
                 try (var stmt0 = TS_SQLConnStmtUtils.stmtUpdate(con, sql);) {
                     stmt.run(stmt0);
