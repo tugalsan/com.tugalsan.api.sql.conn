@@ -117,4 +117,9 @@ public class TS_SQLConnAnchor {
         return prop;
     }
     private volatile Properties prop;
+
+    @Override
+    public String toString() {
+        return TS_SQLConnAnchor.class.getSimpleName() + "{" + "config=" + config + ", url=" + url + ", prop=" + prop + '}';
+    }
 }
