@@ -34,7 +34,7 @@ public class TS_SQLConnColUtils {
     }
 
     public static String creationType(TS_SQLConnConfig config, TGS_SQLColTyped colType) {
-        if (Objects.equals(config.method, TS_SQLConnMethodUtils.METHOD_MYSQL())) {
+        if (Objects.equals(config.method, TS_SQLConnMethodUtils.METHOD_MARIADB()) || Objects.equals(config.method, TS_SQLConnMethodUtils.METHOD_MYSQL())) {
             if (colType.familyLng()) {
                 return "INTEGER NOT NULL";
             }

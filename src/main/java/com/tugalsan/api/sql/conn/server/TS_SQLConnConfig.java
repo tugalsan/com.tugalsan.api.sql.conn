@@ -5,7 +5,7 @@ import java.util.Objects;
 
 public class TS_SQLConnConfig implements Serializable {
 
-    public int method = TS_SQLConnMethodUtils.METHOD_MYSQL();
+    public int method = TS_SQLConnMethodUtils.METHOD_MARIADB();
     public String dbName;
     public String dbIp = "localhost";
     public int dbPort = 3306;
