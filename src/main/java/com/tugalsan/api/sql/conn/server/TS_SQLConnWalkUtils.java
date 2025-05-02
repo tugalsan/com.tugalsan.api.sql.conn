@@ -38,8 +38,9 @@ public class TS_SQLConnWalkUtils {
         return result.value0;
     }
 
+    @Deprecated //WARNING: CHECK TO SEE IF SQL IS SAFE!
     private static void stmtQuery(TS_SQLConnAnchor anchor, CharSequence sql, TGS_FuncMTU_In1<PreparedStatement> stmt) {
-        anchor.con_RatedLimited_MaxTimeout(con -> {
+        anchor.use(con -> {
             TGS_FuncMTCUtils.run(() -> {
                 try (var stmt0 = TS_SQLConnStmtUtils.stmtQuery(con, sql);) {
                     stmt.run(stmt0);
@@ -48,8 +49,9 @@ public class TS_SQLConnWalkUtils {
         });
     }
 
+    @Deprecated //WARNING: CHECK TO SEE IF SQL IS SAFE!
     private static void stmtUpdate(TS_SQLConnAnchor anchor, CharSequence sql, TGS_FuncMTU_In1<PreparedStatement> stmt) {
-        anchor.con_RatedLimited_MaxTimeout(con -> {
+        anchor.use(con -> {
             TGS_FuncMTCUtils.run(() -> {
                 try (var stmt0 = TS_SQLConnStmtUtils.stmtUpdate(con, sql);) {
                     stmt.run(stmt0);
@@ -58,6 +60,7 @@ public class TS_SQLConnWalkUtils {
         });
     }
 
+    @Deprecated //WARNING: CHECK TO SEE IF SQL IS SAFE!
     public static void query(TS_SQLConnAnchor anchor, CharSequence sqlStmt, TGS_FuncMTU_In1<PreparedStatement> fillStmt, TGS_FuncMTU_In1<TS_SQLResultSet> rs) {
         if (d.infoEnable) {
             var sqlMsg = sqlStmt.toString().startsWith("SELECT * FROM MESSAGE");
@@ -77,6 +80,7 @@ public class TS_SQLConnWalkUtils {
         });
     }
 
+    @Deprecated //WARNING: CHECK TO SEE IF SQL IS SAFE!
     public static TS_SQLConnStmtUpdateResult update(TS_SQLConnAnchor anchor, CharSequence sqlStmt, TGS_FuncMTU_In1<PreparedStatement> fillStmt) {
         d.ci("update", "sqlStmt", sqlStmt);
         TGS_Tuple1<TS_SQLConnStmtUpdateResult> pack = TGS_Tuple1.of();

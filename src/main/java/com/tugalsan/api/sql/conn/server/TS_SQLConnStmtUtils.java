@@ -57,7 +57,8 @@ public class TS_SQLConnStmtUtils {
 
     public static PreparedStatement stmtQuery(Connection con, CharSequence sql) {
         return TGS_FuncMTCUtils.call(() -> {
-            if (!TS_SQLConnConUtils.scrollingSupported(con)) {
+            var scrollingSupported = TGS_FuncMTCUtils.call(() -> con.getMetaData().supportsResultSetType(ResultSet.TYPE_SCROLL_INSENSITIVE));
+            if (!scrollingSupported) {
                 TGS_FuncMTUUtils.thrw(d.className, "stmtQuery", "!TS_SQLConnConUtils.scrollingSupported(con)");
             }
             return con.prepareStatement(sql.toString(), ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);

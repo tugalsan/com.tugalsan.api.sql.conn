@@ -11,6 +11,10 @@ import java.util.*;
 
 public class TS_SQLConnColUtils {
 
+    private TS_SQLConnColUtils() {
+
+    }
+
     final private static TS_Log d = TS_Log.of(TS_SQLConnColUtils.class);
 
     public static List<String> names(TS_SQLConnAnchor anchor, CharSequence tableName) {

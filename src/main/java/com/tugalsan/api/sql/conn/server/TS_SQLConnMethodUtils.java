@@ -6,14 +6,7 @@ public class TS_SQLConnMethodUtils {
 
     }
 
-    public static boolean USE_MARIADB_DRIVER_AS_MYSQL_CONNECTOR = true;//change pom.xml too
-
-    public static String get_METHOD_MYSQL_JAR_FILE_NAME_PREFIX() {
-        //https://mariadb.com/downloads/connectors/connectors-data-access/java8-connector/
-        return USE_MARIADB_DRIVER_AS_MYSQL_CONNECTOR ? "mariadb-java-client" : "mysql-connector-j-";
-    }
-
-    public static int METHOD_MYSQL() {
+    public static int METHOD_MARIADB() {
         return 0;
     }
 
@@ -33,9 +26,35 @@ public class TS_SQLConnMethodUtils {
         return 4;
     }
 
-    public static String getDriver(TS_SQLConnConfig config) {
+    public static int METHOD_MYSQL() {
+        return 5;
+    }
+
+    public static String getJarName(TS_SQLConnConfig config) {
+        if (config.method == METHOD_MARIADB()) {
+            return "mariadb-java-client";
+        }
+        if (config.method == METHOD_ODBC()) {
+            return "Unsupported SQL method:" + config.method;
+        }
+        if (config.method == METHOD_ORACLE()) {
+            return "Unsupported SQL method:" + config.method;
+        }
+        if (config.method == METHOD_SQLSERVER()) {
+            return "Unsupported SQL method:" + config.method;
+        }
+        if (config.method == METHOD_SMALLSQL()) {
+            return "Unsupported SQL method:" + config.method;
+        }
         if (config.method == METHOD_MYSQL()) {
-            return USE_MARIADB_DRIVER_AS_MYSQL_CONNECTOR ? "org.mariadb.jdbc.Driver" : "com.mysql.cj.jdbc.Driver";//"com.mysql.jdbc.Driver";
+            return "mysql-connector-j-";
+        }
+        return "Unrecognized SQL method:" + config.method;
+    }
+
+    public static String getDriver(TS_SQLConnConfig config) {
+        if (config.method == METHOD_MARIADB()) {
+            return "org.mariadb.jdbc.Driver";
         }
         if (config.method == METHOD_ODBC()) {
             return "sun.jdbc.odbc.JdbcOdbcDriver";
@@ -49,24 +68,30 @@ public class TS_SQLConnMethodUtils {
         if (config.method == METHOD_SMALLSQL()) {
             return "smallsql.database.SSDriver";
         }
+        if (config.method == METHOD_MYSQL()) {
+            return "com.mysql.cj.jdbc.Driver";//"com.mysql.jdbc.Driver";
+        }
         return "Unrecognized SQL method:" + config.method;
     }
 
     public static String getDriverProtocol(TS_SQLConnConfig config) {
-        if (config.method == METHOD_MYSQL()) {
-            return USE_MARIADB_DRIVER_AS_MYSQL_CONNECTOR ? "mariadb" : "mysql";
+        if (config.method == METHOD_MARIADB()) {
+            return "mariadb";
         }
         if (config.method == METHOD_ODBC()) {
-            return "jdbc:odbc";//    final public static String config_link () "jdbc:odbc:" + databaseName;
+            return "jdbc:odbc";//"jdbc:odbc:" + databaseName;
         }
         if (config.method == METHOD_ORACLE()) {
-            return "jdbc:oracle:thin";//    final public static String config_link () "jdbc:oracle:thin:@" + serverName + ":" + portNumber + ":" + databaseName;
+            return "jdbc:oracle:thin";//"jdbc:oracle:thin:@" + serverName + ":" + portNumber + ":" + databaseName;
         }
         if (config.method == METHOD_SQLSERVER()) {
-            return "jdbc:jtds:sqlserver";//    final public static String config_link () "jdbc:jtds:sqlserver://" + serverName + ":" + portNumber + "/" + databaseName + ";instance=SQLEXPRESS";
+            return "jdbc:jtds:sqlserver";//"jdbc:jtds:sqlserver://" + serverName + ":" + portNumber + "/" + databaseName + ";instance=SQLEXPRESS";
         }
         if (config.method == METHOD_SMALLSQL()) {
-            return "jdbc:smallsql";//    final public static String config_link () "jdbc:smallsql:" + databaseName + "?create=true";
+            return "jdbc:smallsql";//"jdbc:smallsql:" + databaseName + "?create=true";
+        }
+        if (config.method == METHOD_MYSQL()) {
+            return "mysql";
         }
         return "Unrecognized SQL method:" + config.method;
     }
