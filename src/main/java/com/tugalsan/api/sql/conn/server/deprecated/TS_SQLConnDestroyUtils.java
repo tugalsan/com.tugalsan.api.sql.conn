@@ -1,4 +1,4 @@
-package com.tugalsan.api.sql.conn.server;
+package com.tugalsan.api.sql.conn.server.deprecated;
 
 import java.sql.*;
 import com.tugalsan.api.log.server.TS_Log;
