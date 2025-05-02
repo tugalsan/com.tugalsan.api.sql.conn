@@ -1,15 +1,17 @@
-package com.tugalsan.api.sql.conn.server;
+package com.tugalsan.api.sql.conn.server.core;
 
 import com.tugalsan.api.log.server.TS_Log;
+import com.tugalsan.api.sql.conn.server.TS_SQLConnConfig;
+import com.tugalsan.api.sql.conn.server.TS_SQLConnMethodUtils;
 import java.nio.charset.StandardCharsets;
 
-public class TS_SQLConnURLUtils {
+public class TS_SQLConnCoreURLUtils {
 
-    private TS_SQLConnURLUtils() {
+    private TS_SQLConnCoreURLUtils() {
 
     }
 
-    final private static TS_Log d = TS_Log.of(TS_SQLConnURLUtils.class);
+    final private static TS_Log d = TS_Log.of(TS_SQLConnCoreURLUtils.class);
 
     private static String PARAMETER_AND() {
         return "&";

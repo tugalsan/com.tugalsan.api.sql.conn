@@ -1,5 +1,6 @@
 package com.tugalsan.api.sql.conn.server;
 
+import com.tugalsan.api.sql.conn.server.core.TS_SQLConnCoreURLUtils;
 import com.tugalsan.api.file.json.server.TS_FileJsonUtils;
 import com.tugalsan.api.file.server.TS_DirectoryUtils;
 import com.tugalsan.api.file.server.TS_FileUtils;
@@ -88,7 +89,7 @@ public class TS_SQLConnAnchor {
         if (url == null) {
             synchronized (this) {
                 if (url == null) {
-                    url = TS_SQLConnURLUtils.create(config);
+                    url = TS_SQLConnCoreURLUtils.create(config);
                 }
             }
         }
