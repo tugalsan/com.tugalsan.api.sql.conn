@@ -122,4 +122,8 @@ public class TS_SQLConnAnchor {
     public String toString() {
         return TS_SQLConnAnchor.class.getSimpleName() + "{" + "config=" + config + ", url=" + url + ", prop=" + prop + '}';
     }
+
+    public String tagSelectAndSpace() {
+        return config.method == TS_SQLConnMethodUtils.METHOD_MARIADB() ? "SELECT SQL_CACHE " : "SELECT ";
+    }
 }

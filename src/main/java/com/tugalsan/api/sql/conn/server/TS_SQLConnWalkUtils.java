@@ -61,14 +61,7 @@ public class TS_SQLConnWalkUtils {
     }
 
     @Deprecated //WARNING: CHECK TO SEE IF SQL IS SAFE!
-    public static void query(TS_SQLConnAnchor anchor, CharSequence sqlStmt, TGS_FuncMTU_In1<PreparedStatement> fillStmt, TGS_FuncMTU_In1<TS_SQLResultSet> rs) {
-        if (d.infoEnable) {
-            var sqlMsg = sqlStmt.toString().startsWith("SELECT * FROM MESSAGE");
-            var sqlDom = sqlStmt.toString().startsWith("SELECT * FROM domain");
-            if (!sqlMsg && !sqlDom) {
-                d.ci("query", "sqlStmt", sqlStmt);
-            }
-        }
+    public static void query(TS_SQLConnAnchor anchor, CharSequence sqlStmt, TGS_FuncMTU_In1<PreparedStatement> fillStmt, TGS_FuncMTU_In1<TS_SQLResultSet> rs) {        
         TS_SQLConnWalkUtils.stmtQuery(anchor, sqlStmt, stmt -> {
             fillStmt.run(stmt);
             TGS_FuncMTCUtils.run(() -> {
