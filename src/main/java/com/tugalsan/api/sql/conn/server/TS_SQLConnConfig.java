@@ -15,6 +15,7 @@ public class TS_SQLConnConfig implements Serializable {
     public boolean useSSL = false;
     public boolean region_ist = true;
     public boolean charsetUTF8 = true;
+    public boolean useCacheIfPossible = false;
 
     @Override
     public int hashCode() {
@@ -29,6 +30,7 @@ public class TS_SQLConnConfig implements Serializable {
         hash = 89 * hash + (this.useSSL ? 1 : 0);
         hash = 89 * hash + (this.region_ist ? 1 : 0);
         hash = 89 * hash + (this.charsetUTF8 ? 1 : 0);
+        hash = 89 * hash + (this.useCacheIfPossible ? 1 : 0);
         return hash;
     }
 
@@ -62,6 +64,9 @@ public class TS_SQLConnConfig implements Serializable {
         if (this.charsetUTF8 != other.charsetUTF8) {
             return false;
         }
+        if (this.useCacheIfPossible != other.useCacheIfPossible) {
+            return false;
+        }
         if (!Objects.equals(this.dbName, other.dbName)) {
             return false;
         }
@@ -76,7 +81,7 @@ public class TS_SQLConnConfig implements Serializable {
 
     @Override
     public String toString() {
-        return TS_SQLConnConfig.class.getSimpleName() + "{" + "method=" + method + ", dbName=" + dbName + ", dbIp=" + dbIp + ", dbPort=" + dbPort + ", dbUser=" + dbUser + ", dbPassword=" + dbPassword + ", autoReconnect=" + autoReconnect + ", useSSL=" + useSSL + ", region_ist=" + region_ist + ", charsetUTF8=" + charsetUTF8 + '}';
+        return TS_SQLConnConfig.class.getSimpleName() + "{" + "method=" + method + ", dbName=" + dbName + ", dbIp=" + dbIp + ", dbPort=" + dbPort + ", dbUser=" + dbUser + ", dbPassword=" + dbPassword + ", autoReconnect=" + autoReconnect + ", useSSL=" + useSSL + ", region_ist=" + region_ist + ", charsetUTF8=" + charsetUTF8+ ", useCacheIfPossible=" + useCacheIfPossible + '}';
     }
 
     @Deprecated//NEEDED FOR SERILIZE
@@ -103,6 +108,7 @@ public class TS_SQLConnConfig implements Serializable {
         cfg.method = method;
         cfg.region_ist = region_ist;
         cfg.useSSL = useSSL;
+        cfg.useCacheIfPossible = useCacheIfPossible;
         return cfg;
     }
 

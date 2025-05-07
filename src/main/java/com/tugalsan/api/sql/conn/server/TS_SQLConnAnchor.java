@@ -23,6 +23,7 @@ public class TS_SQLConnAnchor {
         this.config = config;
     }
     final public TS_SQLConnConfig config;
+    public volatile boolean disanleUseCacheForAWhile = false;
 
     public void use(TGS_FuncMTU_In1<Connection> con) {
         try (var conPack = TS_SQLConnCoreNewConnection.of(TS_SQLConnAnchor.this).value()) {
@@ -124,6 +125,13 @@ public class TS_SQLConnAnchor {
     }
 
     public String tagSelectAndSpace() {
-        return config.method == TS_SQLConnMethodUtils.METHOD_MARIADB() ? "SELECT SQL_CACHE " : "SELECT ";
+        if (!disanleUseCacheForAWhile) {
+            if (config.useCacheIfPossible) {
+                if (config.method == TS_SQLConnMethodUtils.METHOD_MARIADB()) {
+                    return "SELECT SQL_CACHE ";
+                }
+            }
+        }
+        return "SELECT ";
     }
 }
