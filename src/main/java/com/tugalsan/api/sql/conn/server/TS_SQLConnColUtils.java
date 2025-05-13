@@ -34,7 +34,7 @@ public class TS_SQLConnColUtils {
     }
 
     public static String creationType(TS_SQLConnConfig config, TGS_SQLColTyped colType) {
-        if (Objects.equals(config.method, TS_SQLConnMethodUtils.METHOD_MARIADB()) || Objects.equals(config.method, TS_SQLConnMethodUtils.METHOD_MYSQL())) {
+        if (Objects.equals(config.method, TS_SQLConnMethodUtils.METHOD_MARIADB())) {
             if (colType.familyLng()) {
                 return "INTEGER NOT NULL";
             }
@@ -43,6 +43,30 @@ public class TS_SQLConnColUtils {
             }
             if (colType.familyBytes()) {
                 return "LONGBLOB";
+            }
+            return TGS_FuncMTUUtils.thrw(d.className, "creationType(TS_SQLConnConfig config, TGS_SQLColTyped colType)", "Unrecognized SQL colType:" + colType);
+        }
+        if (Objects.equals(config.method, TS_SQLConnMethodUtils.METHOD_MYSQL())) {
+            if (colType.familyLng()) {
+                return "INTEGER NOT NULL";
+            }
+            if (colType.familyStr()) {
+                return "VARCHAR(254) NOT NULL";
+            }
+            if (colType.familyBytes()) {
+                return "LONGBLOB";
+            }
+            return TGS_FuncMTUUtils.thrw(d.className, "creationType(TS_SQLConnConfig config, TGS_SQLColTyped colType)", "Unrecognized SQL colType:" + colType);
+        }
+        if (Objects.equals(config.method, TS_SQLConnMethodUtils.METHOD_POSTGRES())) {
+            if (colType.familyLng()) {
+                return "INTEGER NOT NULL";
+            }
+            if (colType.familyStr()) {
+                return "VARCHAR(254) NOT NULL";
+            }
+            if (colType.familyBytes()) {
+                return "BYTEA";
             }
             return TGS_FuncMTUUtils.thrw(d.className, "creationType(TS_SQLConnConfig config, TGS_SQLColTyped colType)", "Unrecognized SQL colType:" + colType);
         }
