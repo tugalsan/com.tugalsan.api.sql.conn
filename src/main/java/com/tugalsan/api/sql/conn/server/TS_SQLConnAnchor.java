@@ -125,9 +125,9 @@ public class TS_SQLConnAnchor {
     }
 
     public String tagSelectAndSpace() {
-        if (!disanleUseCacheForAWhile) {
-            if (config.useCacheIfPossible) {
-                if (config.method == TS_SQLConnMethodUtils.METHOD_MARIADB()) {
+        if (config.method == TS_SQLConnMethodUtils.METHOD_MARIADB()) {
+            if (!disanleUseCacheForAWhile) {
+                if (config.useCacheIfPossible) {
                     return "SELECT SQL_CACHE ";
                 }
             }
