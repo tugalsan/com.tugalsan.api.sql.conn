@@ -1,7 +1,6 @@
 module com.tugalsan.api.sql.conn {
     requires java.sql;
     requires tomcat.jdbc;
-    
     requires com.tugalsan.api.union;
     requires com.tugalsan.api.profile;
     requires com.tugalsan.api.function;

@@ -5,7 +5,7 @@ import java.util.Arrays;
 public class TS_SQLConnDestroyUtils {
 
     private TS_SQLConnDestroyUtils() {
-
+        
     }
 
     public static void destroy(TS_SQLConnAnchor... anchors) {
