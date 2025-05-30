@@ -23,7 +23,7 @@ public class TS_SQLConnAnchor {
         this.config = config;
     }
     final public TS_SQLConnConfig config;
-    public volatile boolean disableUseCacheForAWhile = false;
+    public volatile boolean disableUseCacheForAWhile = false;//class.TS_LibRqlBufferCreateUtils and func.tagSelectAndSpace uses it
 
     public void use(TGS_FuncMTU_In1<Connection> con) {
         try (var conPack = TS_SQLConnCoreNewConnection.of(TS_SQLConnAnchor.this).value()) {
