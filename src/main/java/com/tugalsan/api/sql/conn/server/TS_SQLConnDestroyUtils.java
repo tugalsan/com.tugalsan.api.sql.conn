@@ -1,9 +1,8 @@
 package com.tugalsan.api.sql.conn.server;
 
-import com.tugalsan.api.function.client.TGS_FuncUtils;
+import com.tugalsan.api.function.client.maythrowexceptions.checked.TGS_FuncMTCUtils;
 import com.tugalsan.api.log.server.TS_Log;
 import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.Arrays;
 
 public class TS_SQLConnDestroyUtils {
@@ -24,13 +23,10 @@ public class TS_SQLConnDestroyUtils {
 //            }
         }
         DriverManager.getDrivers().asIterator().forEachRemaining(driver -> {
-            try {
+            TGS_FuncMTCUtils.run(() -> {
                 DriverManager.deregisterDriver(driver);
                 d.cr("Driver deregistered", driver);
-            } catch (SQLException e) {
-                d.ce("Error deregistering driver!", driver, e.getMessage());
-                TGS_FuncUtils.throwIfInterruptedException(e);
-            }
+            }, e -> d.ce("Error deregistering driver!", driver, e.getMessage()));
         });
     }
 }
