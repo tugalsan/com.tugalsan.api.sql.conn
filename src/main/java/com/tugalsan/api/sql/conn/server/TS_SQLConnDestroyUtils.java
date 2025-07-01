@@ -1,5 +1,6 @@
 package com.tugalsan.api.sql.conn.server;
 
+import com.tugalsan.api.function.client.TGS_FuncUtils;
 import com.tugalsan.api.log.server.TS_Log;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -26,8 +27,9 @@ public class TS_SQLConnDestroyUtils {
             try {
                 DriverManager.deregisterDriver(driver);
                 d.cr("Driver deregistered", driver);
-            } catch (SQLException ex) {
-                d.ce("Error deregistering driver!", driver, ex.getMessage());
+            } catch (SQLException e) {
+                d.ce("Error deregistering driver!", driver, e.getMessage());
+                TGS_FuncUtils.throwIfInterruptedException(e);
             }
         });
     }
