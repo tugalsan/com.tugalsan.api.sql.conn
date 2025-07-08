@@ -13,6 +13,7 @@ public class TS_SQLConnDestroyUtils {
 
     }
 
+    @Deprecated //WHY TO USE. NOT GOOD WITH MULTI WAR PROJECTS
     public static void destroy(TS_SQLConnAnchor... anchors) {
         var isMysqlVariant = Arrays.stream(anchors)
                 .anyMatch(anchor -> anchor.config.method == TS_SQLConnMethodUtils.METHOD_MARIADB() || anchor.config.method == TS_SQLConnMethodUtils.METHOD_MYSQL());
