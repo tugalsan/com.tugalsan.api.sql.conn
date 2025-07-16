@@ -88,7 +88,7 @@ public class TS_SQLConnStmtUtils {
         return TGS_FuncMTCUtils.call(() -> {
             if (param instanceof byte[] val) {
                 if (!TGS_SQLColTypedUtils.familyBytes(colName)) {
-                    TGS_FuncMTUUtils.thrw(d.className, "fill", "param instanceof byte[] -> !TGS_SQLColTypedUtils.familyBytes(colName)");
+                    TGS_FuncMTUUtils.thrw(d.className, "fill", "param instanceof byte[] -> !TGS_SQLColTypedUtils.familyBytes(" + colName + ")");
                 }
                 d.ci("fill", index, "byte[]", "len", val.length);
                 fillStmt.setBytes(index + 1, val);
@@ -96,7 +96,7 @@ public class TS_SQLConnStmtUtils {
             }
             if (param instanceof Boolean val) {
                 if (!TGS_SQLColTypedUtils.familyLng(colName)) {
-                    TGS_FuncMTUUtils.thrw(d.className, "fill", "param instanceof Boolean -> !TGS_SQLColTypedUtils.familyLng(colName)");
+                    TGS_FuncMTUUtils.thrw(d.className, "fill", "param instanceof Boolean -> !TGS_SQLColTypedUtils.familyLng(" + colName + ")");
                 }
                 d.ci("fill", index, "bool", val);
                 fillStmt.setLong(index + 1, val ? 1L : 0L);
@@ -104,7 +104,7 @@ public class TS_SQLConnStmtUtils {
             }
             if (param instanceof Short val) {
                 if (!TGS_SQLColTypedUtils.familyLng(colName)) {
-                    TGS_FuncMTUUtils.thrw(d.className, "fill", "param instanceof Short -> !TGS_SQLColTypedUtils.familyLng(colName)");
+                    TGS_FuncMTUUtils.thrw(d.className, "fill", "param instanceof Short -> !TGS_SQLColTypedUtils.familyLng(" + colName + ")");
                 }
                 d.ci("fill", index, "Short", val);
                 fillStmt.setLong(index + 1, val);
@@ -112,7 +112,7 @@ public class TS_SQLConnStmtUtils {
             }
             if (param instanceof Integer val) {
                 if (!TGS_SQLColTypedUtils.familyLng(colName)) {
-                    TGS_FuncMTUUtils.thrw(d.className, "fill", "param instanceof Integer -> !TGS_SQLColTypedUtils.familyLng(colName)");
+                    TGS_FuncMTUUtils.thrw(d.className, "fill", "param instanceof Integer -> !TGS_SQLColTypedUtils.familyLng(" + colName + ")");
                 }
                 d.ci("fill", index, "Integer", val);
                 fillStmt.setLong(index + 1, val);
@@ -120,7 +120,7 @@ public class TS_SQLConnStmtUtils {
             }
             if (param instanceof Long val) {
                 if (!TGS_SQLColTypedUtils.familyLng(colName)) {
-                    TGS_FuncMTUUtils.thrw(d.className, "fill", "param instanceof Long -> !TGS_SQLColTypedUtils.familyLng(colName)");
+                    TGS_FuncMTUUtils.thrw(d.className, "fill", "param instanceof Long -> !TGS_SQLColTypedUtils.familyLng(" + colName + ")");
                 }
                 d.ci("fill", index, "Long", val);
                 fillStmt.setLong(index + 1, val);
@@ -128,7 +128,7 @@ public class TS_SQLConnStmtUtils {
             }
             if (param instanceof Object[] val) {
                 if (!TGS_SQLColTypedUtils.typeBytes(colName) && !TGS_SQLColTypedUtils.typeBytesRow(colName)) {
-                    TGS_FuncMTUUtils.thrw(d.className, "fill", "param instanceof Object[] -> !TGS_SQLColTypedUtils.typeBytes(colName) && !TGS_SQLColTypedUtils.typeBytesRow(colName)");
+                    TGS_FuncMTUUtils.thrw(d.className, "fill", "param instanceof Object[] -> !TGS_SQLColTypedUtils.typeBytes(" + colName + ") && !TGS_SQLColTypedUtils.typeBytesRow(" + colName + ")");
                 }
                 var opObj = TS_FileObjUtils.toBytes(val);
                 if (opObj.isExcuse()) {
