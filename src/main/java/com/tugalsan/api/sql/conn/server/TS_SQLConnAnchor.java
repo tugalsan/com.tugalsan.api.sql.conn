@@ -87,41 +87,29 @@ public class TS_SQLConnAnchor {
     }
 
     public String url() {
-        if (url == null) {
-            synchronized (this) {
-                if (url == null) {
-                    url = TS_SQLConnCoreURLUtils.create(config);
-                }
-            }
-        }
-        return url;
+        return url.orElseSet(() -> TS_SQLConnCoreURLUtils.create(config));
     }
-    private volatile String url = null;
+    private volatile StableValue<String> url = StableValue.of();
 
     public Properties properties() {
-        if (prop == null) {
-            synchronized (this) {
-                if (prop == null) {
-                    var newProp = new Properties();
-                    if (config.charsetUTF8) {
-                        newProp.put("charSet", StandardCharsets.UTF_8.name());
-                    }
-                    if (config.dbUser == null || config.dbUser.equals("") || config.dbPassword == null) {
-                    } else {
-                        newProp.put("user", config.dbUser);
-                        newProp.put("password", config.dbPassword);
-                    }
-                    prop = newProp;
-                }
+        return prop.orElseSet(() -> {
+            var newProp = new Properties();
+            if (config.charsetUTF8) {
+                newProp.put("charSet", StandardCharsets.UTF_8.name());
             }
-        }
-        return prop;
+            if (config.dbUser == null || config.dbUser.equals("") || config.dbPassword == null) {
+            } else {
+                newProp.put("user", config.dbUser);
+                newProp.put("password", config.dbPassword);
+            }
+            return newProp;
+        });
     }
-    private volatile Properties prop;
+    private volatile StableValue<Properties> prop = StableValue.of();
 
     @Override
     public String toString() {
-        return TS_SQLConnAnchor.class.getSimpleName() + "{" + "config=" + config + ", url=" + url + ", prop=" + prop + '}';
+        return TS_SQLConnAnchor.class.getSimpleName() + "{" + "config=" + config + ", url=" + url.orElse("null") + ", prop=" + prop.orElse(new Properties()) + '}';
     }
 
     public String tagSelectAndSpace() {
