@@ -1,18 +1,15 @@
 package com.tugalsan.api.sql.conn.server;
 
-import com.tugalsan.api.sql.conn.server.core.TS_SQLConnCoreURLUtils;
-import com.tugalsan.api.file.json.server.TS_FileJsonUtils;
-import com.tugalsan.api.file.server.TS_DirectoryUtils;
-import com.tugalsan.api.file.server.TS_FileUtils;
-import com.tugalsan.api.file.txt.server.TS_FileTxtUtils;
-import com.tugalsan.api.function.client.maythrowexceptions.checked.TGS_FuncMTCUtils;
-import com.tugalsan.api.function.client.maythrowexceptions.unchecked.TGS_FuncMTU_In1;
-import com.tugalsan.api.log.server.TS_Log;
-import com.tugalsan.api.sql.conn.server.core.TS_SQLConnCoreNewConnection;
-import com.tugalsan.api.union.client.TGS_UnionExcuse;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.sql.Connection;
+import module com.tugalsan.api.file.json;
+import module com.tugalsan.api.file;
+import module com.tugalsan.api.file.txt;
+import module com.tugalsan.api.function;
+import module com.tugalsan.api.log;
+import module com.tugalsan.api.union;
+import module java.sql;
+import com.tugalsan.api.sql.conn.server.core.*;
+import java.nio.charset.*;
+import java.nio.file.*;
 import java.util.*;
 
 public class TS_SQLConnAnchor {

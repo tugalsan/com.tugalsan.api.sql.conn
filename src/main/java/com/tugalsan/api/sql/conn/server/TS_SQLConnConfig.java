@@ -1,7 +1,7 @@
 package com.tugalsan.api.sql.conn.server;
 
-import java.io.Serializable;
-import java.util.Objects;
+import java.io.*;
+import java.util.*;
 
 public class TS_SQLConnConfig implements Serializable {
 

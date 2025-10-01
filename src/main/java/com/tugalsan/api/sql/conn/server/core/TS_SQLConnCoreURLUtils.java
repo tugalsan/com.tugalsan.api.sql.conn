@@ -1,9 +1,8 @@
 package com.tugalsan.api.sql.conn.server.core;
 
-import com.tugalsan.api.log.server.TS_Log;
-import com.tugalsan.api.sql.conn.server.TS_SQLConnConfig;
-import com.tugalsan.api.sql.conn.server.TS_SQLConnMethodUtils;
-import java.nio.charset.StandardCharsets;
+import module com.tugalsan.api.log;
+import module com.tugalsan.api.sql.conn;
+import java.nio.charset.*;
 
 public class TS_SQLConnCoreURLUtils {
 

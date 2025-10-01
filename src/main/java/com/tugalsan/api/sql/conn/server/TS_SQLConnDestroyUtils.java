@@ -1,9 +1,9 @@
 package com.tugalsan.api.sql.conn.server;
 
-import com.tugalsan.api.function.client.maythrowexceptions.checked.TGS_FuncMTCUtils;
-import com.tugalsan.api.log.server.TS_Log;
-import java.sql.DriverManager;
-import java.util.Arrays;
+import module com.tugalsan.api.function;
+import module com.tugalsan.api.log;
+import module java.sql;
+import java.util.*;
 
 public class TS_SQLConnDestroyUtils {
 

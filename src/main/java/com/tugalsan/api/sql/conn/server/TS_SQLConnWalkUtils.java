@@ -1,12 +1,10 @@
 package com.tugalsan.api.sql.conn.server;
 
-import com.tugalsan.api.function.client.maythrowexceptions.checked.TGS_FuncMTCUtils;
-import com.tugalsan.api.function.client.maythrowexceptions.unchecked.TGS_FuncMTU_In1;
-import com.tugalsan.api.log.server.TS_Log;
-import com.tugalsan.api.tuple.client.TGS_Tuple1;
-import com.tugalsan.api.sql.resultset.server.TS_SQLResultSet;
-
-import java.sql.PreparedStatement;
+import module com.tugalsan.api.function;
+import module com.tugalsan.api.log;
+import module com.tugalsan.api.tuple;
+import module com.tugalsan.api.sql.resultset;
+import module java.sql;
 
 public class TS_SQLConnWalkUtils {
 
@@ -61,7 +59,7 @@ public class TS_SQLConnWalkUtils {
     }
 
     @Deprecated //WARNING: CHECK TO SEE IF SQL IS SAFE!
-    public static void query(TS_SQLConnAnchor anchor, CharSequence sqlStmt, TGS_FuncMTU_In1<PreparedStatement> fillStmt, TGS_FuncMTU_In1<TS_SQLResultSet> rs) {        
+    public static void query(TS_SQLConnAnchor anchor, CharSequence sqlStmt, TGS_FuncMTU_In1<PreparedStatement> fillStmt, TGS_FuncMTU_In1<TS_SQLResultSet> rs) {
         TS_SQLConnWalkUtils.stmtQuery(anchor, sqlStmt, stmt -> {
             fillStmt.run(stmt);
             TGS_FuncMTCUtils.run(() -> {

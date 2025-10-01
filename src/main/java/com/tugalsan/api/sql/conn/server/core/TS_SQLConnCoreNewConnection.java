@@ -1,14 +1,11 @@
 package com.tugalsan.api.sql.conn.server.core;
 
-import com.tugalsan.api.function.client.maythrowexceptions.checked.TGS_FuncMTCUtils;
-import com.tugalsan.api.log.server.*;
-import com.tugalsan.api.profile.server.melody.TS_ProfileMelodyUtils;
-import com.tugalsan.api.sql.conn.server.TS_SQLConnAnchor;
-import com.tugalsan.api.sql.conn.server.TS_SQLConnMethodUtils;
-import com.tugalsan.api.sql.conn.server.TS_SQLConnWalkUtils;
-import com.tugalsan.api.union.client.TGS_UnionExcuse;
-
-import java.sql.*;
+import module com.tugalsan.api.function;
+import module com.tugalsan.api.log;
+import module com.tugalsan.api.profile;
+import module com.tugalsan.api.sql.conn;
+import module com.tugalsan.api.union;
+import module java.sql;
 
 public class TS_SQLConnCoreNewConnection implements AutoCloseable {
 

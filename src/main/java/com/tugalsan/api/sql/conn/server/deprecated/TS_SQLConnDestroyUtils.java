@@ -1,8 +1,8 @@
 package com.tugalsan.api.sql.conn.server.deprecated;
 
-import java.sql.*;
-import com.tugalsan.api.log.server.TS_Log;
-import com.tugalsan.api.function.client.maythrowexceptions.checked.TGS_FuncMTCUtils;
+import module com.tugalsan.api.log;
+import module com.tugalsan.api.function;
+import module java.sql;
 
 public class TS_SQLConnDestroyUtils {
 

@@ -1,18 +1,13 @@
 package com.tugalsan.api.sql.conn.server;
 
-import com.tugalsan.api.file.obj.server.*;
-import com.tugalsan.api.function.client.TGS_FuncUtils;
-import com.tugalsan.api.function.client.maythrowexceptions.checked.TGS_FuncMTCUtils;
-import com.tugalsan.api.function.client.maythrowexceptions.unchecked.TGS_FuncMTUUtils;
-import com.tugalsan.api.function.client.maythrowexceptions.unchecked.TGS_FuncMTU_In1;
-import com.tugalsan.api.log.server.TS_Log;
-import com.tugalsan.api.sql.col.typed.client.TGS_SQLColTypedUtils;
-import com.tugalsan.api.string.client.*;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.List;
-import java.util.stream.IntStream;
+import module com.tugalsan.api.file.obj;
+import module com.tugalsan.api.function;
+import module com.tugalsan.api.log;
+import module com.tugalsan.api.sql.col.typed;
+import module com.tugalsan.api.string;
+import module java.sql;
+import java.util.*;
+import java.util.stream.*;
 
 public class TS_SQLConnStmtUtils {
 
