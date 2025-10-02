@@ -37,7 +37,6 @@ public class TS_SQLConnStmtUtils {
     }
 
     public static PreparedStatement stmtUpdate(Connection con, CharSequence sql) {
-
         return TGS_FuncMTCUtils.call(() -> {
             return con.prepareStatement(sql.toString(), PreparedStatement.RETURN_GENERATED_KEYS);
         }, e -> {
