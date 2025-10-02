@@ -5,12 +5,17 @@ import module com.tugalsan.api.file;
 import module com.tugalsan.api.file.txt;
 import module com.tugalsan.api.function;
 import module com.tugalsan.api.log;
+import com.tugalsan.api.os.server.TS_OsCpuUtils;
+
 import module com.tugalsan.api.union;
 import module java.sql;
 import com.tugalsan.api.sql.conn.server.core.*;
+import com.tugalsan.api.thread.server.sync.rateLimited.TS_ThreadSyncRateLimitedRun;
 import java.nio.charset.*;
 import java.nio.file.*;
 import java.util.*;
+import java.util.concurrent.Semaphore;
+import java.util.function.Supplier;
 
 public class TS_SQLConnAnchor {
 
@@ -23,10 +28,13 @@ public class TS_SQLConnAnchor {
     public volatile boolean disableUseCacheForAWhile = false;//class.TS_LibRqlBufferCreateUtils and func.tagSelectAndSpace uses it
 
     public void use(TGS_FuncMTU_In1<Connection> con) {
-        try (var conPack = TS_SQLConnCoreNewConnection.of(TS_SQLConnAnchor.this).value()) {
-            con.run(conPack.con());
-        }
+        TS_ThreadSyncRateLimitedRun.of(use_sema.get()).run(() -> {
+            try (var conPack = TS_SQLConnCoreNewConnection.of(TS_SQLConnAnchor.this).value()) {
+                con.run(conPack.con());
+            }
+        });
     }
+    final private static Supplier<Semaphore> use_sema = StableValue.supplier(() -> new Semaphore(TS_OsCpuUtils.getProcessorCount() - 1));
 
     public static TS_SQLConnAnchor of(TS_SQLConnConfig config) {
         return new TS_SQLConnAnchor(config);
