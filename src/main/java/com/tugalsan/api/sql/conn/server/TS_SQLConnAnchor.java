@@ -33,7 +33,7 @@ public class TS_SQLConnAnchor {
             }
         });
     }
-    private static volatile Supplier<Semaphore> use_sema = StableValue.supplier(() -> new Semaphore(TS_OsCpuUtils.getProcessorCount() - 1));
+    public static volatile Supplier<Semaphore> use_sema = StableValue.supplier(() -> new Semaphore(TS_OsCpuUtils.getProcessorCount() - 1));
 
     public static TS_SQLConnAnchor of(TS_SQLConnConfig config) {
         return new TS_SQLConnAnchor(config);
