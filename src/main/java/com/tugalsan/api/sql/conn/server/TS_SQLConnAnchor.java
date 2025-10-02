@@ -29,15 +29,15 @@ public class TS_SQLConnAnchor {
 
     public void use(TGS_FuncMTU_In1<Connection> con) {
         var count = use_counter.getAndIncrement();
-        d.ci("use", count, "triggered", use_sema.get().availablePermits(), use_sema.get());
+        d.ci("use", count, "triggered", "permits", use_sema.get().availablePermits());
         TS_ThreadSyncRateLimitedRun.of(use_sema.get()).run(() -> {
-            d.ci("use", count, "begin", use_sema.get().availablePermits(), use_sema.get());
+            d.ci("use", count, "begin....", "permits", use_sema.get().availablePermits());
             try (var conPack = TS_SQLConnCoreNewConnection.of(TS_SQLConnAnchor.this).value()) {
                 con.run(conPack.con());
             }
-            d.ci("use", count, "end", use_sema.get().availablePermits(), use_sema.get());
+            d.ci("use", count, "end......", "permits", use_sema.get().availablePermits());
         });
-        d.ci("use", count, "finalized", use_sema.get().availablePermits(), use_sema.get());
+        d.ci("use", count, "finalized", "permits", use_sema.get().availablePermits());
     }
     public static volatile Supplier<Semaphore> use_sema = StableValue.supplier(() -> new Semaphore(TS_OsCpuUtils.getProcessorCount() - 1));
     final static AtomicLong use_counter = new AtomicLong();
