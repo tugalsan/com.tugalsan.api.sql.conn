@@ -13,8 +13,7 @@ import com.tugalsan.api.sql.conn.server.core.*;
 import java.nio.charset.*;
 import java.nio.file.*;
 import java.util.*;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.*;
 import java.util.function.*;
 
 public class TS_SQLConnAnchor {
@@ -29,17 +28,17 @@ public class TS_SQLConnAnchor {
 
     public void use(TGS_FuncMTU_In1<Connection> con) {
         var count = use_counter.getAndIncrement();
-        d.ci("use", count, "triggered", "permits", use_sema.get().availablePermits());
+        d.ci("use", count, "triggered", "used", use_sema.get().usedPermits(), "available", use_sema.get().availablePermits(), "max", use_sema.get().maxPermits());
         TS_ThreadSyncRateLimitedRun.of(use_sema.get()).run(() -> {
-            d.ci("use", count, "begin....", "permits", use_sema.get().availablePermits());
+            d.ci("use", count, "begin....", "used", use_sema.get().usedPermits(), "available", use_sema.get().availablePermits(), "max", use_sema.get().maxPermits());
             try (var conPack = TS_SQLConnCoreNewConnection.of(TS_SQLConnAnchor.this).value()) {
                 con.run(conPack.con());
             }
-            d.ci("use", count, "end......", "permits", use_sema.get().availablePermits());
+            d.ci("use", count, "end......", "used", use_sema.get().usedPermits(), "available", use_sema.get().availablePermits(), "max", use_sema.get().maxPermits());
         });
-        d.ci("use", count, "finalized", "permits", use_sema.get().availablePermits());
+        d.ci("use", count, "finalized", "used", use_sema.get().usedPermits(), "available", use_sema.get().availablePermits(), "max", use_sema.get().maxPermits());
     }
-    public static volatile Supplier<Semaphore> use_sema = StableValue.supplier(() -> new Semaphore(TS_OsCpuUtils.getProcessorCount() - 1));
+    public static volatile Supplier<TS_ThreadSyncSemaphore> use_sema = StableValue.supplier(() -> new TS_ThreadSyncSemaphore(TS_OsCpuUtils.getProcessorCount() - 1));
     final static AtomicLong use_counter = new AtomicLong();
 
     public static TS_SQLConnAnchor of(TS_SQLConnConfig config) {
