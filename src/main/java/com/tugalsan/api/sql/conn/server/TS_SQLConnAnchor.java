@@ -14,11 +14,12 @@ import java.nio.charset.*;
 import java.nio.file.*;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.*;
 
 public class TS_SQLConnAnchor {
 
-    final private static TS_Log d = TS_Log.of(TS_SQLConnAnchor.class);
+    final private static TS_Log d = TS_Log.of(true, TS_SQLConnAnchor.class);
 
     private TS_SQLConnAnchor(TS_SQLConnConfig config) {
         this.config = config;
@@ -27,13 +28,19 @@ public class TS_SQLConnAnchor {
     public volatile boolean disableUseCacheForAWhile = false;//class.TS_LibRqlBufferCreateUtils and func.tagSelectAndSpace uses it
 
     public void use(TGS_FuncMTU_In1<Connection> con) {
+        var count = use_counter.getAndIncrement();
+        d.ci("use", count, "triggered", use_sema.get().availablePermits(), use_sema.get());
         TS_ThreadSyncRateLimitedRun.of(use_sema.get()).run(() -> {
+            d.ci("use", count, "begin", use_sema.get().availablePermits(), use_sema.get());
             try (var conPack = TS_SQLConnCoreNewConnection.of(TS_SQLConnAnchor.this).value()) {
                 con.run(conPack.con());
             }
+            d.ci("use", count, "end", use_sema.get().availablePermits(), use_sema.get());
         });
+        d.ci("use", count, "finalized", use_sema.get().availablePermits(), use_sema.get());
     }
     public static volatile Supplier<Semaphore> use_sema = StableValue.supplier(() -> new Semaphore(TS_OsCpuUtils.getProcessorCount() - 1));
+    final static AtomicLong use_counter = new AtomicLong();
 
     public static TS_SQLConnAnchor of(TS_SQLConnConfig config) {
         return new TS_SQLConnAnchor(config);
@@ -59,7 +66,7 @@ public class TS_SQLConnAnchor {
             TS_FileTxtUtils.toFile(jsonString0, filePath, false);
             return jsonString0;
         });
-        d.ci("createAnchor", jsonString);
+        //d.ci("createAnchor", jsonString);
 
         var u_config = TS_FileJsonUtils.toObject(jsonString, TS_SQLConnConfig.class);
         if (u_config.isExcuse()) {
